@@ -1,0 +1,36 @@
+{
+  "source_id": "src_wiki_inventory_slots",
+  "title": "Inventory - Minecraft Wiki（背包槽位构成）",
+  "url": "https://minecraft.wiki/w/Inventory",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "s [ edit | edit source ] See also: Slot The inventory consists of 4 armor slots, 27 storage slots, 9 hotbar slots, and an off-hand slot. Items in the hotbar slots can be selected using the keyboard keys ( 1 – 9 ) or by moving the Scroll Wheel. Pressing the F ‌ [ JE only ] key moves the selected item to and from the hotbar slot and the of",
+  "evidence_notes": "给出玩家背包的槽位构成：4 护甲 + 27 储存 + 9 快捷栏 + 1 副手，即 36 格可携带物品（27+9）。是「背包满」判定与腾位策略的槽位总数依据。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。",
+  "derived_values": [
+    {
+      "value": "36",
+      "basis": "可携带物品槽位 = 27 storage slots + 9 hotbar slots = 36（摘录中的 27 与 9 直接相加；护甲 4 与副手 1 不计入可携带物品）"
+    }
+  ]
+}

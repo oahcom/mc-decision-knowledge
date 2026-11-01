@@ -1,0 +1,172 @@
+{
+  "id": "tool_collect_drops",
+  "knowledge_type": "tool_guide",
+  "title": "拾取掉落物（collect / pickup）执行契约",
+  "summary": "拾取失败很少报错，只会“没捡到”。契约要求以实体集合差与背包 diff 双向验证，并对拾取不同步给出二次读取规则，避免把客户端预测当成已获得。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "地面上存在目标掉落物实体",
+      "计划需要把掉落物收入背包"
+    ],
+    "state_features": [
+      "bot.entities",
+      "item_drop_entities",
+      "inventory_free_slots",
+      "distance_to_drop",
+      "hostiles_within_8",
+      "despawn_estimate"
+    ]
+  },
+  "actions": [
+    "按 item_filter 与 radius 生成待拾取实体列表",
+    "按距离排序，逐个靠近（不穿越危险方块）",
+    "每拾取一件后核对实体是否消失、背包是否增加",
+    "超时后输出未拾取清单并停止绕行"
+  ],
+  "preconditions": [
+    "bot.entities 中存在 type=item 且符合 filter 的实体",
+    "掉落物位置可达（路径不经过熔岩/水/悬崖）",
+    "背包至少 1 个空位或可合并堆叠",
+    "6 格内无敌对实体，或已先清理"
+  ],
+  "success_condition": "目标掉落物实体从 bot.entities 消失，且背包对应计数增加相同数量（两次读取一致）",
+  "abort_condition": [
+    "timeout_ms 到期：停止绕行，输出未拾取清单",
+    "单个掉落物绕行超过 2 次：放弃该件",
+    "背包已满：立即停止并转入腾位流程"
+  ],
+  "risk_notes": [
+    "掉落物在熔岩、水中或悬崖边时不要靠近拾取",
+    "背包已满时不要开始拾取（会白跑）",
+    "怪物在 6 格内时不要弯腰拾取",
+    "掉落物接近 despawn 计时时不要规划长绕行"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_wiki_inventory_slots"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "collect / pickup",
+  "parameters": [
+    {
+      "name": "item_filter",
+      "type": "list<string>",
+      "required": false,
+      "description": "只拾取这些物品；缺省为全部"
+    },
+    {
+      "name": "radius",
+      "type": "number",
+      "required": false,
+      "description": "搜索半径（格），默认 8"
+    },
+    {
+      "name": "max_items",
+      "type": "integer",
+      "required": false,
+      "description": "单次最多拾取件数"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "默认 8000"
+    },
+    {
+      "name": "confirm_reads",
+      "type": "integer",
+      "required": false,
+      "description": "背包确认读取次数，默认 2，间隔 ≥2 tick"
+    }
+  ],
+  "expected_effects": [
+    "掉落物实体消失",
+    "背包对应物品计数增加",
+    "拾取过程不造成伤害"
+  ],
+  "failure_modes": [
+    "pickup_no_entity — 目标实体已不存在（被拾取、despawn 或合并）",
+    "pickup_out_of_reach — 掉落物在不可达位置（岩浆、封闭空间、悬崖下）",
+    "pickup_inventory_full — 背包满，服务端不接收",
+    "pickup_contested — 被其它实体或玩家抢先拾取",
+    "pickup_desync — 实体消失但背包未增加（需二次读取确认）",
+    "pickup_timeout — 超时未完成"
+  ],
+  "verification": [
+    "实体 id 集合前后差集为空",
+    "背包按 itemType 聚合增加量与掉落数量一致",
+    "间隔 ≥2 tick 的两次读取结果一致"
+  ],
+  "tags": [
+    "tool-contract",
+    "collection",
+    "link_playbook:pb_iron_mining_run",
+    "theme:state-sync"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "preconditions",
+      "value": "1",
+      "context": "背包至少 1 个空位",
+      "reason": "最小空位要求：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "2",
+      "context": "单个掉落物绕行超过 2 次",
+      "reason": "单件掉落物的绕行次数上限：作者自定"
+    },
+    {
+      "field": "parameters",
+      "value": "8",
+      "context": "搜索半径（格），默认 8",
+      "reason": "工具参数的初始值（默认搜索半径）：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "8000",
+      "context": "默认 8000",
+      "reason": "工具参数的初始值（默认超时）：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "2",
+      "context": "背包确认读取次数，默认 2",
+      "reason": "工具参数的初始值（确认读取次数）：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "2",
+      "context": "间隔 ≥2 tick",
+      "reason": "确认读取的间隔：作者自定"
+    },
+    {
+      "field": "verification",
+      "value": "2",
+      "context": "间隔 ≥2 tick 的两次读取结果一致",
+      "reason": "确认读取的间隔：作者自定"
+    },
+    {
+      "field": "verification",
+      "value": "2",
+      "context": "间隔 ≥2 tick",
+      "reason": "两次读取的最小间隔：作者自定的确认等待步长"
+    }
+  ],
+  "evidence_strength": "high"
+}

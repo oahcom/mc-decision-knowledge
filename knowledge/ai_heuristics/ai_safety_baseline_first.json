@@ -1,0 +1,73 @@
+{
+  "id": "ai_safety_baseline_first",
+  "knowledge_type": "ai_heuristic",
+  "title": "安全基线优先：补给、装备、退路不满足时先恢复安全",
+  "summary": "模型在做收益导向的选择前，必须先把生命、食物、装备耐久和可退路恢复到一个保守安全基线之上，否则任何探索或采集计划都应降级或暂缓。安全基线是本项目的策略阈值，不是游戏规则。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "正在比较候选策略或生成新计划",
+      "任一安全维度低于保守基线"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "bot.inventory",
+      "known_threats",
+      "shelter_available"
+    ]
+  },
+  "actions": [
+    "读取生命、食物、装备耐久与背包空位，对照安全基线",
+    "任一维度不达标时，先执行恢复动作（进食、整备、回庇护所）",
+    "恢复达标后再比较收益导向的候选路线"
+  ],
+  "preconditions": [
+    "安全基线数值来自结构化状态中心",
+    "运行时能区分生命/食物/耐久的实测值与预测值"
+  ],
+  "success_condition": "生命、食物、关键工具耐久均恢复到安全基线之上，且存在可退路后才进入收益导向计划",
+  "abort_condition": [
+    "无法在有限步内恢复到安全基线（如食物耗尽）",
+    "危险事件抢占，需切换到本地危险保护"
+  ],
+  "risk_notes": [
+    "把安全基线写成普适事实会误导决策，必须标注为策略阈值",
+    "忽略任一安全维度只看单一指标（如只看生命不看食物）会漏判"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "当生命、食物、装备耐久或退路任一不满足安全基线时，优先恢复安全状态，再考虑资源收益。",
+  "alternative_comparison": [
+    "继续探索/采集：短期收益更高，但低血量或低耐久下失败成本（死亡、掉装、掉资源）显著上升",
+    "先恢复安全基线：短期收益下降，但降低死亡与资源损失风险，且为后续探索保留退路"
+  ],
+  "anti_patterns": [
+    "看到高价值资源就忽略生命和食物状态",
+    "只检查生命而忽略食物或工具耐久，导致中途饿死或工具损坏",
+    "在旧状态版本上判断安全基线，得出已过期的结论"
+  ],
+  "model_guidance": "先核对生命、食物、装备耐久和退路四项，任一项低于基线就输出恢复型短计划；恢复达标前不输出收益导向计划，并明确写出重规划条件。",
+  "tags": [
+    "ai-decision",
+    "safety",
+    "link_playbook:pb_first_night_shelter",
+    "theme:safety"
+  ],
+  "evidence_strength": "low"
+}

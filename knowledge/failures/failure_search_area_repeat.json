@@ -1,0 +1,150 @@
+{
+  "id": "failure_search_area_repeat",
+  "knowledge_type": "failure_recovery",
+  "title": "搜索路径重复覆盖同一区域",
+  "summary": "搜索失败常不是范围不足，而是重复覆盖。以区块去重率作为判据，可以区分“真的没资源”与“一直在原地绕圈”。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "最近 200 步内区块去重率低于 30%",
+      "已访问区块数停滞"
+    ],
+    "state_features": [
+      "visited_chunks",
+      "path_history",
+      "goal_history",
+      "target_resource_count"
+    ]
+  },
+  "actions": [
+    "计算最近 200 步的区块去重率",
+    "检查目标点在两次计划之间是否被改写",
+    "检查 path_reset 中 goal_updated 的次数",
+    "按 L1→L4 执行并记录新覆盖区域"
+  ],
+  "preconditions": [
+    "路径历史可用且按区块粒度记录"
+  ],
+  "success_condition": "新区块访问率 ≥ 80%，且目标资源计数增长",
+  "abort_condition": [
+    "恢复达到 escalate_after",
+    "已访问集合无法持久化（记录缺失时不得继续搜索）"
+  ],
+  "risk_notes": [
+    "随机游走式搜索在洞穴系统中会高频回溯",
+    "目标点被重置会让搜索退化为原地循环"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_pathfinder_reset_reasons",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark",
+    "src_wiki_chunk_dimensions"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "最近 200 步的区块去重率低于 30%",
+    "已访问区块数不再增长",
+    "目标资源计数不变，但移动距离持续增加"
+  ],
+  "possible_causes": [
+    "未维护已访问集合，重复进入相同区块",
+    "坐标取整或容差设置导致区域判定漂移",
+    "目标点被重新计算回原点附近",
+    "搜索半径小于单次移动步长，未真正进入新区域",
+    "洞穴系统的死路导致原路返回被计为新路径"
+  ],
+  "diagnostics": [
+    "判别：区块覆盖在增长只是未命中，转 failure_search_no_progress",
+    "按 16×16 区块粒度统计最近路径的唯一率",
+    "检查两次计划之间 goal 是否被改写",
+    "统计 path_reset goal_updated 次数",
+    "抽查 3 个重复区块的目标方块是否已被采空"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：切换象限或高度层，禁止进入已访问集合，允许 1 次",
+    "L2 局部子任务重规划：改为条带式扫描（固定步长 16 格、单向推进、逐层下移）",
+    "L3 回到最近安全检查点：重置并持久化已访问集合，记录已排除区域",
+    "L4 升级给大模型：判定该区域搜索价值为负，改换资源点"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "随机游走式搜索",
+    "重复进入同一区块并计入进度",
+    "把“再绕一圈”当作恢复手段",
+    "在没有新覆盖区域时继续消耗时间"
+  ],
+  "tags": [
+    "failure-recovery",
+    "search",
+    "link_playbook:pb_iron_mining_run",
+    "theme:search"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "200",
+      "context": "最近 200 步内区块去重率",
+      "reason": "去重率统计窗口（步数）：作者自定"
+    },
+    {
+      "field": "trigger",
+      "value": "30",
+      "context": "去重率低于 30%",
+      "reason": "区块去重率下限：作者自定"
+    },
+    {
+      "field": "actions",
+      "value": "200",
+      "context": "计算最近 200 步的区块去重率",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "success_condition",
+      "value": "80",
+      "context": "新区块访问率 ≥ 80%",
+      "reason": "可接受的重复率上限（重复率需低于 20%）：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "3",
+      "context": "抽查 3 个重复区块",
+      "reason": "抽查样本量：作者自定"
+    },
+    {
+      "field": "symptoms",
+      "value": "200",
+      "context": "最近 200 步的区块去重率",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "symptoms",
+      "value": "30",
+      "context": "去重率低于 30%",
+      "reason": "去重率下限：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "1",
+      "context": "允许 1 次",
+      "reason": "同层重试次数上限：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "16",
+      "context": "固定步长 16 格",
+      "reason": "条带式扫描的单步步长：作者自定"
+    }
+  ],
+  "evidence_strength": "medium"
+}

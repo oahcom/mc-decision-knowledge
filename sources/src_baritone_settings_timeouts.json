@@ -1,0 +1,30 @@
+{
+  "source_id": "src_baritone_settings_timeouts",
+  "title": "Baritone Settings.java — path timeouts, fall heights and reach defaults",
+  "url": "https://raw.githubusercontent.com/cabaletta/baritone/master/src/api/java/baritone/api/Settings.java",
+  "platform": "GitHub",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "LGPL-3.0-or-later",
+  "content_excerpt": "Defaults in Settings.java include: primaryTimeoutMS 500, failureTimeoutMS 2000, planAheadPrimaryTimeoutMS 4000, planAheadFailureTimeoutMS 5000, slowPathTimeoutMS 40000, pathingMaxChunkBorderFetch 50, maxFallHeightNoWater 3, maxFallHeightBucket 20, blockReachDistance 4.5, blockBreakSpeed 6, blockBreakAdditionalPenalty 2, movementTimeoutTicks 100, mineScanDroppedItems true.",
+  "evidence_notes": "成熟路径系统使用有限时间预算（毫秒级主超时 + 失败超时）与提前退出计数，而不是无限搜索；可作为本项目超时基线的参照。块交互距离 4.5 与坠落高度 3 也是判定“够得着/摔得起”的量化依据。",
+  "related_game_versions": [
+    "Baritone 支持的 Java Edition 版本",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "这些是 Baritone 的内部调参，不是 Minecraft 规则，只能作为超时/阈值的参照基线。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

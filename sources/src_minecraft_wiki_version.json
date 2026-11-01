@@ -1,0 +1,29 @@
+{
+  "source_id": "src_minecraft_wiki_version",
+  "title": "Minecraft Wiki version index (Java Edition current release)",
+  "url": "https://minecraft.wiki/",
+  "platform": "Minecraft Wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T19:40:00+08:00",
+  "content_excerpt": "Version index lists Java Edition 26.3 as the current release and 26.4 Snapshot 6 as the latest snapshot.",
+  "evidence_notes": "Used to fix the target version for the knowledge layer. The 26.3 stable release was confirmed on 2026-11-01 by the Minecraft Wiki version index and by independent plugin compatibility listings that report 26.3 as the newest supported Java version.",
+  "related_game_versions": [
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 4,
+    "specificity": 5,
+    "version_clarity": 5,
+    "reproducibility": 4
+  },
+  "notes": "Snapshot 26.4 is explicitly out of scope as a target version."
+}

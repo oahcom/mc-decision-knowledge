@@ -1,0 +1,83 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_night_exposure",
+  "title": "夜间暴露的处理：封闭、绕行与提前收工",
+  "summary": "夜间的问题不是“要不要战斗”，而是“天黑前有没有封闭点”。本策略给出四条出路并明确各自代价，其中一条是“提前收工”——它经常被忽略，却是失败成本最低的一条。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "天色已接近入夜",
+      "当前位置不是封闭空间",
+      "附近没有敌对实体但也还没有安全点"
+    ],
+    "state_features": [
+      "time_of_day",
+      "shelter_available",
+      "light_level",
+      "known_threats",
+      "hostiles_within_8",
+      "bot.health",
+      "nearby_container"
+    ]
+  },
+  "actions": [
+    "确认距天黑还有多少时间以及当前位置是否有遮蔽",
+    "按“封闭点 → 绕行 → 提前收工”的成本顺序选择出路",
+    "若选择封闭点，先确认材料与封闭方式，再封口并检查缺口",
+    "把夜间结束后的状态事实（封闭位置、光源、剩余耐久）写回"
+  ],
+  "preconditions": [
+    "已知当前时间与天黑剩余时间",
+    "已知附近是否有可封闭的地形或已建庇护所"
+  ],
+  "success_condition": "天黑时身处封闭空间且无敌对实体进入，或已提前收工返回安全点，由位置封闭性与敌对实体状态验证",
+  "abort_condition": [
+    "天已黑且附近无可封闭地形",
+    "封闭过程中被敌对实体打断",
+    "生命状态不允许继续作业"
+  ],
+  "risk_notes": [
+    "不要在夜间露天赶路",
+    "不要把洞口当作庇护所——它既是入口也是出口",
+    "不要把插着火把的洞口当作安全空间"
+  ],
+  "candidate_routes": [
+    "就地立柱并封顶：材料成本低，但对地形有要求",
+    "挖进山体封闭：防护最好，耗时与暴露时间最长",
+    "提前收工返回已建庇护所：最稳妥，放弃本轮剩余收益",
+    "用床跳过夜晚：需要现成的床与安全地点"
+  ],
+  "decision_tradeoffs": [
+    "立柱：快，但若被围攻则无处可退",
+    "挖进山体：最安全，但挖掘本身消耗工具耐久且暴露",
+    "提前收工：零风险，代价是当天产出",
+    "床：省时省力，但前提条件常常不满足"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "exposure",
+    "link_playbook:pb_first_night_shelter",
+    "canonical_id:stg_night_exposure"
+  ],
+  "evidence_strength": "medium"
+}

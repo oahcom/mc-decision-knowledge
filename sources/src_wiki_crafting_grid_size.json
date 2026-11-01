@@ -1,0 +1,30 @@
+{
+  "source_id": "src_wiki_crafting_grid_size",
+  "title": "Crafting - Minecraft Wiki（2×2 与 3×3 合成格）",
+  "url": "https://minecraft.wiki/w/Crafting",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "avigation Crafting system [ edit | edit source ] Manual crafting [ edit | edit source ] 2×2 crafting grid ( inventory ) 3×3 crafting grid ( crafting table ) Players in Survival and Adventure mode, as well as Creative in Bedrock Edition and Spectator in Java Edition (although unable to interact with the GUI), have access to a 2×2 crafting grid from their inventory screen. Players craft by arranging items in the crafting grid to match a given recipe. Sma",
+  "evidence_notes": "给出合成格尺寸：背包界面只有 2×2 合成格，工作台提供 3×3 合成格。是「哪些配方必须靠近工作台」与「配方需求 ≥4 时需工作台」的结构性依据。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。"
+}

@@ -1,0 +1,27 @@
+{
+  "source_id": "src_minecraft_wiki_gameplay",
+  "title": "Minecraft Wiki gameplay and tutorials",
+  "url": "https://minecraft.wiki/w/Tutorials",
+  "platform": "Minecraft Wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "Minecraft Wiki provides tutorials covering gameplay mechanics, farming, mob management, enchanting, smelting, mechanisms, and technical topics.",
+  "evidence_notes": "Primary community reference for converting general Minecraft gameplay knowledge into decision knowledge. Must not be copied wholesale; only short evidence excerpts and synthesized decision rules are stored.",
+  "related_game_versions": ["Java Edition", "Bedrock Edition"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 4,
+    "version_clarity": 3,
+    "reproducibility": 4
+  },
+  "notes": "Seed source. Tutorials often describe community practice rather than a normative rule; knowledge derived from them must remain draft until verified."
+}

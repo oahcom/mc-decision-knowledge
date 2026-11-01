@@ -1,0 +1,85 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_collect_and_store",
+  "title": "采集配额与存放策略",
+  "summary": "采集的真正成本不是时间，而是占掉的背包空间。本策略决定采什么、采多少、放在哪，把“满背包继续挖”和“东西采了带不回来”当成同一个问题处理。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "作业产出会持续进入背包",
+      "背包空间正在被占用",
+      "存在多个存放点可选"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "inventory_free_slots",
+      "stackable_pairs",
+      "low_value_items",
+      "nearby_container",
+      "pending_drops",
+      "target_resource_count"
+    ]
+  },
+  "actions": [
+    "区分目标资源与顺手采集的附带资源",
+    "为附带资源设配额，超出即丢弃或就地存放",
+    "优先合并同类堆叠，再考虑丢弃",
+    "选择存放点时就近存放（洞穴内堆放 / 装箱 / 返程卸货）"
+  ],
+  "preconditions": [
+    "已知本段作业的目标资源种类与所需数量",
+    "已知可用的存放点及其位置"
+  ],
+  "success_condition": "目标资源完整保留在背包或存放点，附带资源未挤占关键物资空间，由背包内容与存放点状态验证",
+  "abort_condition": [
+    "背包已满且目标资源尚未采够",
+    "存放点不可达或已被占用",
+    "出现需要立即撤离的状态"
+  ],
+  "risk_notes": [
+    "不要在背包满时继续开采——掉落物会消失",
+    "不要丢弃工具、食物或唯一材料",
+    "不要把“顺手多拿一点”当作无成本动作"
+  ],
+  "candidate_routes": [
+    "就地堆放：零往返，但东西在洞穴里可能被抢或被烧",
+    "就近装箱：安全可取，依赖附近有容器",
+    "只取目标资源：背包最干净，放弃其他收益",
+    "满载即返：背包利用率最高，牺牲探索深度"
+  ],
+  "decision_tradeoffs": [
+    "就地堆放：成本最低，保存风险最高",
+    "装箱：保存可靠，前提是附近有容器",
+    "只取目标：效率聚焦，放弃意外收获",
+    "满载即返：单位时间带回最多，但限制了行动半径"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_events",
+    "src_internal_design",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "api_contract",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "capacity",
+    "link_playbook:pb_inventory_tool_management",
+    "link_playbook:pb_iron_mining_run",
+    "canonical_id:stg_collect_and_store"
+  ],
+  "evidence_strength": "high"
+}

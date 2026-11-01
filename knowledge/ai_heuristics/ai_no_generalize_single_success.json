@@ -1,0 +1,71 @@
+{
+  "id": "ai_no_generalize_single_success",
+  "knowledge_type": "ai_heuristic",
+  "title": "不把一次成功当普适规律：单次结果不做规律性外推",
+  "summary": "一次成功可能是环境或运气使然，不能据此把某条路线或某个动作写成普适规律。模型应区分“单次观察”与“可重复结论”，对单次成功保持克制，直到有多条一致证据或回放验证。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "基于单次成功结果推断普适规律",
+      "准备把观察写成策略或启发"
+    ],
+    "state_features": [
+      "observation_count",
+      "environment_signature",
+      "success_count",
+      "state_version"
+    ]
+  },
+  "actions": [
+    "区分单次观察与可重复结论",
+    "单次成功只记为待验证假设，不外推",
+    "累计多条一致证据后再提升结论强度"
+  ],
+  "preconditions": [
+    "观察次数与环境可记录",
+    "能区分成功是必然还是运气"
+  ],
+  "success_condition": "单次成功被标记为待验证假设，直到有多条一致证据才外推为规律",
+  "abort_condition": [
+    "证据不足却已把假设写成事实"
+  ],
+  "risk_notes": [
+    "把一次成功推广为普适规则会误导后续决策",
+    "忽略环境差异的单次外推尤其危险"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_mindcraft_project",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "一次成功不构成普适规律，只记为待验证假设，直到有多条一致证据才外推。",
+  "alternative_comparison": [
+    "立即外推：省时，但把运气当规律会误导后续决策",
+    "克制为假设：慢，但避免在证据不足时做出错误外推"
+  ],
+  "anti_patterns": [
+    "把一次成功写成“总是有效”的规则",
+    "忽略环境与状态差异，把局部成功当成全局规律",
+    "跳过回放验证直接把单次结果提升到高置信"
+  ],
+  "model_guidance": "把单次成功标记为待验证假设，记录环境与状态签名；只有累计多条一致证据或通过回放验证，才把假设提升为可重复结论，并在知识中注明证据强度。",
+  "tags": [
+    "ai-decision",
+    "meta",
+    "evidence",
+    "link_strategy:stg_opening_priority",
+    "theme:meta"
+  ],
+  "evidence_strength": "medium"
+}

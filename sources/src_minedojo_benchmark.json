@@ -1,0 +1,27 @@
+{
+  "source_id": "src_minedojo_benchmark",
+  "title": "MineDojo benchmark and knowledge base",
+  "url": "https://github.com/MineDojo/MineDojo",
+  "platform": "GitHub",
+  "source_type": "benchmark",
+  "reliability": "A",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "MineDojo is a research framework with thousands of Minecraft tasks and an internet-scale knowledge base including YouTube videos, Wiki pages, and Reddit posts.",
+  "evidence_notes": "Reference for task definitions, success criteria, and how community knowledge can be organized for embodied agents.",
+  "related_game_versions": ["Java Edition versions used by the benchmark"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "The dataset contains third-party content. Do not redistribute it; store only citations and short evidence excerpts unless the license explicitly allows reuse."
+}

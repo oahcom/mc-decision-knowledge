@@ -1,0 +1,30 @@
+{
+  "source_id": "src_wiki_player_interaction_range",
+  "title": "Player - Minecraft Wiki（默认交互距离）",
+  "url": "https://minecraft.wiki/w/Player",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "rizontal distances: [ 1 ] [ needs testing in Java Edition ] Default interaction range Type In other game modes In Creative mode Java Edition block 4.5 blocks 5 blocks Java Edition entity 3 blocks 5 blocks Bedrock Edition block 5 blocks Bedrock Edition entity 3 blocks 5 blocks Bedrock Edition touch 6 blocks 12 blocks Health and hunger meters [ edit | edit source ] The player has 10 full hearts or 20 health points",
+  "evidence_notes": "给出 Java Edition 方块交互距离 4.5 格、实体交互距离 3 格，以及 Bedrock 对应值（方块 5 / 实体 3 / 触碰 6）。这是「工作台/熔炉/容器能否在 N 格外打开」的服务端硬边界。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。"
+}

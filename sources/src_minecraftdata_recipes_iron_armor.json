@@ -1,0 +1,47 @@
+{
+  "source_id": "src_minecraftdata_recipes_iron_armor",
+  "title": "minecraft-data recipes.json（iron_helmet/iron_chestplate/iron_leggings/iron_boots 配方用量）",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/1.21.4/recipes.json",
+  "platform": "github",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "### iron_helmet\n    {\n      \"inShape\": [\n        [\n          842,\n          842,\n          842\n        ],\n        [\n          842,\n          null,\n          842\n        ]\n      ],\n      \"result\": {\n        \"id\": 895,\n        \"count\": 1\n      }\n    }\n\n### iron_chestplate\n    {\n      \"inShape\": [\n        [\n          842,\n          null,\n          842\n        ],\n        [\n          842,\n          842,\n          842\n        ],\n        [\n          842,\n          842,\n          842\n        ]\n      ],\n      \"result\": {\n        \"id\": 896,\n        \"count\": 1\n      }\n    }\n\n### iron_leggings\n    {\n      \"inShape\": [\n        [\n          842,\n          842,\n          842\n        ],\n        [\n          842,\n          null,\n          842\n        ],\n        [\n          842,\n          null,\n          842\n        ]\n      ],\n      \"result\": {\n        \"id\": 897,\n        \"count\": 1\n      }\n    }\n\n### iron_boots\n    {\n      \"inShape\": [\n        [\n          842,\n          null,\n          842\n        ],\n        [\n          842,\n          null,\n          842\n        ]\n      ],\n      \"result\": {\n        \"id\": 898,\n        \"count\": 1\n      }\n    }",
+  "evidence_notes": "配方用量 = 材料 id 在合成格中出现的次数；iron_helmet = 5 iron_ingot；iron_chestplate = 8 iron_ingot；iron_leggings = 7 iron_ingot；iron_boots = 4 iron_ingot。同一份数据中铁剑 2 铁锭 + 1 木棍与 Minecraft Wiki 的 {{Crafting}} 模板逐字一致（互证）。",
+  "related_game_versions": [
+    "Java Edition 1.21.4"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 5,
+    "reproducibility": 5
+  },
+  "notes": "摘录为 recipes.json 原文切片（逐行），非加工后的结论。同一 id 重复出现即为该材料的用量，可手工数出。",
+  "derived_values": [
+    {
+      "value": "5",
+      "basis": "iron_helmet 的 inShape 合成格中材料 iron_ingot 的 id 出现 5 次，即该配方需 5 个 iron_ingot"
+    },
+    {
+      "value": "8",
+      "basis": "iron_chestplate 的 inShape 合成格中材料 iron_ingot 的 id 出现 8 次，即该配方需 8 个 iron_ingot"
+    },
+    {
+      "value": "7",
+      "basis": "iron_leggings 的 inShape 合成格中材料 iron_ingot 的 id 出现 7 次，即该配方需 7 个 iron_ingot"
+    },
+    {
+      "value": "4",
+      "basis": "iron_boots 的 inShape 合成格中材料 iron_ingot 的 id 出现 4 次，即该配方需 4 个 iron_ingot"
+    }
+  ]
+}

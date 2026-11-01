@@ -1,0 +1,127 @@
+{
+  "id": "failure_path_no_path",
+  "knowledge_type": "failure_recovery",
+  "title": "路径不可达（NoPath）",
+  "summary": "NoPath 表示搜索空间内无解，不是“再试一次就好”。必须先确认是配置禁止了必要动作、目标未加载，还是目标本身被不可破坏方块包围。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "goto 以 err.name='NoPath' 拒绝",
+      "path_update 状态为 noPath"
+    ],
+    "state_features": [
+      "bot.pathfinder.goal",
+      "movements.canDig",
+      "loaded_chunks",
+      "blocks_around_target",
+      "search_radius"
+    ]
+  },
+  "actions": [
+    "捕获 err.name 与消息，确认不是 Timeout",
+    "检查目标区块是否加载、目标点周围方块",
+    "检查 movements 关键开关（canDig、allow1by1towers、maxDropDown）",
+    "按 L1→L4 降级目标或调整配置"
+  ],
+  "preconditions": [
+    "错误来自 goto 的具名拒绝，而非外层超时包装"
+  ],
+  "success_condition": "到达目标容差内，或明确记录不可达原因并切换到替代目标",
+  "abort_condition": [
+    "恢复达到 escalate_after",
+    "目标被确认处于不可破坏结构内部",
+    "生命 < 12 时不继续尝试（策略阈值，可调）"
+  ],
+  "risk_notes": [
+    "为提高成功率而放开全部破坏权限会带来环境风险",
+    "在未加载区块反复规划只会稳定失败"
+  ],
+  "source_refs": [
+    "src_pathfinder_goto_errors",
+    "src_pathfinder_reset_reasons",
+    "src_baritone_features_pathing",
+    "src_baritone_settings_timeouts",
+    "src_minecraft_wiki_version",
+    "src_baritone_project"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "error_codes",
+    "default_values",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "goto 拒绝，err.name 为 NoPath，消息为 'No path to the goal!'",
+    "path_update 终态为 noPath",
+    "bot 位置没有产生位移"
+  ],
+  "possible_causes": [
+    "目标在未加载区块或超出 searchRadius",
+    "movements 禁止了路线必需的动作（canDig=false、maxDropDown 过小、禁塔）",
+    "目标被基岩、水或熔岩包围，无合法进入路径",
+    "目标点在实体内部或悬空，goal 类型与实际不匹配",
+    "服务端反作弊拒绝路径中的破坏或放置"
+  ],
+  "diagnostics": [
+    "确认目标区块加载状态与距离",
+    "打印目标周围 3×3×3 方块类型",
+    "打印 movements 关键开关值",
+    "检查 path_reset reason 是否含 no_scaffolding_blocks / place_error / dig_error",
+    "用 GoalNear（容差 2~3 格）做一次降级重试"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：把目标降级为 ±2 格容差或相邻可达格，只允许 1 次",
+    "L2 局部子任务重规划：先接近到 32 格内再重新规划；必要时临时允许必要动作（挖掘/垫脚）",
+    "L3 回到最近安全检查点：重新评估目标价值，避免为低价值目标消耗补给",
+    "L4 升级给大模型：判定目标不可达，改为替代资源点或换阶段目标"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "原样重发同一个 goal",
+    "无限增大 searchRadius",
+    "为通过路径而永久放开全部破坏与坠落限制",
+    "在未加载区块反复规划"
+  ],
+  "tags": [
+    "failure-recovery",
+    "path",
+    "link_playbook:pb_iron_mining_run",
+    "theme:path"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "abort_condition",
+      "value": "12",
+      "context": "生命 < 12 时不继续尝试",
+      "reason": "最低生命值：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "2",
+      "context": "把目标降级为 ±2 格容差",
+      "reason": "目标降级容差：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "1",
+      "context": "只允许 1 次",
+      "reason": "同层重试次数上限：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "32",
+      "context": "先接近到 32 格内再重新规划",
+      "reason": "预接近距离：作者自定"
+    }
+  ],
+  "evidence_strength": "high"
+}

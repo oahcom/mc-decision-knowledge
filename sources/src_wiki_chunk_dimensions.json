@@ -1,0 +1,30 @@
+{
+  "source_id": "src_wiki_chunk_dimensions",
+  "title": "Chunk - Minecraft Wiki（区块尺寸 16×16）",
+  "url": "https://minecraft.wiki/w/Chunk",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "ngle chunk. The entire chunk extends up to a height of 319. A chunk is a 16×16 segment of a world . Chunks are the method used by the game to divide maps into manageable pieces. They are further divided in 16-block tall sections , which are also often called \"subchunks\". Contents 1 Description 2 Chunk loading 3 Java Edition chunk loading 3.1 Tickets 3.2 L",
+  "evidence_notes": "给出区块尺寸：16×16 区块划分世界，并按 16 格高切分为 subchunk。是「按 16×16 区块粒度统计搜索唯一率」的粒度依据。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。"
+}

@@ -1,0 +1,83 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_food_sustain",
+  "title": "食物来源选择与可持续性",
+  "summary": "食物策略要回答两个不同问题：现在这一顿从哪来，以及后面每一顿从哪来。一次性来源（打完就没）与可重复来源（能再获取）必须分开评估，否则会在远征中段断粮。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "需要支持一次持续时间较长的作业",
+      "当前食物储备不足以覆盖该作业",
+      "尚未确定可持续的食物来源"
+    ],
+    "state_features": [
+      "bot.food",
+      "food_items_count",
+      "known_threats",
+      "time_of_day",
+      "visited_chunks",
+      "target_resource_count"
+    ]
+  },
+  "actions": [
+    "区分“这一顿”和“接下来每一顿”两种需求",
+    "为即时需求选择最快的可获取来源",
+    "为持续需求选择一个可重复触发的来源并优先建立它",
+    "把已建立的来源记入状态事实，作业计划据此排程"
+  ],
+  "preconditions": [
+    "已知当前食物存量与作业预计时长",
+    "已知作业区域内可用的食物来源类型"
+  ],
+  "success_condition": "存在一个已验证可重复获取的食物来源，且当前库存足以覆盖下一次作业窗口，结论由背包食物数量与来源记录验证",
+  "abort_condition": [
+    "所有已知来源均已枯竭且无新来源被发现",
+    "获取食物的过程本身风险高于所获收益",
+    "存在更高优先级的危险事件（战斗、岩浆）抢占"
+  ],
+  "risk_notes": [
+    "不要把一次性猎获当成食物来源已经解决",
+    "不要在战斗或坠落状态下去获取食物",
+    "不要用有负面效果的食物充当唯一补给"
+  ],
+  "candidate_routes": [
+    "狩猎：即时获取快，但依赖刷怪位置，洞穴刷怪点最稳",
+    "耕种：可重复、可预期，但需要耕地工具、水与种子",
+    "洞穴刷怪：产出稳定，代价是长期暴露在洞穴",
+    "村庄与水域：来源密集，但需要先找到并安全抵达"
+  ],
+  "decision_tradeoffs": [
+    "狩猎：即时性最好，可持续性依赖具体刷怪点",
+    "耕种：可持续性最好，启动成本与前置链最长",
+    "洞穴刷怪：兼顾即时与可持续，风险集中在作业面",
+    "村庄：一次性收益高，但路线成本不可控"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_mindcraft_project",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "attrition",
+    "link_playbook:pb_iron_mining_run",
+    "link_playbook:pb_opening_resource_buildup",
+    "canonical_id:stg_food_sustain"
+  ],
+  "evidence_strength": "high"
+}

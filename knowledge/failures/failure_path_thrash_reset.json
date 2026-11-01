@@ -1,0 +1,167 @@
+{
+  "id": "failure_path_thrash_reset",
+  "knowledge_type": "failure_recovery",
+  "title": "路径反复重算（path_reset 抖动）",
+  "summary": "path_reset 高频出现时，问题通常在环境或调用方，而不在寻路算法：路径旁液体流动、目标绑定移动实体、每 tick 重设 goal 都会让规划永远无法收敛。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "10 秒内 path_reset 次数 ≥ 5",
+      "净位移 < 8 格"
+    ],
+    "state_features": [
+      "path_reset_reasons",
+      "goal_type",
+      "set_goal_frequency",
+      "blocks_near_path",
+      "net_displacement"
+    ]
+  },
+  "actions": [
+    "按 reason 统计 10 秒窗口内的重置次数",
+    "检查路径是否穿经液体或重力方块区域",
+    "检查调用方是否高频 setGoal",
+    "按 L1→L4 稳定目标或绕开抖动源"
+  ],
+  "preconditions": [
+    "path_reset 事件已被记录（否则先补埋点）"
+  ],
+  "success_condition": "10 秒内 path_reset ≤ 1 且净位移 > 8 格",
+  "abort_condition": [
+    "恢复达到 escalate_after",
+    "抖动源无法消除（如持续流体）"
+  ],
+  "risk_notes": [
+    "把重算当成进度会掩盖零位移事实",
+    "在流体区强行长距离寻路会持续失败"
+  ],
+  "source_refs": [
+    "src_pathfinder_reset_reasons",
+    "src_pathfinder_goto_errors",
+    "src_baritone_features_pathing",
+    "src_minecraft_wiki_version",
+    "src_baritone_project"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "error_codes",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "10 秒内 path_reset 出现 5 次以上",
+    "reason 集中在 block_updated / chunk_loaded / goal_moved",
+    "路径反复生成又清空，净位移很小",
+    "规划耗时占比异常升高"
+  ],
+  "possible_causes": [
+    "路径附近水或熔岩流动、沙砾下落，持续触发 block_updated",
+    "目标绑定到移动实体，goal_moved 频繁触发",
+    "调用方每 tick 或每次观测都重设 goal，触发 goal_updated",
+    "区块持续加载触发 chunk_loaded 重置",
+    "垫脚方块不足导致 no_scaffolding_blocks 反复重算"
+  ],
+  "diagnostics": [
+    "判别：净位移几乎为 0 且 reason 为 stuck 时，转 failure_path_stuck",
+    "按 reason 分组统计 10 秒窗口的重置次数",
+    "检查路径 3 格范围内的液体与重力方块",
+    "统计 setGoal 调用频率",
+    "确认 goal 是静态坐标还是实体绑定"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：停止高频 setGoal，改为单次设定并等待终态",
+    "L2 局部子任务重规划：绕开流体与重力方块区域，或改用静态坐标目标",
+    "L3 回到最近安全检查点：以稳定目标重新规划，必要时拆分为多段短程",
+    "L4 升级给大模型：降低该任务频率或改为分段执行策略"
+  ],
+  "escalate_after": 3,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "每 tick 重设 goal",
+    "在流体区域强行长距离寻路",
+    "把路径重算当作进展",
+    "忽略 block_updated 的持续触发"
+  ],
+  "tags": [
+    "failure-recovery",
+    "path",
+    "link_playbook:pb_iron_mining_run",
+    "theme:path"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "10",
+      "context": "10 秒内 path_reset 次数",
+      "reason": "重置抖动的统计窗口：作者自定"
+    },
+    {
+      "field": "trigger",
+      "value": "5",
+      "context": "次数 ≥ 5",
+      "reason": "判定为抖动的重置次数阈值：作者自定"
+    },
+    {
+      "field": "trigger",
+      "value": "8",
+      "context": "净位移 < 8 格",
+      "reason": "有效推进的位移阈值：作者自定"
+    },
+    {
+      "field": "actions",
+      "value": "10",
+      "context": "统计 10 秒窗口内的重置次数",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "success_condition",
+      "value": "10",
+      "context": "10 秒内 path_reset",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "success_condition",
+      "value": "1",
+      "context": "path_reset ≤ 1",
+      "reason": "可接受的单次重置数：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "8",
+      "context": "净位移 > 8 格",
+      "reason": "有效推进的位移阈值：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "10",
+      "context": "统计 10 秒窗口的重置次数",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "symptoms",
+      "value": "10",
+      "context": "10 秒内 path_reset",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "symptoms",
+      "value": "5",
+      "context": "出现 5 次以上",
+      "reason": "重置次数阈值：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "净位移几乎为 0",
+      "reason": "区分「卡住」与「抖动」的相对判据：净位移几乎为 0 表示原地不动，是相对量而非外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

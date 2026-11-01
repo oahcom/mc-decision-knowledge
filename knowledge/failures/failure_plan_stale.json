@@ -1,0 +1,103 @@
+{
+  "id": "failure_plan_stale",
+  "knowledge_type": "failure_recovery",
+  "title": "计划过期：状态版本变化后继续旧计划",
+  "summary": "计划过期不是执行错误，而是调度错误：步骤本身没变，但假设已经失效。判定标准是计划绑定的 state_version 与运行时版本不一致，且前置条件不再成立。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "plan.state_version 落后于 runtime.state_version",
+      "剩余步骤前置条件不再成立"
+    ],
+    "state_features": [
+      "plan.state_version",
+      "runtime.state_version",
+      "bot.health",
+      "bot.food",
+      "bot.inventory",
+      "equipment_durability"
+    ]
+  },
+  "actions": [
+    "比较计划与运行时的 state_version",
+    "逐条校验剩余步骤的前置条件",
+    "按 L1→L4 重算或废弃计划"
+  ],
+  "preconditions": [
+    "运行时维护单调递增的 state_version",
+    "计划创建时记录版本号"
+  ],
+  "success_condition": "计划 state_version 等于运行时版本，且当前步骤前置条件全部成立",
+  "abort_condition": [
+    "版本无法对齐（事件丢失）",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "只改步骤序号不改前置条件，等价于继续执行旧计划",
+    "把“继续执行”当作恢复会掩盖状态漂移"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "执行中的计划使用旧 state_version",
+    "计划假设的生命、食物或耐久与实测不符",
+    "步骤前置条件已不成立但仍在被调用",
+    "同一计划反复重试却不更新假设"
+  ],
+  "possible_causes": [
+    "状态版本未随关键事件递增",
+    "异步结果晚到，计划先于状态更新生成",
+    "计划缓存未失效",
+    "并发子任务同时修改状态",
+    "把工具的口头成功当作状态已变更"
+  ],
+  "diagnostics": [
+    "打印计划的版本号与运行时版本号",
+    "逐条校验剩余步骤的前置条件",
+    "列出最近 10 个状态变更事件",
+    "检查是否存在并发子任务持有同一状态"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：暂停当前步骤，重新校验前置条件，不重试动作",
+    "L2 局部子任务重规划：用最新状态重算剩余步骤，目标保持不变",
+    "L3 回到最近安全检查点：把未完成子目标标记为未达成，回到检查点",
+    "L4 升级给大模型：废弃旧计划，新计划必须绑定新的 state_version"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "用旧版本状态继续执行",
+    "只调整步骤顺序而不重新校验前置条件",
+    "把“继续执行”当作恢复手段",
+    "跳过检查点直接推进下一阶段"
+  ],
+  "tags": [
+    "failure-recovery",
+    "planning",
+    "link_strategy:stg_opening_priority",
+    "theme:planning"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "diagnostics",
+      "value": "10",
+      "context": "列出最近 10 个状态变更事件",
+      "reason": "回溯窗口的事件条数：作者自定"
+    }
+  ],
+  "evidence_strength": "medium"
+}

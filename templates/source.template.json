@@ -1,0 +1,27 @@
+{
+  "source_id": "src_example_official",
+  "title": "来源记录示例",
+  "url": "https://example.com/source",
+  "platform": "example",
+  "source_type": "official_document",
+  "reliability": "A",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T00:00:00+08:00",
+  "content_excerpt": "这里只放用于支撑知识条目的短摘录，不超过 1200 字符。",
+  "evidence_notes": "说明该来源支撑哪些知识，以及为什么它可靠。",
+  "related_game_versions": ["填写来源覆盖版本，如 26.3"],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 4,
+    "version_clarity": 4,
+    "reproducibility": 4
+  },
+  "notes": "此文件为模板，不可作为正式来源使用。"
+}

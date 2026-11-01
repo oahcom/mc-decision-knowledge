@@ -1,0 +1,82 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_recovery_budget",
+  "title": "恢复预算：同一失败值不值得继续修",
+  "summary": "失败后的投入应该有预算。本策略给出四个成本档位，并规定每一档必须改变至少一个参数，避免用重复的机械动作假装在解决问题。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "同一个失败码在相同状态下再次出现",
+      "已经执行过一次恢复动作",
+      "恢复动作没有产生新信息"
+    ],
+    "state_features": [
+      "failure_code",
+      "attempt_count",
+      "last_attempt_params",
+      "target_signature",
+      "state_version",
+      "known_threats"
+    ]
+  },
+  "actions": [
+    "先判定这次失败属于工具层、状态层还是策略层",
+    "按四档预算选择投入级别，并保证每档至少改变一个参数",
+    "工具层无法解决时立即升级，不要在同层反复尝试",
+    "每次恢复都记录改了什么，为下一次重规划留下依据"
+  ],
+  "preconditions": [
+    "失败计数已持久化",
+    "已知这次失败与上次失败的差异"
+  ],
+  "success_condition": "失败被解决或目标被明确放弃并替换，且失败计数与状态版本同步更新",
+  "abort_condition": [
+    "达到该失败卡规定的升级阈值",
+    "恢复过程中出现更高优先级的危险",
+    "剩余预算不足以完成一次有效尝试"
+  ],
+  "risk_notes": [
+    "不要用原样重试冒充恢复",
+    "不要在同一次失败上花掉两级预算",
+    "不要清除失败计数来“重新开始”"
+  ],
+  "candidate_routes": [
+    "低成本重试：改变目标点、工具、路线或时间中的至少一个维度",
+    "局部重规划：保留目标，重做这一段路径或资源点",
+    "回安全检查点重做：保留已得资源，放弃当前进度",
+    "放弃子目标并换路线：把失败写成负知识，避免重复"
+  ],
+  "decision_tradeoffs": [
+    "低成本重试：成本最低，但只对参数型失败有效",
+    "局部重规划：成本中等，适用于路径与资源点选择错误",
+    "回检查点：成本较高，但能恢复到已知良好状态",
+    "换路线：放弃当前目标，换取不再犯同一个错"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_pathfinder_reset_reasons",
+    "src_mindcraft_project",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "verified_scope": [
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "recovery",
+    "theme:meta",
+    "canonical_id:stg_recovery_budget"
+  ],
+  "evidence_strength": "medium"
+}

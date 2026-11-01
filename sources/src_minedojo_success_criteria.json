@@ -1,0 +1,23 @@
+{
+  "source_id": "src_minedojo_success_criteria",
+  "title": "MineDojo — minedojo/tasks/meta/utils/success_criteria.py (成功判据函数集)",
+  "url": "https://raw.githubusercontent.com/MineDojo/MineDojo/main/minedojo/tasks/meta/utils/success_criteria.py",
+  "platform": "GitHub",
+  "source_type": "benchmark",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "y)\n\ndef _simple_inventory_based_check(\n name: str,\n quantity: int,\n ini_info_dict: dict,\n cur_info_dict: dict,\n elapsed_timesteps: int,\n):\n \"\"\"\n A simple success check based on `info[\"inventory\"]`\n \"\"\"\n return (\n sum(\n [\n inv_item[\"quantity\"]\n for inv_item in cur_info_dict[\"inventory\"]\n if inv_item[\"name\"] == name\n ]\n )\n - sum(\n [\n inv_item[\"quantity\"]\n for inv_item in ini_info_dict[\"inventory\"]\n if inv_item[\"name\"] == name\n ]\n )\n ) >= quantity\n\ndef simple_inventory_based_check(\n name: str, quantity: int, **kwargs\n) -> check_success_base:\n return partial(_simple_inventory_based_check, name=name, quantity=quantity)\n\ndef _time_since_death_check(\n threshold, ini_info_dict: dict, cur_info_dict: dict, elapsed_timesteps: int\n):\n \"\"\"\n Success check based on info[\"time_since_death\"]\n \"\"\"\n return cur_info_dict[\"stat\"][\"time_since_death\"] >= threshold\n\ndef time_since_death_check(threshold, **kwargs) -> check_success_base:\n return partial(_time_since_death_check, threshold=threshold)\n\ndef _use_any_item_check(\n targets: Dict[str,",
+  "evidence_notes": "何时停止：给出 4 类可程序化判据的精确定义——库存增量 ≥ 目标量、击杀计数 ≥ 目标量、存活 tick ≥ 阈值、使用计数全满足，是把「原版生存目标」翻译成可判定条件的方法论样板。",
+  "related_game_versions": [
+    "1.11.2"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：success_criteria.py § _simple_inventory_based_check / § _time_since_death_check / § _use_all_item_check"
+}

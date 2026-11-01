@@ -1,0 +1,80 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_tool_mix_for_stage",
+  "title": "阶段工具组合：背包里带哪几把",
+  "summary": "同一件工具在不同阶段的边际价值不同。本策略按阶段给出携带组合的取舍，重点解决“主工具之外要不要带备用”与“是否携带非必要工具”这两个常见浪费点。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "准备离开补给点进行一段连续作业",
+      "背包容量有限需要取舍",
+      "当前阶段的主要作业类型已经确定"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "inventory_free_slots",
+      "equipment_durability",
+      "target_resource_count",
+      "fuel_source",
+      "known_threats"
+    ]
+  },
+  "actions": [
+    "确定本段作业的主要动作类型（挖掘、战斗、采集、冶炼）",
+    "为主动作保留主工具与一件备用",
+    "为可能触发的中断类型保留对应工具（照明、防护、收纳）",
+    "删掉与本段作业无关的物品，把空位留给掉落物"
+  ],
+  "preconditions": [
+    "已知本段作业的预计时长与动作类型",
+    "已知哪些物品在补给点可以重新取得"
+  ],
+  "success_condition": "携带组合覆盖本段作业的主动作与主要中断类型，且背包留有容纳掉落物的空间，由背包内容与空位状态验证",
+  "abort_condition": [
+    "主工具已损坏且没有备用",
+    "携带量超出可支撑的作业时长",
+    "出现需要立即撤离的状态"
+  ],
+  "risk_notes": [
+    "不要携带可以重新获取的冗余工具占用掉落物空间",
+    "不要只带主工具——主工具损坏一次就会让整段作业作废",
+    "不要在背包已满时才开始规划携带组合"
+  ],
+  "candidate_routes": [
+    "极简携带：只带主工具与少量补给，掉落物空间最大",
+    "主工具 + 备用：抗单点故障，占用更多空间",
+    "作业专用组合：只带本段必需物，需要时再回来取"
+  ],
+  "decision_tradeoffs": [
+    "极简：空间收益最高，一次损坏即中断",
+    "带备用：韧性最好，空间成本明确",
+    "作业专用：效率最高，但取用需要额外往返"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_prismarine_mineflayer",
+    "src_internal_design",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "api_contract",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "equipment",
+    "link_playbook:pb_inventory_tool_management",
+    "canonical_id:stg_tool_mix_for_stage"
+  ],
+  "evidence_strength": "medium"
+}

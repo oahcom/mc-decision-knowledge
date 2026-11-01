@@ -1,0 +1,34 @@
+{
+  "id": "playbook_high_frequency_scenario",
+  "knowledge_type": "playbook",
+  "title": "高频场景手册示例",
+  "summary": "为高频场景提供开始前检查、继续条件、退出条件和失败入口。此文件为模板，不可作为正式知识使用。",
+  "game_edition": "java",
+  "game_versions": ["填写适用版本，如 26.3"],
+  "stage": "stone_age",
+  "trigger": {
+    "conditions": ["场景触发条件已满足", "当前状态未命中更高优先级危险处理"],
+    "state_features": ["health", "food", "inventory", "nearby_entities", "time_of_day"]
+  },
+  "actions": [
+    "执行开始前检查",
+    "按手册选择策略",
+    "在每个检查点更新任务状态"
+  ],
+  "preconditions": ["必要工具可用", "必要资源已确认"],
+  "success_condition": "场景目标完成并可由游戏状态验证",
+  "abort_condition": ["检查点失败", "危险事件抢占", "目标状态已经改变"],
+  "risk_notes": ["手册提供判断依据，不逐步遥控技能"],
+  "source_refs": ["src_example_official"],
+  "evidence_type": "community_consensus",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T00:00:00+08:00",
+  "updated_at": "2026-11-01T00:00:00+08:00",
+  "scenario": "示例：首次夜晚、下矿准备、战斗撤退等",
+  "checklist": ["装备检查", "食物检查", "退路检查", "工具耐久检查"],
+  "continue_condition": ["资源仍在增长", "风险未超过阈值", "中断次数未达到上限"],
+  "exit_condition": ["目标完成", "补给不足", "连续无进展"],
+  "failure_entry_points": ["failure_example_resource_not_found"],
+  "tags": ["template", "playbook"]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "ai_cave_vs_branch_mining",
+  "knowledge_type": "ai_heuristic",
+  "title": "洞穴探索与分支挖矿的比较：按风险和确定性选路线",
+  "summary": "洞穴探索暴露面积大、铁矿命中率高但伴随战斗与坠落风险；分支挖矿可控、安全但单位时间产出低。模型应根据当前装备、战斗能力与食物储备在两者间权衡，而不是固定偏好其一。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "铁器阶段需要获取铁矿",
+      "面临洞穴探索与分支挖矿两条路线选择"
+    ],
+    "state_features": [
+      "equipment_durability",
+      "bot.health",
+      "bot.food",
+      "combat_capability",
+      "known_threats",
+      "bot.inventory"
+    ]
+  },
+  "actions": [
+    "评估当前装备、战斗能力与食物储备",
+    "比较洞穴探索与分支挖矿的收益、成本与风险",
+    "输出与当前状态匹配的路线选择及切换条件"
+  ],
+  "preconditions": [
+    "两条路线的收益与风险特征已知",
+    "状态特征可由协议层获取"
+  ],
+  "success_condition": "基于当前装备与安全状态选出匹配的铁矿获取路线，并声明切换条件",
+  "abort_condition": [
+    "安全基线不满足，任一路线都应暂缓",
+    "所选路线连续无进展且达到重规划阈值"
+  ],
+  "risk_notes": [
+    "洞穴探索的高收益以暴露于战斗和坠落为代价，不能只看产出",
+    "分支挖矿的确定性高但耗时，需与时间预算一起权衡"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "装备好、食物足、战斗能力允许时优先洞穴探索拿高命中率；装备差或安全不足时改走分支挖矿，保证可控产出。",
+  "alternative_comparison": [
+    "洞穴探索：铁矿命中率高、能顺带探矿，但暴露面积大、有战斗与坠落风险，失败成本高",
+    "分支挖矿：安全可控、确定性产出，但单位时间效率低、耗时长"
+  ],
+  "anti_patterns": [
+    "装备不足仍强行洞穴探索，把高收益赌在低生存率上",
+    "只比较单位产出，忽略死亡与掉装的风险成本",
+    "忽略食物与战斗能力的联动，单看装备等级"
+  ],
+  "model_guidance": "先读装备耐久、战斗能力、食物与已知威胁，再比较两条路线的期望收益与风险；安全状态充足选洞穴，不足则选分支挖矿，并写明触发切换的状态条件。",
+  "tags": [
+    "ai-decision",
+    "route",
+    "mining",
+    "link_strategy:stg_iron_route",
+    "link_playbook:pb_iron_mining_run",
+    "theme:route"
+  ],
+  "evidence_strength": "medium"
+}

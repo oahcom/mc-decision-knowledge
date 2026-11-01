@@ -1,0 +1,108 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "playbook",
+  "id": "playbook_first_night_shelter",
+  "title": "手册 · 首次夜晚（天黑前封闭）",
+  "summary": "覆盖第一个夜晚从日落到次日黎明的处理。核心判断只有一条：入夜时是否身处封闭空间。手册同时给出“来不及封闭”时的降级处置，避免在恐慌中做出高风险动作。",
+  "stage": "spawn",
+  "trigger": {
+    "conditions": [
+      "天色进入夜间或即将入夜",
+      "当前位置不是封闭空间",
+      "附近没有已建成的安全庇护所"
+    ],
+    "state_features": [
+      "time_of_day",
+      "shelter_available",
+      "light_level",
+      "hostiles_within_8",
+      "known_threats",
+      "bot.health",
+      "bot.food",
+      "block_at_feet"
+    ]
+  },
+  "actions": [
+    "执行开始前检查，确认封闭材料、可用地形与剩余时间",
+    "按夜间暴露处理策略在封闭、绕行、提前收工之间选择",
+    "封闭后逐面检查缺口，尤其是脚下与来路方向",
+    "完成后回写状态事实：庇护所位置与封闭方式、光源状态、剩余耐久、下一夜是否需要重复作业"
+  ],
+  "preconditions": [
+    "时间读数可信且与服务器同步",
+    "已知附近是否有可封闭地形"
+  ],
+  "success_condition": "入夜时身处封闭空间且无敌对实体进入，或已提前收工返回安全点，由位置封闭性与敌对实体状态验证",
+  "abort_condition": [
+    "不适用：已在封闭空间内且状态稳定",
+    "不适用：当前处于战斗或坠落事件中，应先走战斗撤退手册",
+    "封闭过程中被敌对实体打断",
+    "生命或体力状态不允许继续作业"
+  ],
+  "risk_notes": [
+    "不要在黑暗中发现缺口后继续待在露天",
+    "不要在封闭过程中同时做采集作业",
+    "手册不替代危险事件的即时反应"
+  ],
+  "candidate_routes": [
+    "就地立柱并封顶",
+    "挖进山体做封闭空间",
+    "提前收工返回已建庇护所",
+    "用床跳过夜晚"
+  ],
+  "scenario": "首次夜晚：入夜前完成封闭并安全度过",
+  "checklist": [
+    "距天黑还剩多少时间",
+    "封闭所需材料是否够用",
+    "封闭后是否有退路（需要能出来）",
+    "光源是否足够且不会引来更多实体",
+    "食物与生命状态是否足以支撑到天亮",
+    "附近是否已有敌对实体"
+  ],
+  "continue_condition": [
+    "封闭工作持续推进且未被打断",
+    "未出现敌对实体",
+    "剩余时间仍足以完成封闭"
+  ],
+  "exit_condition": [
+    "空间已封闭且检查过缺口",
+    "已返回安全庇护所",
+    "出现敌对实体或危险方块",
+    "封闭所需材料不足"
+  ],
+  "failure_entry_points": [
+    "failure_night_exposure",
+    "failure_lava_hazard",
+    "failure_combat_interrupt",
+    "failure_fall_interrupt"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_baritone_features_pathing",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "playbook",
+    "exposure",
+    "link_strategy:stg_night_exposure",
+    "link_strategy:stg_premining_safety_baseline",
+    "canonical_id:pb_first_night_shelter"
+  ],
+  "evidence_strength": "high"
+}

@@ -1,0 +1,121 @@
+{
+  "id": "failure_lava_hazard",
+  "knowledge_type": "failure_recovery",
+  "title": "岩浆与危险方块伤害",
+  "summary": "岩浆是少数“一次就致命”的失败源：只允许完成一轮恢复（撤退→封堵→回检查点），同一目标复发即升级，不做“修正后重试”。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "所在位置或相邻方块为熔岩",
+      "出现持续燃烧伤害"
+    ],
+    "state_features": [
+      "block_at_feet",
+      "blocks_within_3",
+      "in_lava",
+      "bot.health",
+      "water_bucket_available",
+      "position_y"
+    ]
+  },
+  "actions": [
+    "立即撤离到 3 格外的实体方块",
+    "判断是否仍在燃烧",
+    "封堵或改道后再决定是否继续",
+    "按 L1→L3 完成一轮恢复；同一目标再次出现即升级到 L4"
+  ],
+  "preconditions": [
+    "已确认伤害来源为熔岩或火，而非战斗"
+  ],
+  "success_condition": "脱离熔岩 3 格以上、无持续燃烧，且生命 ≥ 12（策略阈值，可调）",
+  "abort_condition": [
+    "落入熔岩且生命 < 8：立即放弃该作业面（策略阈值，可调）",
+    "同一 (failure, target, state_version) 下完成 1 轮恢复后再次出现：立即升级到 L4"
+  ],
+  "risk_notes": [
+    "在熔岩旁挖脚下方块会直接打开熔岩",
+    "方块堵源前必须先撤离，否则会被流下的熔岩覆盖",
+    "掉落物落入熔岩会被销毁，不要为回收而靠近"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_baritone_settings_timeouts",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_baritone_project"
+  ],
+  "evidence_type": "official_document",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "持续燃烧伤害，生命快速下降",
+    "脚下方块或相邻方块为熔岩",
+    "作业面附近出现熔岩湖或熔岩流"
+  ],
+  "possible_causes": [
+    "在熔岩生成层（低 Y 高度）作业",
+    "挖穿熔岩壁或熔岩上方方块",
+    "单格垂直下挖直接落入熔岩",
+    "缺少水桶等应急手段"
+  ],
+  "diagnostics": [
+    "读取脚下方块与周围 3×3×3 方块类型",
+    "确认当前 Y 高度是否处于熔岩生成带",
+    "检查是否仍在燃烧状态",
+    "检查是否有水桶可用于封堵或自救"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：立即撤退到 3 格外的实体方块，本轮不做任何挖掘（撤退即放弃当前目标点）",
+    "L2 局部子任务重规划：用水桶或方块封堵熔岩源，或整体改道",
+    "L3 回到最近安全检查点：恢复生命，放弃当前作业面",
+    "L4 升级给大模型：把该高度层标记为禁采区，改选安全矿层"
+  ],
+  "escalate_after": 1,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "在熔岩旁挖脚下方块",
+    "徒手穿过熔岩或火",
+    "未撤离就试图用方块堵源",
+    "为回收掉落物返回熔岩区"
+  ],
+  "tags": [
+    "failure-recovery",
+    "environment",
+    "link_playbook:pb_iron_mining_run",
+    "theme:hazard"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "success_condition",
+      "value": "3",
+      "context": "脱离熔岩 3 格以上",
+      "reason": "脱离熔岩的安全间距：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "12",
+      "context": "生命 ≥ 12",
+      "reason": "恢复目标生命值：按 20 HP 上限取 60%，作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "8",
+      "context": "落入熔岩且生命 < 8",
+      "reason": "放弃作业面的生命阈值：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "1",
+      "context": "完成 1 轮恢复后再次出现",
+      "reason": "升级到 L4 前的重试轮数上限：作者自定"
+    }
+  ],
+  "evidence_strength": "high"
+}

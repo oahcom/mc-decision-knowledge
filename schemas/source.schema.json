@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MC Decision Knowledge Source",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_id",
+    "title",
+    "url",
+    "platform",
+    "source_type",
+    "reliability",
+    "license",
+    "retrieved_at",
+    "content_excerpt",
+    "evidence_notes",
+    "related_game_versions",
+    "access_method",
+    "compliance"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "pattern": "^src_[a-z0-9]+(?:_[a-z0-9]+)+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 200
+    },
+    "url": {
+      "type": "string",
+      "pattern": "^(https?://|local://).+"
+    },
+    "platform": {
+      "type": "string",
+      "minLength": 2
+    },
+    "source_type": {
+      "enum": [
+        "official_document",
+        "community_wiki",
+        "github_repository",
+        "source_code",
+        "issue_or_pr",
+        "forum_or_social",
+        "video",
+        "research_paper",
+        "benchmark",
+        "internal_design"
+      ]
+    },
+    "reliability": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "license": {
+      "type": "string",
+      "minLength": 3
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "content_excerpt": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 1200
+    },
+    "evidence_notes": {
+      "type": "string",
+      "minLength": 10
+    },
+    "related_game_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "access_method": {
+      "enum": [
+        "public_page",
+        "official_api",
+        "search_result",
+        "local_file"
+      ]
+    },
+    "compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publicly_accessible",
+        "robots_or_terms_respected",
+        "personal_data_excluded",
+        "no_auth_bypass"
+      ],
+      "properties": {
+        "publicly_accessible": {
+          "type": "boolean"
+        },
+        "robots_or_terms_respected": {
+          "type": "boolean"
+        },
+        "personal_data_excluded": {
+          "type": "boolean"
+        },
+        "no_auth_bypass": {
+          "type": "boolean"
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "decision_relevance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "specificity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "version_clarity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "reproducibility": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "derived_values": {
+      "type": "array",
+      "description": "可从 content_excerpt 机械推导出的数值。每条给出数值本身与推导依据（basis），使审核者可以逐字复核推导过程。用于「摘录里没有 36，但有 27 与 9，36 = 27 + 9」这类情形。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "value",
+          "basis"
+        ],
+        "properties": {
+          "value": {
+            "type": "string",
+            "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+            "description": "推导出的数值。"
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 10,
+            "description": "推导依据：说明该数值如何从摘录得出。"
+          },
+          "subject_terms": {
+            "type": "array",
+            "description": "该数值所描述的对象在中文知识文本中可能出现的说法。用于检测「同一条事实既被声明为机制事实、又被声明为作者自定阈值」这类冲突。逐条显式登记，不依赖模糊匹配。",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

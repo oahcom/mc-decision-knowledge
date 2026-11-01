@@ -1,0 +1,105 @@
+{
+  "id": "failure_craft_missing_material",
+  "knowledge_type": "failure_recovery",
+  "title": "合成失败：材料缺失",
+  "summary": "材料缺失多是“差一点”，而差的那一点通常来自上游拾取未确认。诊断要逐项比对配方需求与背包实有，而不是笼统地再采一轮。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "recipesFor 返回空或 craft 抛错",
+      "产物未增加且材料未按配方消耗"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "recipe_requirements",
+      "crafting_table_distance",
+      "pending_pickups"
+    ]
+  },
+  "actions": [
+    "逐项列出配方需求与背包实有数量",
+    "确认是否需要工作台及其可达性",
+    "确认材料变种是否匹配（原木/木板、生铁/铁锭）",
+    "按 L1→L4 补齐或替换"
+  ],
+  "preconditions": [
+    "已通过 recipesFor 确认目标物可合成",
+    "背包读数经过两次一致读取"
+  ],
+  "success_condition": "产物数量达到目标，材料消耗符合配方",
+  "abort_condition": [
+    "材料缺口需要新开采且当前补给不足",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "反复调用 craft 不会让缺失材料出现",
+    "把“差 1 个”当作“再试一次”会浪费窗口交互"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_wiki_player_interaction_range"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "recipesFor 返回空列表",
+    "craft 调用抛错或返回后背包无变化",
+    "材料数量比配方需求少 1~2 个"
+  ],
+  "possible_causes": [
+    "上游拾取未确认，实际材料少于计划假设",
+    "配方需要工作台，但调用时未传工作台",
+    "材料变种不匹配（原木 vs 木板，生铁 vs 铁锭）",
+    "材料被其它子任务占用或已存入箱子"
+  ],
+  "diagnostics": [
+    "判别：材料数量已满足配方但 recipesFor 仍为空时，转 failure_craft_no_recipe，本卡不再重试",
+    "打印配方需求表与背包实有逐项对比",
+    "确认工作台是否在 4.5 格内且可打开",
+    "核对材料 ID 与 metadata",
+    "检查最近是否有拾取未确认事件"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：补齐缺口材料（就近采集，最多 1 次往返）",
+    "L2 局部子任务重规划：改用等效配方或替代材料路径",
+    "L3 回到最近安全检查点：回资源点集中补料，避免零散往返",
+    "L4 升级给大模型：调整目标（例如改用石质替代铁质）"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "反复调用 craft 期待材料自动出现",
+    "用低耐久工具替代必要材料",
+    "跳过工作台检查直接重试",
+    "把预测的材料数量当作实有"
+  ],
+  "tags": [
+    "failure-recovery",
+    "crafting",
+    "link_playbook:pb_stone_tool_furnace",
+    "theme:craft"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "symptoms",
+      "value": "2",
+      "context": "材料数量比配方需求少 1~2 个",
+      "reason": "材料缺口量：作者自定的轻微缺失判别容差（1~2 个属可容忍范围）"
+    }
+  ],
+  "evidence_strength": "high"
+}

@@ -1,0 +1,30 @@
+{
+  "source_id": "src_wiki_player_health",
+  "title": "Health - Minecraft Wiki（玩家生命值上限）",
+  "url": "https://minecraft.wiki/w/Health",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "| edit source ] Entity Health Playable Player 20 HP × 10 Animals and miscellaneous Allay 20 HP × 10 Armadillo 12 HP × 6 Axolotl 14 HP × 7 Bat 6 HP Bee 10 HP Camel 32 HP × 16 Cat ‌ [ JE only ] 10 HP Cat ‌ [ BE only ] Wild: 10 HP Tamed: 20 HP × 10 Chick",
+  "evidence_notes": "给出玩家生命值上限 20 HP（10 颗心）。是「生命 < 10 撤退」「生命 < 12 不开打」等生命百分比阈值的换算基准。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。"
+}

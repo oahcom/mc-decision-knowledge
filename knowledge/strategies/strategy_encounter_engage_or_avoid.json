@@ -1,0 +1,86 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_encounter_engage_or_avoid",
+  "title": "遇敌时交战、规避还是绕行",
+  "summary": "遇到敌对实体不是默认开打。交战、规避、绕行三种处置各有代价，选择依据是当前装备与位置是否允许一次干净的战斗。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "敌对实体进入可交战距离",
+      "当前正在执行其它作业",
+      "尚未决定是否投入战斗"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "armor_durability",
+      "weapon_durability",
+      "hostile_count",
+      "escape_route_exists",
+      "known_threats",
+      "bot.position"
+    ]
+  },
+  "actions": [
+    "先判断这次战斗是否可结束：位置是否开阔、退路是否存在、装备是否够用",
+    "可结束则交战并优先处理高威胁目标；不可结束则规避或绕行",
+    "战斗中一旦触发撤退阈值立即撤离，不在战斗中进食或采集",
+    "战斗结束后确认掉落物归属与剩余耐久，再决定是否继续原作业"
+  ],
+  "preconditions": [
+    "已知敌对实体的数量与距离",
+    "已知当前装备耐久与退路情况"
+  ],
+  "success_condition": "敌对实体不再构成威胁，或已安全脱离接触，且原作业状态与掉落物归属清晰",
+  "abort_condition": [
+    "触发撤退阈值",
+    "被多个敌对实体包围且无退路",
+    "战斗位置邻近危险方块"
+  ],
+  "risk_notes": [
+    "不要在退路被封的位置开战",
+    "不要在战斗中进食或采集——两者都会被打断",
+    "不要为了战利品承担高风险战斗"
+  ],
+  "candidate_routes": [
+    "主动交战：清除威胁并获取掉落，代价是耐久与生命",
+    "规避：放弃掉落保住状态，代价是作业延后",
+    "绕行：绕开战斗区继续目标，代价是路径变长",
+    "撤退到安全点：最保守，代价是放弃当前进度"
+  ],
+  "decision_tradeoffs": [
+    "交战：收益最高，但把状态押在一次干净的战斗上",
+    "规避：零损失零收益，作业被推迟",
+    "绕行：保住进度，路径成本增加",
+    "撤退：保护状态，已投入的成本作废"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_mineflayer_api_actions",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "api_contract",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "combat",
+    "link_playbook:pb_combat_retreat",
+    "canonical_id:stg_encounter_engage_or_avoid"
+  ],
+  "evidence_strength": "high"
+}

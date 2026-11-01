@@ -1,0 +1,27 @@
+{
+  "source_id": "src_prismarine_mineflayer",
+  "title": "PrismarineJS Mineflayer",
+  "url": "https://github.com/PrismarineJS/mineflayer",
+  "platform": "GitHub",
+  "source_type": "github_repository",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "Mineflayer is a powerful, stable, and high-level JavaScript API for creating Minecraft Java Edition bots. It provides entity knowledge and tracking, block knowledge, physics and movement, inventory management, crafting, digging, and building.",
+  "evidence_notes": "Reference implementation for protocol-layer bot capabilities, tool behavior, inventory operations, pathfinding plugins, and common execution errors.",
+  "related_game_versions": ["Java Edition 1.8 and later", "current supported versions"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "Use repository docs, tests, examples, and issues as evidence. Do not treat every GitHub issue as authoritative without code or maintainer confirmation."
+}

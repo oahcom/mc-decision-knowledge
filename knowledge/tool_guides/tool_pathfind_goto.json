@@ -1,0 +1,177 @@
+{
+  "id": "tool_pathfind_goto",
+  "knowledge_type": "tool_guide",
+  "title": "导航到目标（pathfind / goto）执行契约",
+  "summary": "goto 的失败是具名错误而非布尔值：NoPath、Timeout、GoalChanged、PathStopped 含义不同，恢复动作也不同。契约要求把 err.name 与 path_reset reason 一起记录，避免把规划超时误判为不可达。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "计划需要移动到某个坐标或实体附近",
+      "目标在已知地图或已加载区块内"
+    ],
+    "state_features": [
+      "bot.entity.position",
+      "bot.pathfinder.goal",
+      "movements.canDig",
+      "bot.health",
+      "bot.food",
+      "loaded_chunks",
+      "forced_move_count"
+    ]
+  },
+  "actions": [
+    "设定 movements 档位（是否允许挖掘/搭塔/坠落高度）",
+    "用 setGoal(goal, dynamic=false) 设定静态目标并记录 state_version",
+    "调用 goto(goal) 并捕获 err.name",
+    "同时记录 path_reset reason 与 forcedMove 次数",
+    "到达后按位置容差与 isMoving() 复核"
+  ],
+  "preconditions": [
+    "目标所在区块已加载，或在 searchRadius 内可分步接近",
+    "movements 允许路线所需的动作（挖掘/放置/跳跃）",
+    "生命 ≥ 12 且食物 ≥ 8（策略阈值，可调，非游戏硬规则）",
+    "目标点不是熔岩、火、仙人掌等危险方块",
+    "当前没有正在进行的 dig/craft 占用窗口或交互"
+  ],
+  "success_condition": "与目标距离 ≤ tolerance 且路径终态为 success 或触发 goal_reached；isMoving() 为 false",
+  "abort_condition": [
+    "goto Promise reject 时立即中止，按 err.name 分类，不得继续推进",
+    "stop() 在下一节点停止并 emit path_stop；需要立即停用 setGoal(null)",
+    "超时后不得原样重发同一 goal",
+    "受到攻击或生命骤降：放弃导航，转入撤退"
+  ],
+  "risk_notes": [
+    "目标在未加载区块时不要直接长距离规划（先接近再规划）",
+    "movements.canDig=false 而路线需要挖掘时必然 NoPath，不要反复重试",
+    "生命 < 12 或夜间长途时不要用最大速度路线（策略阈值，可调）",
+    "目标在熔岩池或悬崖正下方时不要使用",
+    "服务端频繁 forcedMove 时不要假定路径有效"
+  ],
+  "source_refs": [
+    "src_pathfinder_goto_errors",
+    "src_pathfinder_reset_reasons",
+    "src_baritone_usage_commands",
+    "src_baritone_settings_timeouts",
+    "src_baritone_features_pathing",
+    "src_minecraft_wiki_version",
+    "src_baritone_project"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "error_codes",
+    "default_values",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "pathfind / goto",
+  "parameters": [
+    {
+      "name": "goal",
+      "type": "object",
+      "required": true,
+      "description": "目标：{type: near|block|xz|y, pos, range}"
+    },
+    {
+      "name": "dynamic",
+      "type": "boolean",
+      "required": false,
+      "description": "目标是否随实体移动重算，默认 false"
+    },
+    {
+      "name": "tolerance",
+      "type": "number",
+      "required": false,
+      "description": "到达判定容差（格），默认 1"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "等于规划超时（默认 thinkTimeout 5000）+ 行程时间预算"
+    },
+    {
+      "name": "movements_profile",
+      "type": "object",
+      "required": false,
+      "description": "{can_dig, allow_1by1_towers, max_drop_down}；默认禁挖、禁塔、坠落 ≤3"
+    },
+    {
+      "name": "stop_on_damage",
+      "type": "boolean",
+      "required": false,
+      "description": "受伤即中断，默认 true"
+    }
+  ],
+  "expected_effects": [
+    "bot.entity.position 收敛到目标容差内",
+    "path_update 终态为 success，触发 goal_reached",
+    "bot.pathfinder.goal 被清空，isMoving() 为 false"
+  ],
+  "failure_modes": [
+    "NoPath — err.name='NoPath'，消息 'No path to the goal!'：搜索空间内无解",
+    "Timeout — err.name='Timeout'，消息 'Took to long to decide path to goal!'：规划超时而非不可达",
+    "GoalChanged — 目标在完成前被改写",
+    "PathStopped — 被 stop() 或外部清除目标，路径未完成",
+    "path_reset:stuck — 单节点超过 3500 ms 未到达触发 futility 重置",
+    "path_reset:block_updated — 路径旁方块变化触发重算",
+    "path_reset:chunk_loaded — 区块加载触发重算",
+    "path_reset:goal_moved — 目标移动触发重算",
+    "path_reset:no_scaffolding_blocks — 缺少垫脚方块，无法继续搭建",
+    "path_reset:place_error — 放置方块失败",
+    "path_reset:dig_error — 挖掘失败导致路径中断",
+    "status:partial — 规划被切片，尚未得到完整路径，不等于失败"
+  ],
+  "verification": [
+    "position 与目标距离 ≤ tolerance",
+    "isMoving() / isMining() / isBuilding() 均为 false",
+    "path_update 终态为 success 或已触发 goal_reached",
+    "连续 20 tick 净位移 > 0.1 格（排除“看起来在走”的抖动）"
+  ],
+  "tags": [
+    "tool-contract",
+    "navigation",
+    "link_playbook:pb_iron_mining_run",
+    "theme:path"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "preconditions",
+      "value": "12",
+      "context": "生命 ≥ 12",
+      "reason": "长距离移动的最低生命线：作者自定"
+    },
+    {
+      "field": "preconditions",
+      "value": "8",
+      "context": "食物 ≥ 8",
+      "reason": "长距离移动的最低食物线：作者自定"
+    },
+    {
+      "field": "risk_notes",
+      "value": "12",
+      "context": "生命 < 12",
+      "reason": "禁止最大速度路线的生命线：作者自定"
+    },
+    {
+      "field": "parameters",
+      "value": "1",
+      "context": "到达判定容差（格），默认 1",
+      "reason": "工具参数的初始值（到达容差）：作者可调"
+    },
+    {
+      "field": "verification",
+      "value": "0.1",
+      "context": "净位移 > 0.1 格",
+      "reason": "排除路径抖动所需的最小位移：作者自定"
+    }
+  ],
+  "evidence_strength": "high"
+}

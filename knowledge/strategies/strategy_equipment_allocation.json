@@ -1,0 +1,83 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_equipment_allocation",
+  "title": "装备优先级与资源分配",
+  "summary": "稀缺的铁锭只有一份。同样的铁做成镐、盾、护甲或头盔，收益结构完全不同。本策略按“当前最可能致命的中断类型”分配，而不是按数值大小排序。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "获得的关键资源不足以同时满足多个装备目标",
+      "存在多个候选装备目标",
+      "当前阶段的主要中断风险已经明确"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "armor_durability",
+      "weapon_durability",
+      "equipment_durability",
+      "known_threats",
+      "failure_code",
+      "attack_count"
+    ]
+  },
+  "actions": [
+    "列出候选装备目标与各自材料消耗",
+    "判断当前最可能致命的中断类型（坠落、战斗、断粮、迷路）",
+    "优先为最高频的中断类型配装备",
+    "把未选中的目标与理由一起记录，便于后续调整"
+  ],
+  "preconditions": [
+    "已知可分配材料的数量与种类",
+    "已知最近若干次中断的主因"
+  ],
+  "success_condition": "装备分配与当前最主要的中断风险匹配，且分配结果由背包材料消耗与装备栏状态验证",
+  "abort_condition": [
+    "材料不足以完成任何一件候选装备",
+    "中断主因已经改变，原分配不再匹配",
+    "存在更高优先级的危险事件"
+  ],
+  "risk_notes": [
+    "不要在资源紧张时平均分配——平均分配会让每件都不足以改变结果",
+    "不要把高价值材料用在低频场景上"
+  ],
+  "candidate_routes": [
+    "优先镐类：产出能力优先，抗风险能力不足",
+    "优先盾牌与护甲：抗风险能力优先，产出效率下降",
+    "优先食物与回程能力：把资源用在维持作业而非提升上限",
+    "均衡分配：任何单项都不突出，失败后果分散"
+  ],
+  "decision_tradeoffs": [
+    "镐优先：单位时间收益最高，但一次战斗或坠落就可能清零",
+    "护甲优先：显著降低中断代价，产出效率下降",
+    "补给优先：延长可持续作业时间，上限受限",
+    "均衡：单项收益都低，但不易被单一事件击穿"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "equipment",
+    "link_playbook:pb_inventory_tool_management",
+    "link_playbook:pb_combat_retreat",
+    "canonical_id:stg_equipment_allocation"
+  ],
+  "evidence_strength": "medium"
+}

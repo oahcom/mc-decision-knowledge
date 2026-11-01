@@ -1,0 +1,141 @@
+{
+  "id": "failure_night_exposure",
+  "knowledge_type": "failure_recovery",
+  "title": "夜晚暴露在未封闭空间",
+  "summary": "夜晚失败的核心是“没在日落前完成封闭”。判据是天黑后仍无封闭空间且出现敌对实体，此时优先级高于任何采集目标。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "spawn",
+  "trigger": {
+    "conditions": [
+      "时间进入夜间且所处空间未封闭",
+      "8 格内出现敌对实体"
+    ],
+    "state_features": [
+      "time_of_day",
+      "shelter_sealed",
+      "light_level",
+      "hostiles_within_8",
+      "bot.health"
+    ]
+  },
+  "actions": [
+    "确认当前时间与封闭状态",
+    "就地建立最小封闭空间或撤回庇护所",
+    "确认光照与缺口",
+    "按 L1→L4 处理"
+  ],
+  "preconditions": [
+    "时间与位置信息可信（服务器时间同步）"
+  ],
+  "success_condition": "在封闭空间内连续 60 秒无受伤，且 8 格内无敌对实体",
+  "abort_condition": [
+    "生命 < 8 且无法封闭（策略阈值，可调）",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "夜间露天赶路的风险高于收益",
+    "未封闭的洞口点着火把不等于安全"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_internal_design",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "天黑后仍在露天或半开放洞穴",
+    "敌对实体数量在短时间内上升",
+    "持续受到攻击且无法回血"
+  ],
+  "possible_causes": [
+    "白天采集超时，未预留返程时间",
+    "庇护所未真正封闭（存在缺口）",
+    "照明不足，封闭空间内仍刷怪",
+    "把洞口或矿道当作临时庇护所"
+  ],
+  "diagnostics": [
+    "读取 time_of_day 判断距天亮的时间",
+    "检查庇护所六面封闭性与缺口位置",
+    "检查光照等级与刷怪面",
+    "统计 8 格内敌对实体数量"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：就地立柱（≥3 格高）并封顶，先脱离地面威胁",
+    "L2 局部子任务重规划：横向挖进 2 格做临时避难并封口",
+    "L3 回到最近安全检查点：撤回已知安全的庇护所",
+    "L4 升级给大模型：把“日落前 1000 tick 开始返程”写入计划约束"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "夜间露天赶路",
+    "把洞口点火把当作安全措施",
+    "未封闭就尝试睡觉",
+    "在黑暗中继续挖矿"
+  ],
+  "tags": [
+    "failure-recovery",
+    "exposure",
+    "link_playbook:pb_first_night_shelter",
+    "link_strategy:stg_night_exposure",
+    "theme:exposure"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "8",
+      "context": "8 格内出现敌对实体",
+      "reason": "敌对实体告警半径：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "60",
+      "context": "连续 60 秒无受伤",
+      "reason": "脱离危险期的观察窗口：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "8",
+      "context": "8 格内无敌对实体",
+      "reason": "判定已脱离危险的敌对实体安全半径由作者自定，取 8 格"
+    },
+    {
+      "field": "abort_condition",
+      "value": "8",
+      "context": "生命 < 8 且无法封闭",
+      "reason": "撤退生命阈值：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "8",
+      "context": "统计 8 格内敌对实体数量",
+      "reason": "敌对实体检查半径由作者自定，取 8 格作为作业点安全半径"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "3",
+      "context": "就地立柱（≥3 格高）",
+      "reason": "临时庇护的立柱高度：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "2",
+      "context": "横向挖进 2 格做临时避难",
+      "reason": "临时避难的挖掘深度：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "1000",
+      "context": "日落前 1000 tick 开始返程",
+      "reason": "返程提前量：作者自定的 tick 预算"
+    }
+  ],
+  "evidence_strength": "medium"
+}

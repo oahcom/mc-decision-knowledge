@@ -1,0 +1,138 @@
+{
+  "id": "failure_tool_durability_low",
+  "knowledge_type": "failure_recovery",
+  "title": "工具耐久不足",
+  "summary": "耐久不足的关键不是“还能挖几块”，而是“够不够完成当前子任务并返回”。诊断要把剩余耐久换算成可采方块数，再与任务预算比较。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "装备耐久低于任务所需消耗的 120%（策略阈值，可调）",
+      "背包无同等级备用工具"
+    ],
+    "state_features": [
+      "equipped_tool_durability",
+      "spare_tools",
+      "remaining_blocks",
+      "material_stock",
+      "distance_to_base"
+    ]
+  },
+  "actions": [
+    "读取装备耐久与备用工具数量",
+    "按目标方块数与硬度估算剩余消耗",
+    "比较“继续”与“回程补造”的净收益",
+    "按 L1→L4 处理并在任务前预置阈值"
+  ],
+  "preconditions": [
+    "耐久读数来自装备槽而非缓存"
+  ],
+  "success_condition": "装备耐久 ≥ 任务所需消耗的 120%（策略阈值，可调），或已换新工具，且当前子任务可继续完成",
+  "abort_condition": [
+    "耐久 < 5% 时强制中断，不论任务进度",
+    "无材料补造且无备用工具"
+  ],
+  "risk_notes": [
+    "用高价值工具做低价值任务会放大后续缺口",
+    "耐久低于 5% 时继续开采会导致工具在关键动作中损坏"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_prismarine_mineflayer",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minecraftdata_recipes_tool_chain"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "装备耐久低于 15% 或低于剩余目标方块数所需",
+    "背包中没有同等级备用工具",
+    "合成材料不足以补造"
+  ],
+  "possible_causes": [
+    "任务前未做耐久预算",
+    "连续开采未换镐，单工具承担全部消耗",
+    "用高等级工具执行低价值挖掘",
+    "补造材料（木头/圆石/铁）库存不足"
+  ],
+  "diagnostics": [
+    "判别：装备仍存在且耐久 > 0 按本卡；装备已消失转 failure_tool_broken_mid_task",
+    "读取装备槽耐久百分比与备用工具数",
+    "按目标方块数与硬度估算所需消耗",
+    "检查补造材料库存（圆石/木棍/铁锭）",
+    "比较回程补造与继续开采的时间成本"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：换用备用工具或降级工具继续",
+    "L2 局部子任务重规划：就地补造（石镐 = 3 圆石 + 2 木棍）或改走消耗更低的路线",
+    "L3 回到最近安全检查点：回熔炉/箱子处整备，补足至少 2 把工具",
+    "L4 升级给大模型：把“补装备”提升为当前子目标，暂缓资源采集"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "耐久低于 5% 仍继续开采",
+    "用铁镐挖石头等低价值方块",
+    "无备用工具时深入矿区",
+    "把最后一次耐久用在非必要方块上"
+  ],
+  "tags": [
+    "failure-recovery",
+    "equipment",
+    "link_playbook:pb_iron_mining_run",
+    "link_strategy:stg_equipment_allocation",
+    "theme:durability"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "120",
+      "context": "任务所需消耗的 120%",
+      "reason": "耐久冗余倍数：作者自定的策略阈值"
+    },
+    {
+      "field": "success_condition",
+      "value": "120",
+      "context": "任务所需消耗的 120%",
+      "reason": "耐久冗余倍数：作者自定的策略阈值"
+    },
+    {
+      "field": "abort_condition",
+      "value": "5",
+      "context": "耐久 < 5% 时强制中断",
+      "reason": "强制中断的耐久线：作者自定"
+    },
+    {
+      "field": "risk_notes",
+      "value": "5",
+      "context": "耐久低于 5% 时继续开采",
+      "reason": "强制中断的耐久线：作者自定"
+    },
+    {
+      "field": "symptoms",
+      "value": "15",
+      "context": "装备耐久低于 15%",
+      "reason": "预警耐久线：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "2",
+      "context": "补足至少 2 把工具",
+      "reason": "工具备份数量：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "装备仍存在且耐久 > 0",
+      "reason": "区分「耐久偏低」与「已损坏」的相对判据：耐久大于 0 且装备仍存在即归本卡，是相对量"
+    }
+  ],
+  "evidence_strength": "medium"
+}

@@ -1,0 +1,83 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_opening_priority",
+  "title": "开局目标排序：木头、工具、食物、庇护所的取舍",
+  "summary": "出生后的目标排序不是固定流程。本策略给出的是条件式排序：先看哪些目标会阻断其它目标（没有工具就采不动矿，没有封闭点就过不了夜），再按阻断程度排序，而不是按“好做程度”排序。",
+  "stage": "spawn",
+  "trigger": {
+    "conditions": [
+      "尚未拥有石制工具",
+      "尚未建立可封闭的过夜点",
+      "当前还没有进入矿洞作业阶段"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "bot.food",
+      "bot.health",
+      "time_of_day",
+      "shelter_available",
+      "nearby_tree",
+      "known_threats"
+    ]
+  },
+  "actions": [
+    "列出当前缺口：木料、工作台、基础工具、食物、封闭点",
+    "判断每个缺口会阻断哪些其它目标（例如没有镐就采不到圆石，没有圆石就做不出熔炉）",
+    "按阻断程度排序，一次只推进排在最前的一个目标",
+    "每完成一个目标就回写背包与位置状态，再重新排序"
+  ],
+  "preconditions": [
+    "已知当前是否存在食物与遮蔽物",
+    "已知附近是否有树与可封闭地形",
+    "当前没有正在进行的危险事件"
+  ],
+  "success_condition": "已获得工作台与石制镐，并存在一个可封闭的过夜点，且该结论由背包内容与所在位置状态验证",
+  "abort_condition": [
+    "天色已晚且仍无可封闭空间",
+    "出现敌对实体且无可用退路",
+    "石制工具、食物与封闭点均已就位（排序目标已达成）"
+  ],
+  "risk_notes": [
+    "不要因为某一步容易就长期停留（例如无目的地持续伐木）",
+    "不要在饥饿或受伤状态下继续推进工具链",
+    "不要跳过封闭点只做工具——工具做得再好也换不来一个夜晚"
+  ],
+  "candidate_routes": [
+    "取木 → 工作台 → 木镐 → 找封闭点 → 石镐",
+    "先建立封闭点 → 再取木 → 再做工具",
+    "先解决食物来源 → 再按阻断顺序推进工具链"
+  ],
+  "decision_tradeoffs": [
+    "取木优先：材料最易获得，但可能占用整个白天而不产出工具",
+    "封闭点优先：安全优先，但若天色尚早则推迟了工具进度",
+    "食物优先：能支撑后续作业，但食物来源本身可能需要工具"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_mindcraft_project",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "opening",
+    "link_playbook:pb_opening_resource_buildup",
+    "canonical_id:stg_opening_priority"
+  ],
+  "evidence_strength": "high"
+}

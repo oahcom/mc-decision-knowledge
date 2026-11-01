@@ -1,0 +1,76 @@
+{
+  "id": "ai_pre_explore_conservative_baseline",
+  "knowledge_type": "ai_heuristic",
+  "title": "深入探索前的保守基线：先满足回退条件再下潜",
+  "summary": "进入洞穴、矿井或远离出生点的区域前，模型应要求一个更严格的保守基线：足够的食物与光源、关键工具的备份或耐久余量、明确的退路坐标或标记。这不是通用攻略而是项目设定的探索门槛。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "计划进入远离安全区的洞穴、矿井或深层区域",
+      "尚未核对深入探索所需的保守基线"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "bot.inventory",
+      "known_threats",
+      "waypoint_available",
+      "light_sources"
+    ]
+  },
+  "actions": [
+    "核对深入探索前的保守基线：食物、光源、工具耐久余量、退路标记",
+    "任一项缺失时先补齐再下潜",
+    "记录进入点坐标或放置路标，作为回退检查点"
+  ],
+  "preconditions": [
+    "目标区域已知或可通过协议层获取",
+    "运行时支持记录路标或进入点坐标"
+  ],
+  "success_condition": "食物与光源充足、关键工具耐久有余量、已标记退路后，才启动深入探索计划",
+  "abort_condition": [
+    "食物或光源在探索途中跌破基线",
+    "退路标记丢失且无法重建",
+    "出现更高优先级危险事件"
+  ],
+  "risk_notes": [
+    "深入探索门槛比日常安全基线更严格，阈值需标注为策略阈值",
+    "无退路标记下潜等于把撤退交给运气"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "深入探索前必须满足更严格的保守基线（食物、光源、工具耐久余量、退路标记），缺一项先补齐再下潜。",
+  "alternative_comparison": [
+    "立即下潜：省时，但遇险时食物、光源或退路不足会导致死亡或资源永久丢失",
+    "先补齐基线再下潜：多花一轮整备时间，但显著降低深入区域的高损失风险"
+  ],
+  "anti_patterns": [
+    "把日常安全基线当成深入探索门槛",
+    "只带一把关键工具就下潜，没有耐久余量或备份",
+    "进入复杂洞穴后才发现没有光源或食物，被迫原路返回"
+  ],
+  "model_guidance": "下潜前逐项确认食物、光源、工具耐久余量和退路标记；任何一项不满足就输出补齐动作，并把进入点坐标写进计划作为回退检查点。",
+  "tags": [
+    "ai-decision",
+    "safety",
+    "exploration",
+    "link_playbook:pb_iron_mining_run",
+    "theme:safety"
+  ],
+  "evidence_strength": "low"
+}

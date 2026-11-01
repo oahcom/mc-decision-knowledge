@@ -1,0 +1,30 @@
+{
+  "source_id": "src_pathfinder_goto_errors",
+  "title": "mineflayer-pathfinder lib/goto.js — named rejection errors",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/mineflayer-pathfinder/master/lib/goto.js",
+  "platform": "GitHub",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "content_excerpt": "goto() listens for goal_reached, path_update, goal_updated and path_stop, then rejects with named errors: NoPath ('No path to the goal!') on status noPath; Timeout ('Took to long to decide path to goal!') on status timeout; GoalChanged ('The goal was changed before it could be completed!'); PathStopped ('Path was stopped before it could be completed! Thus, the desired goal was not reached.'). A 'success' result with an empty path resolves immediately because the goal is already met.",
+  "evidence_notes": "错误名 err.name 是稳定的错误码，应作为 tool_guide 的 failure_modes 键。关键区分：Timeout 表示“规划超时”而不是“走不到”，NoPath 才表示搜索空间内无解；PathStopped 表示被外部停止，三者恢复动作不同。",
+  "related_game_versions": [
+    "mineflayer-pathfinder 主线（与 mineflayer 支持版本同步）",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "源码级证据，可直接作为错误码契约；不覆盖服务端拒绝路径的情况。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

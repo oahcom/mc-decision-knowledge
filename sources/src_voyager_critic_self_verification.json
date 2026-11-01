@@ -1,0 +1,23 @@
+{
+  "source_id": "src_voyager_critic_self_verification",
+  "title": "Voyager — voyager/agents/critic.py (自验证 Agent：成功判定与重试上限)",
+  "url": "https://raw.githubusercontent.com/MineDojo/Voyager/main/voyager/agents/critic.py",
+  "platform": "GitHub",
+  "source_type": "research_paper",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "ritique\n\n def ai_check_task_success(self, messages, max_retries=5):\n if max_retries == 0:\n print(\n \"\\033[31mFailed to parse Critic Agent response. Consider updating your prompt.\\033[0m\"\n )\n return False, \"\"\n\n if messages[1] is None:\n return False, \"\"\n\n critic = self.llm(messages).content\n print(f\"\\033[31m****Critic Agent ai message****\\n{critic}\\033[0m\")\n try:\n response = fix_and_parse_json(critic)\n assert response[\"success\"] in [True, False]\n if \"critique\" not in response:\n response[\"critique\"] = \"\"\n return response[\"success\"], response[\"critique\"]\n except Exception as e:\n print(f\"\\033[31mError parsing critic response: {e} Trying again!\\033[0m\")\n return self.ai_check_task_success(\n messages=messages,\n max_retries=max_retries - 1,\n )\n\n def check_task_success(\n self, *, events, task, context, chest_observation, max_retries=5\n ):\n human_message = self.render_human_message(\n events=events,\n task=task,\n context=context,\n chest_observation=chest_observation,\n )\n\n messages = [\n self.render_system_message(),\n human_message,\n ]\n\n if self.mode == \"manual\":\n return",
+  "evidence_notes": "何时停止、失败怎么办：返回 success=True/False 即为停止信号；解析失败最多重试 5 次，耗尽后返回 (False, \"\")；执行错误时直接判失败；失败同时产出 critique 供下一轮代码修正。",
+  "related_game_versions": [
+    "1.19"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：critic.py § render_human_message / § ai_check_task_success"
+}

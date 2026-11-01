@@ -1,0 +1,72 @@
+{
+  "id": "ai_vary_retry_on_failure",
+  "knowledge_type": "ai_heuristic",
+  "title": "失败后不原样重试：每次重试必须改变至少一个维度",
+  "summary": "相同失败用相同方式重试不会产生新信息。模型每次重试都必须改变至少一个维度（目标点、工具、路线或时间），否则就是在累积无意义的失败次数，最终触发升级。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "某动作或子目标失败",
+      "准备再次尝试同一目标"
+    ],
+    "state_features": [
+      "failure_code",
+      "attempt_count",
+      "last_attempt_params",
+      "target_signature",
+      "state_version"
+    ]
+  },
+  "actions": [
+    "聚合当前失败与上次尝试的参数",
+    "确保本次尝试至少改变一个维度",
+    "达到次数上限时升级而非继续重试"
+  ],
+  "preconditions": [
+    "失败计数已持久化（跨计划、跨重启）",
+    "能区分不同目标的失败"
+  ],
+  "success_condition": "每次重试都改变至少一个维度，且失败计数在达到上限前产生新证据或成功",
+  "abort_condition": [
+    "同一 failure_code 在相同状态下达到次数上限",
+    "无任何可改变的维度"
+  ],
+  "risk_notes": [
+    "原样重试是在浪费恢复预算，不产生新信息",
+    "把失败归因于运气会掩盖目标不可达的事实"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_pathfinder_reset_reasons",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "相同失败不得用相同方式重试，每次重试必须改变目标点、工具、路线或时间中的至少一个维度。",
+  "alternative_comparison": [
+    "原样重试：零成本但零信息，纯粹消耗恢复预算",
+    "变维重试：多一次规划，但每次尝试都产生新证据，加速定位根因"
+  ],
+  "anti_patterns": [
+    "无参数变化地循环重试同一目标",
+    "把超时当作“再等等”继续原样等待",
+    "清空失败计数以“重新开始”"
+  ],
+  "model_guidance": "重试前先比对上次参数，强制改变至少一个维度；若已无可变维度或达到上限，停止重试并升级，把该目标标记为 blocked 或切换策略。",
+  "tags": [
+    "ai-decision",
+    "recovery",
+    "link_strategy:stg_opening_priority",
+    "theme:meta"
+  ],
+  "evidence_strength": "medium"
+}

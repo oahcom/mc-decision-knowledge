@@ -1,0 +1,115 @@
+{
+  "id": "failure_tool_broken_mid_task",
+  "knowledge_type": "failure_recovery",
+  "title": "工具在任务中途损坏",
+  "summary": "工具损坏的破坏性不在当下，而在“剩下的方块挖不动”和“掉落为空”。判据是装备槽变空且背包无同类工具，此时继续挖掘只会浪费时间与耐久。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "装备槽工具消失（耐久归零）",
+      "背包无同类备用工具"
+    ],
+    "state_features": [
+      "equipped_tool",
+      "spare_tools",
+      "remaining_blocks",
+      "material_stock",
+      "distance_to_base"
+    ]
+  },
+  "actions": [
+    "确认装备槽与背包是否还有可用工具",
+    "统计剩余目标方块数",
+    "决定就地补造、改采软目标或回程",
+    "按 L1→L4 执行并更新工具预算"
+  ],
+  "preconditions": [
+    "已确认工具消失不是窗口读取错误（背包两次读取一致）"
+  ],
+  "success_condition": "装备槽重新有可用工具（耐久 > 0），或当前子任务已改到无需该工具的目标",
+  "abort_condition": [
+    "无材料补造且无备用工具",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "空手挖矿石不会掉落，等于白耗时间",
+    "把工具消失误判为不同步会导致反复读取与无效等待"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minecraftdata_recipes_tool_chain"
+  ],
+  "evidence_type": "official_document",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "装备槽工具消失，背包同类工具数量为 0",
+    "挖掘中途触发 diggingAborted，方块仍存在",
+    "后续挖掘耗时剧增或掉落为空"
+  ],
+  "possible_causes": [
+    "任务前未做耐久预算",
+    "临界耐久未提前更换",
+    "目标方块硬度高于预期（矿石、黑曜石）",
+    "工具被用于战斗（攻击同样消耗耐久）或误用于高硬度方块，加速损坏"
+  ],
+  "diagnostics": [
+    "判别：装备仍在但耐久偏低时，转 failure_tool_durability_low",
+    "读取装备槽与背包同类工具数量",
+    "对比耐久消耗速率与方块类型",
+    "检查剩余目标方块数与所需耐久",
+    "检查补造材料（圆石、木棍、铁锭）库存"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：换备用工具，或放弃剩余硬方块、改采软目标",
+    "L2 局部子任务重规划：就地补造石镐（3 圆石 + 2 木棍），再继续",
+    "L3 回到最近安全检查点：回箱子/熔炉处整备，至少带 2 把工具",
+    "L4 升级给大模型：把工具预算写入任务契约，重定采集配额"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "空手继续挖需要工具掉落的方块",
+    "用最后一点耐久挖非目标方块",
+    "把工具消失当作状态不同步而反复读取",
+    "无工具时继续深入矿区"
+  ],
+  "tags": [
+    "failure-recovery",
+    "equipment",
+    "link_playbook:pb_iron_mining_run",
+    "link_strategy:stg_equipment_allocation",
+    "theme:durability"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "recovery_steps",
+      "value": "2",
+      "context": "至少带 2 把工具",
+      "reason": "工具备份数量：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "0",
+      "context": "耐久 > 0",
+      "reason": "「工具仍可用」的相对判据：耐久大于 0 即未损坏，是相对量"
+    },
+    {
+      "field": "symptoms",
+      "value": "0",
+      "context": "背包同类工具数量为 0",
+      "reason": "「无备用工具」的相对判据：同类工具数量为 0 即无备选，是相对量"
+    }
+  ],
+  "evidence_strength": "high"
+}

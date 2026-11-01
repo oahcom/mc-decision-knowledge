@@ -1,0 +1,74 @@
+{
+  "id": "ai_classify_failure_type",
+  "knowledge_type": "ai_heuristic",
+  "title": "区分工具失败、状态错误与策略错误后再对症恢复",
+  "summary": "失败有三种不同根因：工具失败（调用或契约问题）、状态错误（事实与预期不符）、策略错误（路线或目标本身不可行）。模型必须先归类再恢复，错配恢复手段会反复踩同一坑。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "动作或子目标失败",
+      "尚未确定失败根因类别"
+    ],
+    "state_features": [
+      "failure_code",
+      "tool_state",
+      "runtime.state_version",
+      "bot.inventory",
+      "target_signature",
+      "attempt_count"
+    ]
+  },
+  "actions": [
+    "依据失败码与状态归类失败：工具、状态或策略",
+    "选择与类别匹配的恢复手段",
+    "类别不明时按状态错误处理并收集更多证据"
+  ],
+  "preconditions": [
+    "失败码可区分工具层与状态层",
+    "状态事实可被协议层读取"
+  ],
+  "success_condition": "正确归类失败根因，并输出与类别匹配的恢复动作",
+  "abort_condition": [
+    "类别持续无法判定",
+    "恢复达到次数上限"
+  ],
+  "risk_notes": [
+    "把策略错误当工具失败修，会反复重试同一路线",
+    "把状态错误当工具失败修，会不断重发已成功的动作"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "先区分失败属于工具失败、状态错误还是策略错误，再选择匹配的恢复手段，不张冠李戴。",
+  "alternative_comparison": [
+    "不分类直接重试：省一步，但错配恢复手段会导致重复失败",
+    "先分类再恢复：多一步诊断，但恢复动作对症，减少无效重试"
+  ],
+  "anti_patterns": [
+    "把策略错误当工具失败，反复重发同一路线",
+    "把状态错误当工具失败，重发已成功的动作",
+    "把所有失败都归因于运气或环境"
+  ],
+  "model_guidance": "先用失败码和最新状态归类根因：工具失败走工具契约恢复，状态错误走状态同步与事实复核，策略错误走路线或目标重规划；类别不明时优先按状态错误处理并补充证据。",
+  "tags": [
+    "ai-decision",
+    "recovery",
+    "diagnosis",
+    "link_strategy:stg_opening_priority",
+    "theme:meta"
+  ],
+  "evidence_strength": "medium"
+}

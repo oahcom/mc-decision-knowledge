@@ -1,0 +1,23 @@
+{
+  "source_id": "src_voyager_curriculum_agent",
+  "title": "Voyager — voyager/agents/curriculum.py (自动课程：难度解锁与失败跳过)",
+  "url": "https://raw.githubusercontent.com/MineDojo/Voyager/main/voyager/agents/curriculum.py",
+  "platform": "GitHub",
+  "source_type": "research_paper",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "ontent)\n\n def propose_next_task(self, *, events, chest_observation, max_retries=5):\n if self.progress == 0 and self.mode == \"auto\":\n task = \"Mine 1 wood log\"\n context = \"You can mine one of oak, birch, spruce, jungle, acacia, dark oak, or mangrove logs.\"\n return task, context\n\n # hard code task when inventory is almost full\n inventoryUsed = events[-1][1][\"status\"][\"inventoryUsed\"]\n if inventoryUsed >= 33:\n if chest_observation != \"Chests: None\\n\\n\":\n chests = chest_observation[8:-2].split(\"\\n\")\n for chest in chests:\n content = chest.split(\":\")[1]\n if content == \" Unknown items inside\" or content == \" Empty\":\n position = chest.split(\":\")[0]\n task = f\"Deposit useless items into the chest at {position}\"\n context = (\n f\"Your inventory have {inventoryUsed} occupied slots before depositing. \"\n \"After depositing, your inventory should only have 20 occupied slots. \"\n \"You should deposit useless items such as andesite, dirt, cobblestone, etc. \"\n \"Also, you can deposit low-level too",
+  "evidence_notes": "什么时候做、失败怎么办：给出各观测维度的解锁阈值与背包占用 ≥33 时强制触发「存箱子」任务；失败任务记入 failed_tasks 并立即跳到下一任务，课程重试时再拾起。",
+  "related_game_versions": [
+    "1.19"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：curriculum.py § default_warmup / § propose_next_task / § update_exploration_progress"
+}

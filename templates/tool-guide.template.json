@@ -1,0 +1,33 @@
+{
+  "id": "tool_guide_example_tool",
+  "knowledge_type": "tool_guide",
+  "title": "工具使用契约示例",
+  "summary": "记录工具的前置条件、参数、预期效果、失败模式和结果验证方式。此文件为模板，不可作为正式知识使用。",
+  "game_edition": "java",
+  "game_versions": ["填写工具或协议适用版本，如 26.3"],
+  "stage": "general",
+  "trigger": {
+    "conditions": ["计划选择该工具", "工具前置条件通过程序检查"],
+    "state_features": ["inventory", "position", "tool_state", "target_state"]
+  },
+  "actions": ["按参数调用工具", "监控超时和中断", "执行后验证结果"],
+  "preconditions": ["工具可用", "参数合法", "目标可达"],
+  "success_condition": "预期后置状态由游戏事实确认",
+  "abort_condition": ["超时", "前置条件失效", "被危险事件抢占"],
+  "risk_notes": ["高级工具必须返回可诊断错误，不能只返回成功或失败"],
+  "source_refs": ["src_example_code"],
+  "evidence_type": "code_behavior",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T00:00:00+08:00",
+  "updated_at": "2026-11-01T00:00:00+08:00",
+  "tool_name": "example_tool",
+  "parameters": [
+    { "name": "target", "type": "string", "required": true, "description": "目标资源或位置" },
+    { "name": "count", "type": "integer", "required": false, "description": "期望数量" }
+  ],
+  "expected_effects": ["目标资源增加", "位置或背包状态改变"],
+  "failure_modes": ["target_unreachable", "missing_material", "interrupted_by_damage", "timeout"],
+  "verification": ["检查背包数量", "检查位置变化", "检查工具返回错误码"],
+  "tags": ["template", "tool-contract"]
+}

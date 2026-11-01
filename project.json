@@ -1,0 +1,51 @@
+{
+  "project_name": "mc-decision-knowledge",
+  "target_edition": "java",
+  "target_game_version": "26.3",
+  "first_milestone": {
+    "name": "spawn_to_iron",
+    "scope": [
+      "开局资源建立",
+      "石质工具",
+      "食物与安全基线",
+      "铁矿获取与熔炼",
+      "铁质关键装备"
+    ],
+    "required_knowledge": {
+      "strategies": 12,
+      "playbooks": 5,
+      "failures": 20,
+      "tool_guides": 8,
+      "ai_heuristics": 12
+    }
+  },
+  "knowledge_policy": {
+    "evidence_required": true,
+    "default_validation_status": "draft",
+    "allowed_high_confidence_only_after": "replay_verified",
+    "version_conflict_policy": "keep_separate_entries",
+    "deprecated_entries": "keep_with_deprecated_status"
+  },
+  "source_policy": {
+    "allowed_access": [
+      "public_page",
+      "official_api",
+      "search_result",
+      "local_file"
+    ],
+    "forbidden": [
+      "bypass_login_or_paywall",
+      "ignore_robots_or_terms",
+      "collect_private_personal_data",
+      "high_frequency_scraping"
+    ]
+  },
+  "validation": {
+    "schema_version": "2026-11-01.2",
+    "command": "python scripts/validate_knowledge.py",
+    "audit_command": "python scripts/audit_knowledge.py"
+  },
+  "target_version_confirmed_at": "2026-11-01",
+  "target_version_source": "src_minecraft_wiki_version",
+  "target_version_note": "26.3 is the current Java Edition stable release confirmed on 2026-11-01. 26.4 is still a development snapshot and must not be used as the target version."
+}

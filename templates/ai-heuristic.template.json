@@ -1,0 +1,36 @@
+{
+  "id": "ai_heuristic_example_decision_rule",
+  "knowledge_type": "ai_heuristic",
+  "title": "大模型决策启发示例",
+  "summary": "把人类经验转化为可执行的大模型选择规则，包含状态特征、候选比较、反模式和模型指导。此文件为模板，不可作为正式知识使用。",
+  "game_edition": "java",
+  "game_versions": ["填写适用版本，如 26.3"],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": ["大模型正在比较候选策略", "状态特征完整"],
+    "state_features": ["health", "food", "equipment", "known_threats", "exploration_progress"]
+  },
+  "actions": ["按决策规则选择候选路线", "输出可验证的短计划", "声明重规划条件"],
+  "preconditions": ["状态来自结构化状态中心", "候选路线均有知识条目"],
+  "success_condition": "生成的计划通过前置检查并在执行后被验证",
+  "abort_condition": ["状态版本过期", "候选路线前置条件失效", "危险保护抢占"],
+  "risk_notes": ["不要把启发式规则写成普适事实", "数值阈值必须有来源或验证状态"],
+  "source_refs": ["src_internal_design"],
+  "evidence_type": "ai_synthesis",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T00:00:00+08:00",
+  "updated_at": "2026-11-01T00:00:00+08:00",
+  "decision_rule": "当补给和退路不满足安全基线时，优先恢复安全状态，再考虑资源收益。",
+  "alternative_comparison": [
+    "继续探索：收益可能更高，但失败成本上升",
+    "返回补给：短期收益下降，但降低死亡和资源损失风险"
+  ],
+  "anti_patterns": [
+    "看到资源就忽略生命和食物状态",
+    "在旧状态版本上继续执行计划",
+    "把一次成功经验推广为普适规则"
+  ],
+  "model_guidance": "先检查状态完整性和安全基线，再比较候选路线；无法判断时输出保守计划并请求重规划。",
+  "tags": ["template", "ai-decision"]
+}

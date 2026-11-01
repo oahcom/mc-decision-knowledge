@@ -1,0 +1,96 @@
+{
+  "id": "failure_craft_no_recipe",
+  "knowledge_type": "failure_recovery",
+  "title": "合成失败：无可用配方",
+  "summary": "无配方与缺材料表现相似但根因不同：前者重试永远不会成功。区分方法是查 recipesAll 是否存在配方，以及该物品是否本就不通过合成获得。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "recipesFor 对目标物品始终返回空",
+      "材料看起来充足"
+    ],
+    "state_features": [
+      "recipes_all_result",
+      "crafting_table_required",
+      "game_version",
+      "target_item_source"
+    ]
+  },
+  "actions": [
+    "用 recipesAll 检查是否存在任何配方",
+    "确认配方是否需要工作台",
+    "确认目标物是否只能通过熔炼/采集/交易获得",
+    "按 L1→L4 替换路径"
+  ],
+  "preconditions": [
+    "目标物品 ID 正确且存在于当前版本注册表"
+  ],
+  "success_condition": "确认配方存在并成功合成，或确认该物品不可合成并切换到正确来源",
+  "abort_condition": [
+    "目标物确认不可合成且替代路径不可行",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "把“材料够了就能合成”当作前提会浪费多次尝试",
+    "版本差异会让旧配方消失"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_wiki_crafting_grid_size"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "recipesFor 对目标物始终返回空列表",
+    "材料数量充足但仍无法合成",
+    "craft 立即失败且无窗口交互"
+  ],
+  "possible_causes": [
+    "目标物不可合成（只能熔炼、采集或交易获得）",
+    "配方需要工作台而调用未提供",
+    "材料 metadata 或变种不匹配",
+    "目标版本中该配方不存在（版本差异）"
+  ],
+  "diagnostics": [
+    "判别：材料数量少于配方需求时，转 failure_craft_missing_material",
+    "调用 recipesAll 判断配方是否存在",
+    "检查配方是否需要 3×3 工作台",
+    "核对目标版本与配方来源",
+    "确认物品是否属于熔炼产物（如铁锭）"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：补工作台后重试一次；本轮不再重复调用 craft，仍为空进入 L2",
+    "L2 局部子任务重规划：改走熔炼或采集路线获得目标物",
+    "L3 回到最近安全检查点：重设目标并记录该物品的正确来源",
+    "L4 升级给大模型：替换目标物或调整阶段目标"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "反复用 recipe=null 调用 craft",
+    "假设材料足够就一定能合成",
+    "跳过工作台可用性检查",
+    "在版本不明时套用旧配方"
+  ],
+  "tags": [
+    "failure-recovery",
+    "crafting",
+    "link_playbook:pb_stone_tool_furnace",
+    "theme:craft"
+  ],
+  "evidence_strength": "high"
+}

@@ -1,0 +1,73 @@
+{
+  "id": "ai_diminishing_returns_stop",
+  "knowledge_type": "ai_heuristic",
+  "title": "探索收益递减的停止条件：边际收益跌破阈值就停止",
+  "summary": "探索的边际收益随已覆盖区域增加而递减。模型应设定一个可量化的停止条件：单位时间新发现低于阈值、或命中率连续下降时，停止当前探索路线，而不是无限扩大搜索范围。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "探索任务边际收益持续下降",
+      "正在决定是否停止探索路线"
+    ],
+    "state_features": [
+      "target_resource_count",
+      "visited_chunks",
+      "search_ticks",
+      "interrupt_count",
+      "tool_state"
+    ]
+  },
+  "actions": [
+    "计算单位时间的新发现或命中率",
+    "与预设的收益递减阈值比较",
+    "达到阈值时停止当前路线并切换或回程"
+  ],
+  "preconditions": [
+    "收益递减阈值已量化为可比较的指标",
+    "新发现计数来自背包或区块事实"
+  ],
+  "success_condition": "当边际收益跌破预设阈值时，输出停止当前探索并切换路线的决策",
+  "abort_condition": [
+    "收益递减但安全或补给告急，应优先回程",
+    "出现更高优先级目标"
+  ],
+  "risk_notes": [
+    "停止阈值是项目策略阈值，需标注而非当游戏事实",
+    "无限扩大搜索范围会同时推高时间与风险成本"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "当探索的单位时间边际收益跌破预设阈值时停止当前路线，切换区域或回程，不无限扩大搜索。",
+  "alternative_comparison": [
+    "继续扩大搜索：可能再遇高产区，但边际收益递减且时间与风险成本持续上升",
+    "停止并切换：放弃当前路线的剩余潜力，但及时止损并保留补给与时间"
+  ],
+  "anti_patterns": [
+    "把曾经的高产体验当成当前路线仍会高产的证据",
+    "不设量化停止条件，靠感觉判断是否继续",
+    "为完成采集目标而忽略收益递减与安全告急"
+  ],
+  "model_guidance": "为探索设定可量化的收益递减阈值，每轮统计单位时间新发现，跌破阈值即输出停止并切换；同时检查安全与补给，若告急则优先回程。",
+  "tags": [
+    "ai-decision",
+    "search",
+    "route",
+    "link_strategy:stg_explore_vs_resupply",
+    "theme:search"
+  ],
+  "evidence_strength": "low"
+}

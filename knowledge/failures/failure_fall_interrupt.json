@@ -1,0 +1,121 @@
+{
+  "id": "failure_fall_interrupt",
+  "knowledge_type": "failure_recovery",
+  "title": "坠落打断作业并造成伤害",
+  "summary": "坠落伤害往往来自“顺手往下挖一格”。判据是 Y 坐标短时间大幅下降且伴随生命骤降，此时首要动作是确认落点安全，而不是继续原任务。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "生命在一次事件中下降 ≥ 4",
+      "Y 坐标在 2 秒内下降 ≥ 4 格"
+    ],
+    "state_features": [
+      "bot.health",
+      "position_y_delta",
+      "block_below",
+      "in_lava",
+      "in_water",
+      "task_progress"
+    ]
+  },
+  "actions": [
+    "确认落点方块与是否仍在移动",
+    "判断是否在水中或熔岩中",
+    "脱离危险并恢复生命",
+    "按 L1→L4 修正下行方式"
+  ],
+  "preconditions": [
+    "已确认伤害来源是坠落而非战斗"
+  ],
+  "success_condition": "落点安全、生命恢复到 12 以上，且下行路线改为逐级台阶",
+  "abort_condition": [
+    "落入熔岩（转入岩浆应急流程）",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "单格垂直下挖会直接落入洞穴或熔岩",
+    "未知落点跳下超过 3 格即为高风险"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_baritone_settings_timeouts",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_wiki_player_health"
+  ],
+  "evidence_type": "official_document",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "生命值骤降且 Y 坐标快速下降",
+    "挖掘动作被打断，bot 位置异常",
+    "落点处出现水、熔岩或深洞"
+  ],
+  "possible_causes": [
+    "单格垂直下挖",
+    "踩空隐藏洞穴或竖井",
+    "水流或熔岩流冲落",
+    "跳跃失误或被击退坠落"
+  ],
+  "diagnostics": [
+    "对比事件前后 y 坐标差值",
+    "读取落点方块类型（水/熔岩/实体方块）",
+    "检查是否仍在持续受伤（燃烧/窒息）",
+    "检查下行路线是否有台阶"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：停止下挖，先确认落脚点安全再继续",
+    "L2 局部子任务重规划：改为阶梯式下挖（每 3 格留台阶），或绕行天然通道",
+    "L3 回到最近安全检查点：恢复生命并重新规划下行路线",
+    "L4 升级给大模型：把“禁止垂直下挖”写入挖掘与路径前置条件"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "单格垂直下挖",
+    "在未知落点跳下超过 3 格",
+    "受伤后立即继续下挖",
+    "在水或熔岩上方作业"
+  ],
+  "tags": [
+    "failure-recovery",
+    "environment",
+    "link_playbook:pb_iron_mining_run",
+    "theme:fall"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "success_condition",
+      "value": "12",
+      "context": "生命恢复到 12 以上",
+      "reason": "恢复目标生命值：按 20 HP 上限取 60%，作者自定"
+    },
+    {
+      "field": "trigger",
+      "value": "4",
+      "context": "生命在一次事件中下降 ≥ 4",
+      "reason": "单次伤害事件判定为「坠落」的阈值：作者自定的检测门限，与「Y 坐标在 2 秒内下降 ≥ 4 格」共同构成坠落识别条件"
+    },
+    {
+      "field": "trigger",
+      "value": "4",
+      "context": "Y 坐标在 2 秒内下降 ≥ 4 格",
+      "reason": "坠落识别的位移幅度门限由作者自定，取 4 格，与「生命在一次事件中下降 ≥ 4」共同构成坠落识别条件"
+    },
+    {
+      "field": "trigger",
+      "value": "2",
+      "context": "Y 坐标在 2 秒内下降 ≥ 4 格",
+      "reason": "坠落识别的时间窗由作者自定，取 2 秒——在该时间窗内位移超过 4 格才判为坠落"
+    }
+  ],
+  "evidence_strength": "high"
+}

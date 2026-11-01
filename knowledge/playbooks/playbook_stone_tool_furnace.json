@@ -1,0 +1,107 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "playbook",
+  "id": "playbook_stone_tool_furnace",
+  "title": "手册 · 石制工具与熔炉（生产链建立）",
+  "summary": "覆盖从木器到石制工具、熔炉与燃料储备的生产链。手册的重点是依赖关系与检查点，而不是材料配方表——配方属于事实，会随版本变化，需要以当前版本为准。",
+  "stage": "stone_age",
+  "trigger": {
+    "conditions": [
+      "尚未拥有石制镐或熔炉",
+      "目标产物需要冶炼才能得到",
+      "当前环境允许进行采集与建造作业"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "nearby_tree",
+      "fuel_source",
+      "known_threats",
+      "time_of_day",
+      "equipment_durability",
+      "bot.food"
+    ]
+  },
+  "actions": [
+    "执行开始前检查清单，确认木料、圆石与燃料来源",
+    "按石质工具与熔炉路线策略选定本轮生产链",
+    "在每个节点用背包事实核对产出，不以计划代替结果",
+    "完成后回写状态事实：已获得的工具与熔炉状态、燃料储备与可支撑的冶炼次数、下一件关键产物"
+  ],
+  "preconditions": [
+    "背包与位置状态可读",
+    "已知木料与圆石来源是否可达"
+  ],
+  "success_condition": "石制工具与熔炉均已就位，且燃料储备可支撑已计划次数的冶炼，由背包与容器状态验证",
+  "abort_condition": [
+    "不适用：已有石制工具与可用熔炉",
+    "不适用：当前处于战斗或危险事件中",
+    "木料来源中断且没有替代",
+    "敌对实体反复打断作业"
+  ],
+  "risk_notes": [
+    "不要把配方当成永远不变的数字，版本变化需重新核对",
+    "不要在熔炉未建好前囤积大量矿石",
+    "手册不替代具体工具的执行契约"
+  ],
+  "candidate_routes": [
+    "标准链：木制工具 → 石制工具 → 熔炉 → 燃料储备",
+    "绕行链：先取圆石暂不建熔炉，冶炼延后",
+    "安全链：先补战斗与防护能力，再回头建熔炉"
+  ],
+  "scenario": "石质工具与熔炉：建立可持续的生产链",
+  "checklist": [
+    "木料来源是否仍然可用",
+    "圆石是否已备足或来源明确",
+    "熔炉位置是否安全且便于取材",
+    "燃料来源是否可持续（而不是一次性的）",
+    "工具耐久是否足以完成建造",
+    "是否临近入夜"
+  ],
+  "continue_condition": [
+    "材料在稳定进入背包",
+    "熔炉建成后进度确实在推进",
+    "未出现反复中断"
+  ],
+  "exit_condition": [
+    "石制工具与熔炉就位且燃料充足",
+    "材料来源中断",
+    "连续中断达到失败升级阈值",
+    "天色已晚且作业需要露天完成"
+  ],
+  "failure_entry_points": [
+    "failure_craft_missing_material",
+    "failure_craft_no_recipe",
+    "failure_smelt_output_blocked",
+    "failure_smelt_fuel_starved",
+    "failure_tool_broken_mid_task"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_mineflayer_api_actions",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "api_contract",
+    "project_policy"
+  ],
+  "tags": [
+    "playbook",
+    "stone-age",
+    "link_strategy:stg_stone_tool_route",
+    "link_strategy:stg_equipment_allocation",
+    "canonical_id:pb_stone_tool_furnace"
+  ],
+  "evidence_strength": "high"
+}

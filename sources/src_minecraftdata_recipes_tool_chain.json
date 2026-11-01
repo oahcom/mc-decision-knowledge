@@ -1,0 +1,63 @@
+{
+  "source_id": "src_minecraftdata_recipes_tool_chain",
+  "title": "minecraft-data recipes.json（wooden_pickaxe/stone_pickaxe/iron_pickaxe/iron_sword 配方用量）",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/1.21.4/recipes.json",
+  "platform": "github",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "### wooden_pickaxe\n    {\n      \"inShape\": [\n        [\n          36,\n          36,\n          36\n        ],\n        [\n          null,\n          879,\n          null\n        ],\n        [\n          null,\n          879,\n          null\n        ]\n      ],\n      \"result\": {\n        \"id\": 851,\n        \"count\": 1\n      }\n    }\n\n### stone_pickaxe\n    {\n      \"inShape\": [\n        [\n          35,\n          35,\n          35\n        ],\n        [\n          null,\n          879,\n          null\n        ],\n        [\n          null,\n          879,\n          null\n        ]\n      ],\n      \"result\": {\n        \"id\": 856,\n        \"count\": 1\n      }\n    }\n\n### iron_pickaxe\n    {\n      \"inShape\": [\n        [\n          842,\n          842,\n          842\n        ],\n        [\n          null,\n          879,\n          null\n        ],\n        [\n          null,\n          879,\n          null\n        ]\n      ],\n      \"result\": {\n        \"id\": 866,\n        \"count\": 1\n      }\n    }\n\n### iron_sword\n    {\n      \"inShape\": [\n        [\n          842\n        ],\n        [\n          842\n        ],\n        [\n          879\n        ]\n      ],\n      \"result\": {\n        \"id\": 864,\n        \"count\": 1\n      }\n    }",
+  "evidence_notes": "配方用量 = 材料 id 在合成格中出现的次数；wooden_pickaxe = 3 oak_planks + 2 stick；stone_pickaxe = 3 cobblestone + 2 stick；iron_pickaxe = 3 iron_ingot + 2 stick；iron_sword = 2 iron_ingot + 1 stick。同一份数据中铁剑 2 铁锭 + 1 木棍与 Minecraft Wiki 的 {{Crafting}} 模板逐字一致（互证）。",
+  "related_game_versions": [
+    "Java Edition 1.21.4"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 5,
+    "reproducibility": 5
+  },
+  "notes": "摘录为 recipes.json 原文切片（逐行），非加工后的结论。同一 id 重复出现即为该材料的用量，可手工数出。",
+  "derived_values": [
+    {
+      "value": "3",
+      "basis": "wooden_pickaxe 的 inShape 合成格中材料 oak_planks 的 id 出现 3 次，即该配方需 3 个 oak_planks"
+    },
+    {
+      "value": "2",
+      "basis": "wooden_pickaxe 的 inShape 合成格中材料 stick 的 id 出现 2 次，即该配方需 2 个 stick"
+    },
+    {
+      "value": "3",
+      "basis": "stone_pickaxe 的 inShape 合成格中材料 cobblestone 的 id 出现 3 次，即该配方需 3 个 cobblestone"
+    },
+    {
+      "value": "2",
+      "basis": "stone_pickaxe 的 inShape 合成格中材料 stick 的 id 出现 2 次，即该配方需 2 个 stick"
+    },
+    {
+      "value": "3",
+      "basis": "iron_pickaxe 的 inShape 合成格中材料 iron_ingot 的 id 出现 3 次，即该配方需 3 个 iron_ingot"
+    },
+    {
+      "value": "2",
+      "basis": "iron_pickaxe 的 inShape 合成格中材料 stick 的 id 出现 2 次，即该配方需 2 个 stick"
+    },
+    {
+      "value": "2",
+      "basis": "iron_sword 的 inShape 合成格中材料 iron_ingot 的 id 出现 2 次，即该配方需 2 个 iron_ingot"
+    },
+    {
+      "value": "1",
+      "basis": "iron_sword 的 inShape 合成格中材料 stick 的 id 出现 1 次，即该配方需 1 个 stick"
+    }
+  ]
+}

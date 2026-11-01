@@ -1,0 +1,30 @@
+{
+  "source_id": "src_baritone_features_pathing",
+  "title": "Baritone FEATURES.md — fall limits, dangerous block avoidance, segmented pathing",
+  "url": "https://raw.githubusercontent.com/cabaletta/baritone/master/FEATURES.md",
+  "platform": "GitHub",
+  "source_type": "official_document",
+  "reliability": "A",
+  "license": "LGPL-3.0-or-later",
+  "content_excerpt": "Baritone falls up to 3 blocks onto solid ground (configurable) and farther with a water bucket. It knows not to walk through fire or on magma, not to corner over lava, not to break blocks touching a liquid, and it prices the break cost of blocks with falling blocks on top. Path calculation can end three ways: a full path, running out of time, or reaching render distance; when the best node sits at the loaded-chunk edge more than 50 times, calculation exits early.",
+  "evidence_notes": "证明“路径失败”常是分段规划的预期行为：渲染距离内找不到完整路径时应先靠近再重算，而不是判定目标不可达。危险方块规避条目支撑岩浆/火/液体相邻方块的禁止动作。",
+  "related_game_versions": [
+    "Baritone 支持的 Java Edition 版本",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 4,
+    "version_clarity": 3,
+    "reproducibility": 4
+  },
+  "notes": "文档称水桶可坠落更远，设置默认 maxFallHeightBucket=20，二者不一致时以实现设置为准。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

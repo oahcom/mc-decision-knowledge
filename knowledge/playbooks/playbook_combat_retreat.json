@@ -1,0 +1,112 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "playbook",
+  "id": "playbook_combat_retreat",
+  "title": "手册 · 战斗与撤退（遇敌处置）",
+  "summary": "覆盖遇敌时的处置流程：判断能否打、选择交战或规避、撤退后收尾。撤退阈值由程序在触发时立即执行，不等待模型决策——手册只负责给出判断依据。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "敌对实体进入可交战距离",
+      "当前作业被打断",
+      "尚未决定是否投入战斗"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "armor_durability",
+      "weapon_durability",
+      "hostile_count",
+      "escape_route_exists",
+      "known_threats",
+      "bot.position",
+      "damage_events"
+    ]
+  },
+  "actions": [
+    "执行开始前检查：敌对实体数量与距离、退路、装备耐久、位置是否邻近危险方块",
+    "按遇敌处置策略选择交战、规避、绕行或撤退",
+    "撤退时优先解除生命与空间威胁，再考虑掉落物",
+    "完成后回写状态事实：战斗结果与消耗、剩余装备耐久、掉落物归属、敌人是否仍在追击"
+  ],
+  "preconditions": [
+    "生命与装备状态可读",
+    "已知退路是否存在"
+  ],
+  "success_condition": "敌对实体不再构成威胁或已安全脱离接触，状态与掉落物归属清晰，由实体列表与背包验证",
+  "abort_condition": [
+    "不适用：当前没有敌对实体威胁",
+    "触发撤退阈值",
+    "被多个敌对实体包围且无退路",
+    "战斗位置邻近危险方块"
+  ],
+  "risk_notes": [
+    "不要在退路被封的位置开战",
+    "不要在战斗中进食或采集",
+    "撤退优先级高于战利品",
+    "手册不替代危险的即时反应"
+  ],
+  "candidate_routes": [
+    "主动交战（状态占优时）",
+    "规避：放弃掉落保住状态",
+    "绕行：保住进度，路径成本增加",
+    "撤退到安全点：保护状态，放弃当前进度"
+  ],
+  "scenario": "战斗与撤退：遇敌时的处置与收尾",
+  "checklist": [
+    "敌对实体的数量、距离与种类",
+    "自身生命与装备耐久是否够用",
+    "退路是否存在且未被封堵",
+    "当前位置是否邻近危险方块",
+    "背包是否有空位拾取掉落",
+    "本次战斗是否必须打（能否规避）"
+  ],
+  "continue_condition": [
+    "威胁正在被有效削弱或已解除",
+    "未触发撤退阈值",
+    "位置仍可安全脱离"
+  ],
+  "exit_condition": [
+    "敌对实体死亡或已脱离接触",
+    "触发撤退阈值",
+    "位置变得不安全",
+    "装备耐久不足以继续交战"
+  ],
+  "failure_entry_points": [
+    "failure_combat_interrupt",
+    "failure_fall_interrupt",
+    "failure_lava_hazard",
+    "failure_tool_durability_low",
+    "failure_food_insufficient"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_mineflayer_api_actions",
+    "src_mineflayer_api_events",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "api_contract",
+    "project_policy"
+  ],
+  "tags": [
+    "playbook",
+    "combat",
+    "link_strategy:stg_encounter_engage_or_avoid",
+    "link_strategy:stg_equipment_allocation",
+    "canonical_id:pb_combat_retreat"
+  ],
+  "evidence_strength": "high"
+}

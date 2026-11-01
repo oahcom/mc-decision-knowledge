@@ -1,0 +1,138 @@
+{
+  "id": "failure_state_desync_inventory",
+  "knowledge_type": "failure_recovery",
+  "title": "状态不同步：以为已获得但背包未变化",
+  "summary": "协议层最常见的伪成功：动作已发出、提示已出现，但服务端权威状态没有变化。唯一可靠的判定是间隔读取背包与实体集合，而不是相信返回值或计划记录。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "计划记录的资源增量与背包实测不一致",
+      "两次读取（间隔 ≥2 tick）结果不同"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "bot.currentWindow",
+      "bot.entities",
+      "block_at_target",
+      "last_window_update"
+    ]
+  },
+  "actions": [
+    "关闭所有容器窗口后重读背包",
+    "检查 bot.currentWindow 与窗口类型",
+    "检查掉落物实体是否存在",
+    "按 L1→L4 以服务端事实重建状态"
+  ],
+  "preconditions": [
+    "已排除读取了错误窗口（容器窗口打开时会读到不同槽位）"
+  ],
+  "success_condition": "两次间隔读取一致，且实际数量与目标差额为 0",
+  "abort_condition": [
+    "恢复达到 escalate_after",
+    "背包持续抖动无法稳定读取"
+  ],
+  "risk_notes": [
+    "用预测值当作已获得会让后续合成与交付连锁失败",
+    "对同一槽位反复点击可能触发服务端异常行为"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_protocol",
+    "src_internal_design",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "error_codes",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "计划记录已获得 N 个物品，但背包聚合计数未增加",
+    "间隔 ≥2 tick 的两次背包读取结果不一致",
+    "方块已被破坏但客户端仍显示存在",
+    "合成或冶炼后槽位内容与预期不符"
+  ],
+  "possible_causes": [
+    "客户端预测与服务端权威不一致（拾取/合成/熔炼需服务端窗口确认）",
+    "读取了错误窗口（容器或工作台窗口打开时槽位索引不同）",
+    "掉落物尚未拾取，或已被其它实体拾取",
+    "服务端回滚（反作弊、延迟补偿）",
+    "物品增量被耐久或燃料消耗抵消"
+  ],
+  "diagnostics": [
+    "关闭窗口后重读背包并做槽位 diff",
+    "检查 bot.currentWindow 是否为 null 及其类型",
+    "检查 bot.entities 中是否存在对应掉落物",
+    "检查最近事件：diggingCompleted、forcedMove、窗口更新",
+    "对比两次读取的差值是否单调"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：间隔 ≥2 tick 重读 1 次，以服务端事实覆盖本地记录",
+    "L2 局部子任务重规划：关闭并重开窗口，或移动到掉落物 1 格内重新拾取",
+    "L3 回到最近安全检查点：以实测背包作为新状态版本，重算剩余目标",
+    "L4 升级给大模型：按实际库存重规划，必要时补采"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "用预测数量当作已获得",
+    "背包未确认就继续合成或交付",
+    "对同一槽位反复点击",
+    "用“再挖一个”掩盖状态不同步"
+  ],
+  "tags": [
+    "failure-recovery",
+    "state-sync",
+    "link_playbook:pb_iron_mining_run",
+    "theme:state-sync"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "2",
+      "context": "两次读取（间隔 ≥2 tick）结果不同",
+      "reason": "重读间隔：作者自定（2 tick 便于等待一帧服务端状态更新）"
+    },
+    {
+      "field": "symptoms",
+      "value": "2",
+      "context": "间隔 ≥2 tick 的两次背包读取结果不一致",
+      "reason": "重读间隔由作者自定，2 tick 便于等待一帧服务端状态更新"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "2",
+      "context": "间隔 ≥2 tick 重读 1 次",
+      "reason": "重读间隔由作者自定，2 tick 便于等待一帧服务端状态更新"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "1",
+      "context": "重读 1 次",
+      "reason": "重读次数上限：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "1",
+      "context": "移动到掉落物 1 格内重新拾取",
+      "reason": "拾取接近距离：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "0",
+      "context": "差额为 0",
+      "reason": "「读取一致」的相对判据：实际数量与目标差额为 0 即完全吻合，是相对量而非外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

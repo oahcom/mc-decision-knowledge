@@ -1,0 +1,23 @@
+{
+  "source_id": "src_paper_steve1_failure_analysis",
+  "title": "STEVE-1: A Generative Model for Text-to-Behavior in Minecraft — §5 与 Appendix B（失败分析）",
+  "url": "https://arxiv.org/html/2306.00937v3",
+  "platform": "arXiv",
+  "source_type": "research_paper",
+  "reliability": "A",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "Future Work B.1 Goal Misgeneralization One of the most common mistakes that Steve-1 makes during evaluation is to overgeneralize. For instance, if we prompt Steve-1 with a video of someone punching a cow, it may simply run to the nearest animal and punch that animal instead. This is related to the concept of goal misgeneralization [ 31 ] . Generalization can be helpful when the task we assign the agent is impossible to achieve from the current state and the agent instead performs a closely related action, but harmful when the task is achievable. We note two things: first, we believe the powerful generalization ability of Steve-1 probably comes from the MineCLIP embeddings and it especially improves the ability of Steve-1 to follow visual instructions when the exact items or blocks nearby are not available in the current environment, which is an extremely common scenario. Second, we notice that the tendency of the agent to misgeneralize decreases with scale.",
+  "evidence_notes": "失败怎么办、什么时候停止：给出 goal misgeneralization 的归因（提示为打牛时去打了最近的动物）与规模缓解效应；并给出后见目标（hindsight goal）的视野有限、超过该范围即属分布外的边界。",
+  "related_game_versions": [
+    "MineRL 环境 / VPT 预训练"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：Appendix B.1 Goal Misgeneralization / B.4 Challenges in Evaluating Steve-1 / B.5 Towards Improved Long-Horizon Performance"
+}

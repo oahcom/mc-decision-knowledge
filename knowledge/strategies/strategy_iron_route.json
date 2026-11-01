@@ -1,0 +1,87 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_iron_route",
+  "title": "铁矿获取路线：洞穴、分支挖矿与替代来源",
+  "summary": "铁是本里程碑的收敛点。三条路线在收益速度、可控性与风险之间互有优劣，本策略按当前装备、补给与探索能力选择，而不是把洞穴探索当成唯一答案。",
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "目标已进入需要铁制工具或铁锭的阶段",
+      "已具备下矿所需的最低装备与补给",
+      "已知可用的燃料与熔炼链状态"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "known_threats",
+      "visited_chunks",
+      "fuel_source",
+      "target_resource_count"
+    ]
+  },
+  "actions": [
+    "核对熔炼链是否就绪（熔炉 + 燃料 + 产出可收取）",
+    "核对下矿前置条件（工具、退路、补给）",
+    "在候选路线之间按收益速度与可控性取舍",
+    "出发前记录选择理由，失败时据此重规划而不是换随机方向"
+  ],
+  "preconditions": [
+    "熔炉与燃料链可用，或已明确放弃本轮冶炼",
+    "具备进入所选路线环境的基本工具",
+    "已知返程路径或已接受返程成本"
+  ],
+  "success_condition": "铁矿石数量达到计划需求且已入包，或已明确判定该路线不产出并完成路线切换，结论由背包计数与搜索记录验证",
+  "abort_condition": [
+    "连续失败次数达到该失败的升级阈值",
+    "补给或装备不足以支撑返程",
+    "出现无法规避的危险（岩浆、洞穴敌对实体聚集）"
+  ],
+  "risk_notes": [
+    "不要把单一路线写成唯一答案——每次搜索的收益结构都不同",
+    "不要在没有熔炼链的情况下先下矿挖一堆矿石",
+    "不要在返程成本已经超过收益时继续深入"
+  ],
+  "candidate_routes": [
+    "洞穴探索：单位时间收益可能最高，但风险与中断概率最高",
+    "分支挖矿：路径可控、可随时回撤，发现速度较慢",
+    "战利品箱与村庄等替代来源：低风险低收益，但可与其他路线并行",
+    "先补齐熔炼链再下矿：进度慢，但避免矿石滞留"
+  ],
+  "decision_tradeoffs": [
+    "洞穴探索：收益上限高，回撤成本与风险同样高",
+    "分支挖矿：可控性最好，期望收益最低",
+    "替代来源：风险最低，但难以单靠它完成铁的指标",
+    "先补熔炼链：牺牲速度换取资源可用性"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "iron-age",
+    "link_playbook:pb_iron_mining_run",
+    "canonical_id:stg_iron_route"
+  ],
+  "evidence_strength": "high"
+}

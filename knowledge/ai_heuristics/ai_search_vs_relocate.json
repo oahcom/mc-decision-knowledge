@@ -1,0 +1,77 @@
+{
+  "id": "ai_search_vs_relocate",
+  "knowledge_type": "ai_heuristic",
+  "title": "继续搜索与更换区域的判断：用有效进度而非时长决定",
+  "summary": "模型不能凭已投入的时间决定继续搜索，而要看有效进度：已探索区块是否去重、目标资源命中是否增长、中断是否吞噬了有效时间。无新信息时继续原地搜索只会累积时间成本。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "目标资源搜索未达到需求",
+      "正在决定继续搜索还是更换区域"
+    ],
+    "state_features": [
+      "target_resource_count",
+      "visited_chunks",
+      "search_ticks",
+      "interrupt_count",
+      "tool_state",
+      "inventory_free_slots"
+    ]
+  },
+  "actions": [
+    "统计窗口内有效搜索时间与中断次数",
+    "判断已访问区块是否仍带来新覆盖",
+    "根据有效进度决定继续搜索或更换区域"
+  ],
+  "preconditions": [
+    "资源计数来自背包事实而非预测",
+    "已访问区块集合可去重统计"
+  ],
+  "success_condition": "基于有效进度（新区域覆盖与命中增长）而非名义时长，输出继续或更换区域的决策",
+  "abort_condition": [
+    "已访问区块去重率过高且命中为零",
+    "背包满或工具失效导致采集不可能",
+    "出现更高优先级危险"
+  ],
+  "risk_notes": [
+    "把名义搜索时间当有效时间会误判进展",
+    "在原地重复搜索等于用时间换安慰，不产生新证据"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "用有效搜索进度（新区域覆盖与命中增长）而非已投入时间决定继续搜索还是更换区域。",
+  "alternative_comparison": [
+    "继续搜索：若仍覆盖新区域且有命中趋势则合理，成本可控",
+    "更换区域：牺牲已积累的局部熟悉度，但避免在低产区空耗时间"
+  ],
+  "anti_patterns": [
+    "用搜索时长当作进展证据",
+    "忽略中断对有效时间的吞噬",
+    "在已访问区域重复搜索却期待新结果"
+  ],
+  "model_guidance": "先换算有效搜索时间并去重已访问区块，命中零增长且无新覆盖时果断更换区域；命中增长或仍有新覆盖时继续，并设定下一次评估点。",
+  "tags": [
+    "ai-decision",
+    "search",
+    "route",
+    "link_playbook:pb_iron_mining_run",
+    "theme:search"
+  ],
+  "evidence_strength": "medium"
+}

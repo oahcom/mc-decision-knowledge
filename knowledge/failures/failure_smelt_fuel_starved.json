@@ -1,0 +1,129 @@
+{
+  "id": "failure_smelt_fuel_starved",
+  "knowledge_type": "failure_recovery",
+  "title": "熔炉燃料耗尽导致冶炼中断",
+  "summary": "燃料不足的表现是进度停滞甚至回退，而界面仍显示熔炉在工作。诊断要以 fuel 与输入消耗双信号判断，恢复必须一次补足缺口而不是边烧边补。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "furnace.fuel 归零或接近 0",
+      "输入数量停止下降，产物少于期望"
+    ],
+    "state_features": [
+      "furnace.fuel",
+      "furnace.fuelItem",
+      "furnace.progress",
+      "input_count",
+      "output_count"
+    ]
+  },
+  "actions": [
+    "读取 fuel 与 fuelItem 剩余",
+    "按单件燃料消耗重算缺口",
+    "一次补足燃料并回读确认",
+    "按 L1→L4 处理"
+  ],
+  "preconditions": [
+    "熔炉窗口处于打开状态",
+    "输入仍为可冶炼物"
+  ],
+  "success_condition": "fuel > 0 且进度持续推进，产物数量与期望值的差额为 0",
+  "abort_condition": [
+    "无可用燃料",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "进度回退不是显示问题，而是燃料断供的真实结果",
+    "边烧边补会导致反复中断与时间浪费"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "furnace.fuel 为 0，进度停止推进",
+    "输入数量不再减少",
+    "产物数量少于投料数量对应值"
+  ],
+  "possible_causes": [
+    "燃料数量未按单件消耗 × 投料量估算",
+    "燃料类型不匹配（不可燃物）",
+    "燃料与输入混放，实际未进入燃料槽",
+    "燃料被其它流程取走"
+  ],
+  "diagnostics": [
+    "判别：fuel 仍大于 0 但输出槽已满时，转 failure_smelt_output_blocked",
+    "读取 fuel 与 fuelItem 数量",
+    "按单件燃料可处理件数换算所需燃料（煤的处理件数需按版本回放核验）",
+    "确认 inputItem 与 fuelItem 槽位正确",
+    "检查熔炉 update 事件是否仍在触发"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：按缺口 ×1.5 一次性追加燃料并回读",
+    "L2 局部子任务重规划：改用高热值燃料，或把批量拆小",
+    "L3 回到最近安全检查点：回基地集中冶炼，避免野外长烧",
+    "L4 升级给大模型：把燃料采集纳入冶炼任务的配额"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "燃料耗尽后继续空等",
+    "把不可燃物投入燃料槽",
+    "把进度回退当成客户端显示问题",
+    "在燃料不确定时投入大批矿石"
+  ],
+  "tags": [
+    "failure-recovery",
+    "smelting",
+    "link_playbook:pb_iron_mining_run",
+    "theme:process"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "recovery_steps",
+      "value": "1.5",
+      "context": "按缺口 ×1.5 一次性追加燃料",
+      "reason": "燃料追加的冗余系数：作者自定"
+    },
+    {
+      "field": "trigger",
+      "value": "0",
+      "context": "furnace.fuel 归零或接近 0",
+      "reason": "「燃料耗尽」的相对判据：fuel 归零即燃料烧完，由熔炉状态自洽推出，不是外部事实"
+    },
+    {
+      "field": "success_condition",
+      "value": "0",
+      "context": "差额为 0",
+      "reason": "「产物与期望一致」的相对判据：差额为 0 即完全吻合，是相对量"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "fuel 仍大于 0",
+      "reason": "fuel 未归零即不属燃料耗尽：这是区分「燃料耗尽」与「输出槽满」的相对判据，是相对量而非外部事实"
+    },
+    {
+      "field": "symptoms",
+      "value": "0",
+      "context": "furnace.fuel 为 0",
+      "reason": "fuel 归零是燃料耗尽的判据：由熔炉当前状态自洽推出，是相对量而非外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

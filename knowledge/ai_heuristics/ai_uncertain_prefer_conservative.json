@@ -1,0 +1,74 @@
+{
+  "id": "ai_uncertain_prefer_conservative",
+  "knowledge_type": "ai_heuristic",
+  "title": "不确定时选择保守计划：可解释的稳健优于不可逆的冒进",
+  "summary": "当状态不完整、风险无法评估或候选路线收益高度不确定时，模型应选择可逆、低损失的保守计划，而不是赌一个高收益但不可逆的动作。保守计划能保留退路并留出纠偏空间。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "状态不完整或风险无法评估",
+      "在多个候选计划间选择"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "known_threats",
+      "uncertainty_level",
+      "shelter_available"
+    ]
+  },
+  "actions": [
+    "评估当前不确定性与各候选的可逆性",
+    "偏向可逆、低损失、保留退路的计划",
+    "显式声明不确定性，不把推测写成事实"
+  ],
+  "preconditions": [
+    "候选计划的可逆性可评估",
+    "运行时能提供不确定性信号"
+  ],
+  "success_condition": "在不完全信息下选择可逆、低损失的保守计划，并显式标注不确定项",
+  "abort_condition": [
+    "保守计划也无法保证安全基线",
+    "出现紧急危险需要立即反应"
+  ],
+  "risk_notes": [
+    "在信息不足时赌不可逆高收益动作，损失无法挽回",
+    "把不确定状态默认为乐观值是危险的"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_mindcraft_project",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "状态不完整或风险无法评估时，选择可逆、低损失、保留退路的保守计划。",
+  "alternative_comparison": [
+    "冒进高收益计划：潜在收益高，但不可逆且信息不足时损失无法挽回",
+    "保守计划：收益偏低，但可逆、低损失、留退路，便于纠偏"
+  ],
+  "anti_patterns": [
+    "把不确定状态默认为乐观值后赌高收益动作",
+    "为追求效率而忽略可逆性",
+    "不标注不确定项，把推测写成事实"
+  ],
+  "model_guidance": "评估不确定性与候选可逆性，信息不足时选可逆、低损失的保守计划，并显式写出不确定项和重规划条件；只在风险可评估且可逆时考虑冒进。",
+  "tags": [
+    "ai-decision",
+    "meta",
+    "safety",
+    "link_strategy:stg_explore_vs_resupply",
+    "theme:meta"
+  ],
+  "evidence_strength": "medium"
+}

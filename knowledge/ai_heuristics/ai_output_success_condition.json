@@ -1,0 +1,74 @@
+{
+  "id": "ai_output_success_condition",
+  "knowledge_type": "ai_heuristic",
+  "title": "输出可验证的成功条件，而非口头描述",
+  "summary": "计划必须用可被游戏事实即时判定的成功条件收尾，而不是“成功拿到资源”这类口头描述。成功条件可验证，运行时才能区分达成、失败与未完成，模型也才能据此决定推进还是重规划。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "正在为计划或子任务定义完成标准",
+      "成功条件含糊或不可验证"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "target_resource_count",
+      "step_progress",
+      "runtime.state_version"
+    ]
+  },
+  "actions": [
+    "把成功条件写成可度量的状态判据",
+    "用背包事实或区块事实作为验证依据",
+    "为每个子目标声明即时可判定的完成条件"
+  ],
+  "preconditions": [
+    "目标状态可通过协议层读取",
+    "验证依据来自事实而非预测"
+  ],
+  "success_condition": "每个计划与子目标都带可被运行时即时验证的成功条件，能区分达成、失败与未完成",
+  "abort_condition": [
+    "验证依据持续不可得",
+    "成功条件与目标本身脱节"
+  ],
+  "risk_notes": [
+    "口头成功声明不可被验证，会掩盖实际失败",
+    "用“接近完成”当成功条件会让运行时无法判定"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minedojo_success_criteria",
+    "src_voyager_critic_self_verification",
+    "src_minedojo_task_specs_spectrum",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "expert_heuristic",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "计划与子目标必须输出可被游戏事实即时验证的成功条件，不接受口头成功描述。",
+  "alternative_comparison": [
+    "口头描述成功：表达快，但运行时无法判定，失败会被掩盖",
+    "可验证成功条件：多一分定义成本，但运行时能准确判定并驱动推进或重规划"
+  ],
+  "anti_patterns": [
+    "用“成功拿到”“顺利完成”等无法验证的描述当成功条件",
+    "把工具的口头返回当成状态已变更的事实",
+    "成功条件与目标脱节，验证通过但目标未达成"
+  ],
+  "model_guidance": "为每个计划和子目标写一个可度量、可被背包或区块事实即时判定的成功条件；运行时据此判定达成/失败/未完成，模型据判定决定推进或重规划。",
+  "tags": [
+    "ai-decision",
+    "planning",
+    "verification",
+    "link_strategy:stg_opening_priority",
+    "theme:planning"
+  ],
+  "evidence_strength": "medium"
+}

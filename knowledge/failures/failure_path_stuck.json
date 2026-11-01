@@ -1,0 +1,173 @@
+{
+  "id": "failure_path_stuck",
+  "knowledge_type": "failure_recovery",
+  "title": "路径卡死或原地抖动",
+  "summary": "卡死的判据是“位移不增长”，不是“还在动”。pathfinder 在单节点超过 3500 ms 时会以 stuck 重置，因此周期性 stuck 说明碰撞体或服务端纠正与寻路假设不一致。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "5 秒内净位移 < 0.5 格但 isMoving() 为 true",
+      "path_reset 出现 stuck"
+    ],
+    "state_features": [
+      "bot.entity.position",
+      "bot.entity.velocity",
+      "forced_move_count",
+      "block_at_feet",
+      "path_reset_reasons"
+    ]
+  },
+  "actions": [
+    "统计 5 秒位移与 forcedMove 次数",
+    "读取卡住位置周围方块与脚下方块类型",
+    "检查 path_reset 序列是否周期性出现 stuck",
+    "按 L1→L4 处理，优先脱离卡点再重规划"
+  ],
+  "preconditions": [
+    "已排除客户端卡顿（服务器仍在正常响应其它操作）"
+  ],
+  "success_condition": "连续 20 tick 净位移 > 0.1 格（确认已脱离卡点），并按新路径到达目标容差内",
+  "abort_condition": [
+    "恢复达到 escalate_after",
+    "卡点位于熔岩或水中且无法脱离",
+    "生命 < 10（策略阈值，可调）"
+  ],
+  "risk_notes": [
+    "在卡住时垂直下挖可能直接坠入洞穴或熔岩",
+    "持续按住前进超过 5 秒不会自愈，只会放大风险"
+  ],
+  "source_refs": [
+    "src_pathfinder_reset_reasons",
+    "src_pathfinder_goto_errors",
+    "src_mineflayer_api_events",
+    "src_baritone_features_pathing",
+    "src_issue_pathfinder_stuck_stairs",
+    "src_issue_pathfinder_parkour_physics",
+    "src_minecraft_wiki_version",
+    "src_baritone_project"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "error_codes",
+    "default_values",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "path_reset 的 reason 为 stuck",
+    "isMoving() 为 true 但坐标几乎不变",
+    "5 秒内净位移小于 0.5 格",
+    "周期性出现同一位置的 stuck 重置"
+  ],
+  "possible_causes": [
+    "碰撞体与寻路假设不一致（台阶朝向、栅栏、活板门、蛛网）：寻路认为可走，实际走不上去",
+    "服务端回拉（forcedMove）不断重置位置",
+    "特殊移动（水中、藤蔓、梯子）在特定地形下与 movements 的模型不符",
+    "目标点在墙内或 1 格缝隙，bot 反复挤压",
+    "客户端物理与服务端不同步（高延迟或丢包）",
+    "物理模拟与寻路评分不一致：判定可达的跳跃实际跳不过去"
+  ],
+  "diagnostics": [
+    "判别：path_reset 的 reason 以 stuck 为主按本卡；以 block_updated / chunk_loaded / goal_moved 为主转 failure_path_thrash_reset",
+    "统计 5 秒窗口内的位移向量与 forcedMove 次数",
+    "读取脚下方块与周围 3×3×3 方块",
+    "查看 path_reset 时间序列中 stuck 的间隔",
+    "对比 velocity 与 position 增量是否矛盾"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：跳跃或侧移 1 格后重发同一目标，只允许 1 次",
+    "L2 局部子任务重规划：改走替代路线（绕行 8 格），或先破坏/垫高卡点方块",
+    "L3 回到最近安全检查点：setGoal(null) 后回退到上一个可达节点重新规划",
+    "L4 升级给大模型：标记该走廊为高风险，改路线或改目标"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "原地反复重发 goto",
+    "持续按住前进键超过 5 秒",
+    "在卡住位置垂直下挖",
+    "忽略 forcedMove 继续推进"
+  ],
+  "tags": [
+    "failure-recovery",
+    "path",
+    "link_playbook:pb_iron_mining_run",
+    "theme:path"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "5",
+      "context": "5 秒内净位移",
+      "reason": "卡住判定的观察窗口：作者自定"
+    },
+    {
+      "field": "trigger",
+      "value": "0.5",
+      "context": "净位移 < 0.5 格",
+      "reason": "卡住判定的位移阈值：作者自定"
+    },
+    {
+      "field": "actions",
+      "value": "5",
+      "context": "统计 5 秒位移",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "success_condition",
+      "value": "20",
+      "context": "连续 20 tick 净位移",
+      "reason": "确认已脱离卡点的观察窗口：作者自定（20 tick 约合 1 秒）"
+    },
+    {
+      "field": "success_condition",
+      "value": "0.1",
+      "context": "净位移 > 0.1 格",
+      "reason": "确认已脱离卡点的位移阈值：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "10",
+      "context": "生命 < 10",
+      "reason": "放弃重试的生命阈值：作者自定"
+    },
+    {
+      "field": "risk_notes",
+      "value": "5",
+      "context": "持续按住前进超过 5 秒",
+      "reason": "无效操作的时间上限：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "5",
+      "context": "统计 5 秒窗口内的位移向量",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "symptoms",
+      "value": "5",
+      "context": "5 秒内净位移",
+      "reason": "卡住判定的观察窗口由作者自定，取 5 秒"
+    },
+    {
+      "field": "symptoms",
+      "value": "0.5",
+      "context": "净位移小于 0.5 格",
+      "reason": "卡住判定的净位移阈值由作者自定，取 0.5 格"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "8",
+      "context": "绕行 8 格",
+      "reason": "替代路线的绕行偏移距离：作者自定"
+    }
+  ],
+  "evidence_strength": "high"
+}

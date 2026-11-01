@@ -1,0 +1,30 @@
+{
+  "source_id": "src_mineflayer_api_actions",
+  "title": "Mineflayer docs/api.md — dig, craft, furnace and consume contracts",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/mineflayer/master/docs/api.md",
+  "platform": "GitHub",
+  "source_type": "official_document",
+  "reliability": "A",
+  "license": "MIT",
+  "content_excerpt": "bot.dig(block, [forceLook], [digFace]) returns a Promise with void as its argument when the block is broken or you are interrupted. Once you begin digging into a block you may not dig any other blocks until the block has been broken or you call bot.stopDigging(). If you call bot.dig twice before the first dig is finished, you will get a fatal 'diggingAborted' error. bot.craft(recipe, count, craftingTable) resolves when the crafting is complete and your inventory is updated. bot.recipesFor(itemType, metadata, minResultCount, craftingTable) returns the recipes you could use with your current inventory. bot.openFurnace returns a Furnace exposing takeInput/takeFuel/takeOutput, putInput/putFuel, inputItem/fuelItem/outputItem and fuel in [0,1]. bot.consume() eats or drinks the currently held item.",
+  "evidence_notes": "官方 API 文档逐条给出挖掘/合成/熔炉/进食的返回语义与并发约束，是 tool_guide 前置条件、后置状态与验证方式的直接依据。注意 dig 的 Promise 在“被中断”时同样返回，因此成功与否必须由方块状态与背包事实判定，不能只看 Promise resolve。",
+  "related_game_versions": [
+    "Java Edition 1.8 及以后（mineflayer 支持范围）",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 3,
+    "reproducibility": 5
+  },
+  "notes": "文档描述的是库行为，非某个具体服务端实现；26.3 上需回放核验后再提升置信度。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

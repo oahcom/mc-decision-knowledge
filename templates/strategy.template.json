@@ -1,0 +1,34 @@
+{
+  "id": "strategy_stage_route_selection",
+  "knowledge_type": "strategy",
+  "title": "阶段路线选择示例",
+  "summary": "在指定阶段根据装备、补给、风险和时间选择候选路线，而不是机械执行固定流程。此文件为模板，不可作为正式知识使用。",
+  "game_edition": "java",
+  "game_versions": ["填写适用版本，如 26.3，或 version-independent"],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": ["当前阶段目标已经明确", "存在至少两条可行路线"],
+    "state_features": ["inventory", "health", "food", "equipment", "known_exploration_area"]
+  },
+  "actions": [
+    "比较候选路线的前置条件、收益、风险和退出条件",
+    "选择当前状态下失败成本最低的路线",
+    "记录选择原因，便于失败后重规划"
+  ],
+  "preconditions": ["基础状态已由程序确认", "候选路线均有来源证据"],
+  "success_condition": "目标物品或装备达到计划要求，并由游戏状态验证",
+  "abort_condition": ["补给不足", "路线连续失败", "风险状态超过策略阈值"],
+  "risk_notes": ["避免把单一路线写成唯一答案", "区分事实和经验判断"],
+  "source_refs": ["src_example_official"],
+  "evidence_type": "official_document",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T00:00:00+08:00",
+  "updated_at": "2026-11-01T00:00:00+08:00",
+  "candidate_routes": ["洞穴探索", "分支挖矿", "其他有证据的替代路线"],
+  "decision_tradeoffs": [
+    "洞穴探索：前期收益快，但风险和中断概率更高",
+    "分支挖矿：路径可控，但资源发现速度可能更慢"
+  ],
+  "tags": ["template", "route-selection"]
+}

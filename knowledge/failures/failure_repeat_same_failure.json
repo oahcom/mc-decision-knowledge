@@ -1,0 +1,107 @@
+{
+  "id": "failure_repeat_same_failure",
+  "knowledge_type": "failure_recovery",
+  "title": "相同失败在同一状态下重复出现",
+  "summary": "重复失败意味着恢复策略没有产生新信息。判据是同一 failure_code 在同一 state_version 下出现三次以上，且每次尝试的参数完全相同。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "同一 failure_code 在同一 state_version 下出现 ≥3 次",
+      "相邻两次尝试参数完全相同"
+    ],
+    "state_features": [
+      "failure_code",
+      "attempt_count",
+      "last_attempt_params",
+      "state_version",
+      "target_signature"
+    ]
+  },
+  "actions": [
+    "按 failure_code 与目标签名聚合失败频次",
+    "检查每次尝试是否改变了至少一个参数",
+    "判断是否已产生新证据",
+    "按 L1→L4 处理并写入负知识"
+  ],
+  "preconditions": [
+    "失败计数已持久化（跨计划、跨重启）"
+  ],
+  "success_condition": "同一 failure_code 在 10 分钟内不再复现，且产生了新状态或新路线",
+  "abort_condition": [
+    "计数无法持久化",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "清除失败计数以“重新开始”会让系统重新踏入同一坑",
+    "把重复失败归因为运气会掩盖不可达事实"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_pathfinder_reset_reasons",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "同一 failure_code 在同一 state_version 下反复出现",
+    "每次恢复动作序列完全相同",
+    "尝试次数增加但没有任何新证据产生"
+  ],
+  "possible_causes": [
+    "恢复策略未改变参数或目标",
+    "只处理症状，未识别根因",
+    "环境持续不变，目标确实不可达",
+    "重试计数未持久化，每次都被重置"
+  ],
+  "diagnostics": [
+    "按 (failure_code, target_signature, state_version, position_bucket) 聚合频次",
+    "对比相邻两次尝试的参数差异",
+    "检查是否产生新证据（新区域、新工具、新路线）",
+    "检查失败计数是否被重置"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：禁止原样重试，必须改变一个维度（目标点、工具、路线或时间）",
+    "L2 局部子任务重规划：换子目标或换资源点，保留已得资源",
+    "L3 回到最近安全检查点：放弃当前子目标，标记为阻塞",
+    "L4 升级给大模型：把该路线标记为 blocked，写入负知识并切换策略"
+  ],
+  "escalate_after": 3,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "无参数变化的循环重试",
+    "把超时当作“再等等”",
+    "对同一目标发起第 4 次相同尝试",
+    "清除失败计数以重新开始"
+  ],
+  "tags": [
+    "failure-recovery",
+    "planning",
+    "link_strategy:stg_opening_priority",
+    "theme:meta"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "3",
+      "context": "出现 ≥3 次",
+      "reason": "判定为重复失败的次数阈值：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "10",
+      "context": "10 分钟内不再复现",
+      "reason": "静默期长度：作者自定"
+    }
+  ],
+  "evidence_strength": "medium"
+}

@@ -1,0 +1,83 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_premining_safety_baseline",
+  "title": "下矿前的安全基线",
+  "summary": "安全基线的作用是在下矿前把不可逆风险（坠落、岩浆、敌对实体、断粮）挡在门外。基线项全部满足才允许深入；部分满足时只允许短程探查。",
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "计划进入洞穴或矿坑作业",
+      "尚未确认全部下矿前置条件",
+      "作业计划包含需要长时间停留在地下的步骤"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "shelter_available",
+      "known_threats",
+      "light_sources",
+      "water_bucket_available",
+      "escape_route_exists"
+    ]
+  },
+  "actions": [
+    "逐项核对基线：生命与食物、工具与耐久、照明、退路、危险方块应对手段",
+    "把不满足的项分类为“可快速补齐”与“需要改变路线”",
+    "只补齐可快速补齐的项；补不齐就缩小作业范围而不是硬上",
+    "把基线结论作为状态事实记录，作业中基线变化即重新评估"
+  ],
+  "preconditions": [
+    "已列出本次作业的实际步骤与所需时长",
+    "已知该作业区域内已识别的危险类型"
+  ],
+  "success_condition": "全部基线项均满足并由当前状态验证，作业被判定为可安全进入；否则作业范围被缩小到短程探查",
+  "abort_condition": [
+    "基线项无法在当前资源下补齐",
+    "作业计划要求的时长超过补给可支撑范围",
+    "照明或退路项无法确认"
+  ],
+  "risk_notes": [
+    "不要把“我之前这么干过没事”当成基线满足",
+    "不要为了赶进度跳过基线核对",
+    "不要把未知区域当作低风险区域"
+  ],
+  "candidate_routes": [
+    "全基线满足后进入：风险最低，进度最慢",
+    "部分基线 + 短程探查：折中，进洞即设返程点",
+    "延后下矿先补装备：进度推迟，换取可安全深入"
+  ],
+  "decision_tradeoffs": [
+    "全基线：把不可逆风险挡在门外，代价是时间",
+    "短程探查：保持推进，但在基线未齐时限制暴露时间",
+    "延后下矿：外部收益最低，但避免了一次不可逆损失的可能"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "safety",
+    "link_playbook:pb_iron_mining_run",
+    "canonical_id:stg_premining_safety_baseline"
+  ],
+  "evidence_strength": "high"
+}

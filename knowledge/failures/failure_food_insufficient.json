@@ -1,0 +1,119 @@
+{
+  "id": "failure_food_insufficient",
+  "knowledge_type": "failure_recovery",
+  "title": "食物不足导致无法回血",
+  "summary": "食物不足的临界点不是“饿”，而是“不能自然回血”。判据是饥饿值低于回血阈值，此时任何战斗与长途都应以撤退为主。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "饥饿值低于回血阈值（< 18）",
+      "背包食物库存 < 3 份（策略阈值，可调）"
+    ],
+    "state_features": [
+      "bot.food",
+      "saturation",
+      "food_items_count",
+      "bot.health",
+      "planned_travel_distance"
+    ]
+  },
+  "actions": [
+    "读取饥饿值与食物库存",
+    "估算剩余行程消耗",
+    "优先补给或缩短行程",
+    "按 L1→L4 处理"
+  ],
+  "preconditions": [
+    "饥饿值与库存来自背包事实"
+  ],
+  "success_condition": "饥饿值 ≥ 18（恢复自然回血）且食物库存 ≥ 3 份（策略阈值，可调）",
+  "abort_condition": [
+    "饥饿值低于 6 且无食物",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "饥饿状态下长途跋涉会持续掉血",
+    "把腐肉作为唯一食物会导致补给需求放大"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_mineflayer_api_actions",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_wiki_hunger_regen_threshold"
+  ],
+  "evidence_type": "official_document",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "饥饿值低于回血阈值，受伤后无法恢复",
+    "冲刺与跳跃受限，移动效率下降",
+    "背包食物库存为 0 或仅剩 1 份"
+  ],
+  "possible_causes": [
+    "未建立稳定食物来源",
+    "长途消耗未计入计划",
+    "长期依赖低饱和度应急食物",
+    "战斗与跳跃增加消耗"
+  ],
+  "diagnostics": [
+    "读取 food 与 saturation",
+    "统计食物库存及各自恢复值",
+    "按剩余行程估算消耗",
+    "检查是否处于持续消耗状态（战斗/游泳/挖掘）"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：立即进食到阈值以上（若仍有食物）",
+    "L2 局部子任务重规划：就近获取食物（狩猎、采集、作物），或缩短行程",
+    "L3 回到最近安全检查点：回基地补给并恢复生命",
+    "L4 升级给大模型：把食物供给设为阶段目标，暂停远征"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "饥饿状态下继续长途跋涉",
+    "把腐肉或河豚作为唯一食物来源",
+    "边交战边进食",
+    "在食物耗尽后仍进入矿区"
+  ],
+  "tags": [
+    "failure-recovery",
+    "attrition",
+    "link_playbook:pb_iron_mining_run",
+    "link_strategy:stg_food_sustain",
+    "theme:attrition"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "3",
+      "context": "背包食物库存 < 3 份",
+      "reason": "随身食物存量下限：作者自定的补给冗余量"
+    },
+    {
+      "field": "success_condition",
+      "value": "3",
+      "context": "食物库存 ≥ 3 份",
+      "reason": "随身食物存量下限由作者自定，作为补给冗余量；3 份是该条目采用的策略阈值"
+    },
+    {
+      "field": "symptoms",
+      "value": "1",
+      "context": "背包食物库存为 0 或仅剩 1 份",
+      "reason": "「几乎耗尽」的相对判据：库存为 0 或仅剩 1 份即视为不可持续，是相对量而非外部事实"
+    },
+    {
+      "field": "symptoms",
+      "value": "0",
+      "context": "背包食物库存为 0 或仅剩 1 份",
+      "reason": "库存归零的相对判据：食物计数为 0 表示完全没有补给，是相对量而非外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

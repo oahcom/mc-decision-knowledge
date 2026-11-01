@@ -1,0 +1,29 @@
+{
+  "source_id": "src_minecraftdata_items_id_map",
+  "title": "minecraft-data items.json（关键材料 id 与堆叠上限）",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/1.21.4/items.json",
+  "platform": "github",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "{\"id\": 35, \"name\": \"cobblestone\", \"displayName\": \"Cobblestone\", \"stackSize\": 64}\n{\"id\": 36, \"name\": \"oak_planks\", \"displayName\": \"Oak Planks\", \"stackSize\": 64}\n{\"id\": 842, \"name\": \"iron_ingot\", \"displayName\": \"Iron Ingot\", \"stackSize\": 64}\n{\"id\": 879, \"name\": \"stick\", \"displayName\": \"Stick\", \"stackSize\": 64}",
+  "evidence_notes": "给出橡木木板、圆石、木棍、铁锭的 id 与堆叠上限，用于核对 recipes.json 摘录中的材料 id（用量靠重复次数确定，名称靠本表确定）。",
+  "related_game_versions": [
+    "Java Edition 1.21.4"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 4,
+    "specificity": 5,
+    "version_clarity": 5,
+    "reproducibility": 5
+  },
+  "notes": "摘录为 items.json 中相关条目的原始 JSON 行。"
+}

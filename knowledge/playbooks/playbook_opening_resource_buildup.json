@@ -1,0 +1,110 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "playbook",
+  "id": "playbook_opening_resource_buildup",
+  "title": "手册 · 开局资源建立（从出生到石制工具）",
+  "summary": "覆盖从出生到具备石制工具与可封闭过夜点的全过程。手册提供的是判断依据与检查点，不规定固定步骤序列——具体顺序由开局目标排序策略按当前阻断关系决定。",
+  "stage": "spawn",
+  "trigger": {
+    "conditions": [
+      "刚出生或刚重生，尚未拥有石制工具",
+      "尚未建立可封闭的过夜点",
+      "当前没有正在进行的危险事件"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "bot.health",
+      "bot.food",
+      "time_of_day",
+      "shelter_available",
+      "nearby_tree",
+      "known_threats",
+      "nearby_container"
+    ]
+  },
+  "actions": [
+    "执行开始前检查清单，逐项确认而不是默认通过",
+    "按开局目标排序策略确定本轮唯一推进目标",
+    "在每个检查点回读背包与位置状态，确认目标是否真的达成",
+    "完成后回写状态事实：已获得的工具与材料、当前可封闭点位置、已知食物来源与最近补给点"
+  ],
+  "preconditions": [
+    "背包与位置状态可读且与游戏事实一致",
+    "已知附近是否有树、遮蔽物与容器"
+  ],
+  "success_condition": "石制工具已到手、存在可封闭的过夜点、且上述结论由背包内容与位置状态验证",
+  "abort_condition": [
+    "不适用：已拥有石制工具与食物，本手册的目标已达成",
+    "不适用：已进入矿洞作业阶段，应改用下矿准备手册",
+    "天色已晚且无可封闭空间",
+    "出现敌对实体且无可用退路"
+  ],
+  "risk_notes": [
+    "手册提供判断依据，不逐步遥控技能",
+    "不要跳过检查清单直接执行动作",
+    "不要在未确认封闭点的情况下认为开局完成"
+  ],
+  "candidate_routes": [
+    "取木优先 → 工具优先 → 封闭点",
+    "封闭点优先 → 材料与工具",
+    "食物优先 → 材料与工具 → 封闭点"
+  ],
+  "scenario": "开局资源建立：从出生到石制工具与过夜点",
+  "checklist": [
+    "背包里是否已有可用的基础工具",
+    "食物是否足以支撑到下一个补给点",
+    "附近是否有可封闭的地形或已建庇护所",
+    "当前工具耐久是否足够完成本轮采集",
+    "已知最近的可获得木料与圆石来源",
+    "天色距离入夜还有多少时间",
+    "是否有敌对实体在附近活动"
+  ],
+  "continue_condition": [
+    "本轮目标的材料在稳定增加",
+    "未出现无法规避的危险事件",
+    "封闭点或工具链仍在按计划推进",
+    "剩余时间仍足以完成本轮目标"
+  ],
+  "exit_condition": [
+    "石制工具与可封闭过夜点均已就位",
+    "出现无法在本轮解决的危险（敌对实体、坠落风险、熔岩）",
+    "连续无进展且已达到失败升级阈值",
+    "背包或耐久不足以支撑下一步作业"
+  ],
+  "failure_entry_points": [
+    "failure_craft_missing_material",
+    "failure_craft_no_recipe",
+    "failure_inventory_full",
+    "failure_tool_durability_low",
+    "failure_night_exposure"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_mindcraft_project",
+    "src_internal_design",
+    "src_prismarine_mineflayer",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "playbook",
+    "opening",
+    "link_strategy:stg_opening_priority",
+    "link_strategy:stg_tool_mix_for_stage",
+    "canonical_id:pb_opening_resource_buildup"
+  ],
+  "evidence_strength": "high"
+}

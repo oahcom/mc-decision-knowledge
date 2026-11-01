@@ -1,0 +1,80 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_explore_vs_resupply",
+  "title": "探索与返回补给的权衡",
+  "summary": "每次外出都在两种成本之间分配：向前探索的收益，与返回补给的成本。本策略用“返程成本占预期收益的比例”作为判据，而不是凭感觉决定要不要回。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "当前处于远离补给点的区域",
+      "背包容量或耐久限制了继续前进",
+      "计划中的目标点与最近的补给点不在同一方向"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "inventory_free_slots",
+      "equipment_durability",
+      "visited_chunks",
+      "nearby_container",
+      "target_resource_count",
+      "distance_to_base"
+    ]
+  },
+  "actions": [
+    "估算再前进一段的预期收益与返程消耗",
+    "比较当前携带量与返程所需的最低携带量",
+    "在“再推进一步”与“现在回补给”之间做选择并记录理由",
+    "若选择继续，为自己设一个明确的返程触发条件"
+  ],
+  "preconditions": [
+    "已知最近补给点或容器位置",
+    "已知当前携带量与剩余作业需求"
+  ],
+  "success_condition": "在补给耗尽前完成目标或安全返回补给点，结论由背包内容与位置状态验证",
+  "abort_condition": [
+    "携带量不足以支撑返程",
+    "返程路径已被破坏或不可通行",
+    "出现不可规避的危险事件"
+  ],
+  "risk_notes": [
+    "不要在没有返程触发条件的情况下持续向前",
+    "不要在背包接近满载时才想起需要返程"
+  ],
+  "candidate_routes": [
+    "一次性远征：单次收益高，但返程成本随距离线性上升",
+    "分段推进 + 中途回程：频繁但可控，途中反复消耗",
+    "设前哨就地存储：把返程变成短途，代价是前期投入"
+  ],
+  "decision_tradeoffs": [
+    "一次性远征：效率上限最高，一次失误就全线崩",
+    "分段回程：稳健，每次都要付往返成本",
+    "前哨存储：折中最优，但需要额外的前期建设"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "expert_heuristic",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "exploration",
+    "link_playbook:pb_iron_mining_run",
+    "canonical_id:stg_explore_vs_resupply"
+  ],
+  "evidence_strength": "medium"
+}

@@ -1,0 +1,75 @@
+{
+  "id": "ai_hazard_interrupt_recover",
+  "knowledge_type": "ai_heuristic",
+  "title": "危险事件抢占后恢复任务：先确认安全再判断是否继续",
+  "summary": "战斗、坠落、岩浆等危险事件会抢占当前任务。模型恢复时不能无脑继续原计划，而要先确认危险已解除、状态可继续，再决定是续跑还是重规划。紧急反应交由本地危险保护，不等待模型返回。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "任务被危险事件抢占中断",
+      "正在决定恢复策略"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "known_threats",
+      "current_task",
+      "plan.state_version",
+      "runtime.state_version"
+    ]
+  },
+  "actions": [
+    "确认危险事件已解除且本地保护已收尾",
+    "核对生命、食物、装备与任务前置条件是否仍成立",
+    "比较续跑原计划与重规划的成本，输出恢复决策"
+  ],
+  "preconditions": [
+    "危险事件的类型与结果已写入状态",
+    "运行时能区分中断原因（战斗、坠落、环境）"
+  ],
+  "success_condition": "危险解除后，基于最新状态判断原计划是否仍成立，并输出续跑或重规划的可验证决策",
+  "abort_condition": [
+    "危险源持续存在（如仍被追击、仍在岩浆旁）",
+    "状态版本已变化导致原计划前置条件失效"
+  ],
+  "risk_notes": [
+    "紧急反应不得等待模型返回，否则错过逃生窗口",
+    "把中断后的状态当作中断前一样继续，是计划过期的常见入口"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "low",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "危险事件抢占后，先确认危险解除并复核状态，再决定续跑原计划或重规划，不得无脑继续。",
+  "alternative_comparison": [
+    "无脑续跑原计划：省一次判断，但危险未清或状态已变时会把任务继续推向失败",
+    "先复核再决策：多一步状态核对，但避免在错误状态下继续执行"
+  ],
+  "anti_patterns": [
+    "把中断等同于任务完成",
+    "忽略危险源是否仍存在就直接回到原任务",
+    "在旧状态版本上判断是否继续"
+  ],
+  "model_guidance": "先确认危险源已解除、本地保护已收尾，再读取最新状态复核原计划的前置条件；条件仍成立则续跑，否则输出重规划并把新计划绑定新 state_version。",
+  "tags": [
+    "ai-decision",
+    "safety",
+    "interrupt",
+    "link_playbook:pb_combat_retreat",
+    "theme:safety"
+  ],
+  "evidence_strength": "low"
+}

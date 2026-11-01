@@ -1,0 +1,140 @@
+{
+  "id": "tool_craft_item",
+  "knowledge_type": "tool_guide",
+  "title": "合成物品（craft）执行契约",
+  "summary": "合成是最容易“以为成功”的动作：窗口交互存在客户端预测，材料与产物都要以窗口关闭后的背包事实为准。契约要求先用 recipesFor 判空，再合成，最后做前后 diff。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "计划需要产出某个可合成物品",
+      "材料与工作台条件已由程序预检"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "bot.currentWindow",
+      "nearby_crafting_table",
+      "bot.health",
+      "hostiles_within_8"
+    ]
+  },
+  "actions": [
+    "调用 recipesFor(item_type, null, 1, table) 判空：第三参数是 minResultCount（产物件数），不是合成次数；材料是否足量另行按 count × 单次消耗核对",
+    "核对材料数量 ≥ count × 单次消耗",
+    "需要工作台时先靠近并打开工作台窗口",
+    "调用 craft(recipe, count, table) 并记录开始时刻",
+    "关闭窗口后做背包前后 diff，再返回成功"
+  ],
+  "preconditions": [
+    "recipesFor 返回非空列表",
+    "材料数量满足 count × 单次消耗",
+    "需要工作台的配方：工作台距离 ≤ 4.5 格且可打开",
+    "背包剩余空位 ≥ 产物占位数",
+    "bot.currentWindow 为 null（没有其它容器窗口处于打开状态）"
+  ],
+  "success_condition": "产物计数增加 count × 单次产出，材料按配方减少，且 bot.currentWindow 为 null",
+  "abort_condition": [
+    "timeout_ms 到期：关闭窗口、重读背包，不得直接重试",
+    "craft 抛错或窗口意外关闭：先核对背包 diff 再判定",
+    "窗口未关闭时不得发起第二次 craft"
+  ],
+  "risk_notes": [
+    "材料刚到账尚未确认时不要批量合成",
+    "背包空位 < 2 时不要合成多产物配方",
+    "身边没有可放置工作台的空间时不要尝试就地合成",
+    "count 很大时不要用单次调用（材料误算与超时风险）"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_wiki_player_interaction_range",
+    "src_wiki_crafting_grid_size"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "craft",
+  "parameters": [
+    {
+      "name": "item_type",
+      "type": "string",
+      "required": true,
+      "description": "目标物品 ID"
+    },
+    {
+      "name": "count",
+      "type": "integer",
+      "required": false,
+      "description": "合成次数，默认 1；产物数 = count × 单次产出"
+    },
+    {
+      "name": "crafting_table_pos",
+      "type": "block_pos",
+      "required": false,
+      "description": "工作台坐标；3×3 配方必填"
+    },
+    {
+      "name": "recipe_id",
+      "type": "string",
+      "required": false,
+      "description": "指定配方；缺省用 recipesFor 的第一个可用配方"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "默认 5000"
+    }
+  ],
+  "expected_effects": [
+    "产物进入背包，数量 = count × 单次产出",
+    "材料按配方消耗",
+    "工作台窗口关闭"
+  ],
+  "failure_modes": [
+    "craft_no_recipe — recipesFor 返回空：材料不足、缺工作台或该物品不可合成",
+    "craft_missing_material — 材料差 1~2 个，常因上游拾取未确认",
+    "craft_table_unreachable — 工作台被包围、超距或被占用",
+    "craft_window_desync — 点击后背包未变化，或产物出现在非预期槽位",
+    "craft_inventory_full — 产物无处存放，服务端拒绝合成",
+    "craft_timeout — 窗口交互无响应（延迟或窗口被关闭）"
+  ],
+  "verification": [
+    "背包产物计数精确等于 count × 单次产出",
+    "材料减少量等于配方消耗 × count",
+    "bot.currentWindow 为 null",
+    "合成后无残留的半成品材料错位（槽位 diff 为空集）"
+  ],
+  "tags": [
+    "tool-contract",
+    "crafting",
+    "link_playbook:pb_stone_tool_furnace",
+    "theme:craft"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "risk_notes",
+      "value": "2",
+      "context": "背包空位 < 2 时不要合成多产物配方",
+      "reason": "合成所需的最小空位：作者自定"
+    },
+    {
+      "field": "parameters",
+      "value": "5000",
+      "context": "默认 5000",
+      "reason": "工具参数的初始值（合成超时）：作者可调"
+    }
+  ],
+  "evidence_strength": "high"
+}

@@ -1,0 +1,27 @@
+{
+  "source_id": "src_baritone_project",
+  "title": "Baritone Minecraft pathfinding system",
+  "url": "https://github.com/cabaletta/baritone",
+  "platform": "GitHub",
+  "source_type": "github_repository",
+  "reliability": "A",
+  "license": "LGPL-3.0-or-later_needs_verification",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "Baritone is a Minecraft pathfinding system with long-distance pathing, chunk caching, block breaking, and dangerous-block avoidance. Its command interface supports goals such as goto, mine, follow, explore, and build.",
+  "evidence_notes": "High-value source for pathfinding tradeoffs, dangerous-block avoidance, mining command behavior, and path cost reasoning.",
+  "related_game_versions": ["Java Edition supported versions"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "Verify the exact official repository and license during the first full source-collection run."
+}

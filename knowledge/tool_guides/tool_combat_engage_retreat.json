@@ -1,0 +1,213 @@
+{
+  "id": "tool_combat_engage_retreat",
+  "knowledge_type": "tool_guide",
+  "title": "交战与撤退（attack / retreat）执行契约",
+  "summary": "战斗失败几乎都来自“该撤没撤”。契约把撤退阈值写成硬条件，并由程序在阈值触发时立即执行，不等待模型返回；同时明确撤退用 setGoal(null) 立即停，而不是 stop() 走完当前节点。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "敌对实体进入威胁半径",
+      "计划选择交战或脱离"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "armor_durability",
+      "weapon_durability",
+      "hostile_count",
+      "escape_route_exists"
+    ]
+  },
+  "actions": [
+    "评估生命、食物、护甲、武器耐久与敌人数量",
+    "满足撤退阈值时立即执行撤退，不等待模型",
+    "交战中使用攻击冷却，避免连续空挥",
+    "脱离后确认追击者距离与受伤情况"
+  ],
+  "preconditions": [
+    "交战：生命 ≥ 12、护甲状态已知、武器耐久 > 10%（策略阈值，可调）；10~12 为滞回带：不主动开战，但已交战时按 abort_condition 的撤退阈值处理",
+    "撤退：存在可通行退路（不是死胡同）",
+    "战斗位置不在熔岩、水边或悬崖边缘"
+  ],
+  "success_condition": "交战：目标不再构成威胁（死亡或脱离）；撤退：与最近敌对实体距离 > 8 且 5 秒内未受伤",
+  "abort_condition": [
+    "生命 < 撤退阈值（默认 10，策略阈值）立即撤退，属于程序级硬中断；10~12 区间不得重新开战，避免在阈值附近反复切换",
+    "护甲耐久 < 20% 或武器即将损坏：立即撤退",
+    "被 3 个以上敌对实体包围：放弃交战",
+    "timeout_ms（默认 15000）到期仍未脱离交战：强制撤退，并按 retreat_no_path 处理"
+  ],
+  "risk_notes": [
+    "低耐久或无甲时不要交战",
+    "洞穴单出口时不要主动开战",
+    "夜间多怪环境不要恋战",
+    "熔岩或悬崖边不要交战",
+    "背包已满时不要为战利品交战"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_usage_commands",
+    "src_minecraft_wiki_version",
+    "src_baritone_project"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "attack / retreat",
+  "parameters": [
+    {
+      "name": "target",
+      "type": "string",
+      "required": true,
+      "description": "实体 id 或实体类型"
+    },
+    {
+      "name": "mode",
+      "type": "string",
+      "required": true,
+      "description": "'engage' 或 'retreat'"
+    },
+    {
+      "name": "retreat_hp",
+      "type": "integer",
+      "required": false,
+      "description": "撤退生命阈值，默认 10"
+    },
+    {
+      "name": "retreat_food",
+      "type": "integer",
+      "required": false,
+      "description": "撤退食物阈值，默认 6"
+    },
+    {
+      "name": "max_chase_distance",
+      "type": "number",
+      "required": false,
+      "description": "最大追击距离，默认 8"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "默认 15000"
+    }
+  ],
+  "expected_effects": [
+    "交战：目标死亡或脱离接触",
+    "撤退：与敌对实体拉开距离，受伤停止",
+    "护甲与武器耐久按战斗时长下降并被记录"
+  ],
+  "failure_modes": [
+    "combat_low_durability — 武器耐久不足，伤害不足导致战斗拖长",
+    "combat_armor_broken — 护甲在交战中失效",
+    "combat_outnumbered — 敌人数量超过可处理上限",
+    "combat_cornered — 退路被封（洞穴、墙角）",
+    "retreat_no_path — 撤退方向 NoPath",
+    "retreat_interrupted — 撤退途中被击退或再次被锁定",
+    "combat_target_lost — 目标消失（死亡、despawn、传送）"
+  ],
+  "verification": [
+    "目标实体不再出现在 bot.entities",
+    "生命曲线在撤退后不再下降",
+    "最近敌对实体距离 > 8",
+    "护甲/武器耐久变化被记录，未发生损坏"
+  ],
+  "tags": [
+    "tool-contract",
+    "combat",
+    "link_playbook:pb_combat_retreat",
+    "theme:combat"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "preconditions",
+      "value": "12",
+      "context": "生命 ≥ 12",
+      "reason": "开战的最低生命线：作者自定"
+    },
+    {
+      "field": "preconditions",
+      "value": "10",
+      "context": "武器耐久 > 10%",
+      "reason": "开战的最低武器耐久线：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "8",
+      "context": "与最近敌对实体距离 > 8",
+      "reason": "判定已脱离的交战距离：作者自定"
+    },
+    {
+      "field": "success_condition",
+      "value": "5",
+      "context": "5 秒内未受伤",
+      "reason": "确认已脱离的观察窗口：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "10",
+      "context": "生命 < 撤退阈值（默认 10",
+      "reason": "撤退生命阈值：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "12",
+      "context": "10~12 区间不得重新开战",
+      "reason": "滞回带的上界：与开战生命线一致，作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "20",
+      "context": "护甲耐久 < 20%",
+      "reason": "撤退的护甲耐久线：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "3",
+      "context": "被 3 个以上敌对实体包围",
+      "reason": "判定被包围的敌对实体数：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "15000",
+      "context": "默认 15000",
+      "reason": "工具参数的初始值（交战超时）：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "10",
+      "context": "撤退生命阈值，默认 10",
+      "reason": "工具参数的初始值：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "8",
+      "context": "最大追击距离，默认 8",
+      "reason": "工具参数的初始值：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "15000",
+      "context": "默认 15000",
+      "reason": "工具参数的初始值：作者可调"
+    },
+    {
+      "field": "verification",
+      "value": "8",
+      "context": "最近敌对实体距离 > 8",
+      "reason": "判定已脱离的交战距离：作者自定"
+    }
+  ],
+  "evidence_strength": "high"
+}

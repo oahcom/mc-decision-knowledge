@@ -1,0 +1,120 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "playbook",
+  "id": "playbook_iron_mining_run",
+  "title": "手册 · 下矿准备与执行（铁矿获取）",
+  "summary": "覆盖一次完整的下矿作业：基线核对 → 选择路线 → 作业 → 收尾撤离。手册要求每个阶段都有可验证的判据，避免把“还在动”当成进展。",
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "目标需要铁矿石或铁锭",
+      "熔炼链可用或已明确放弃本轮冶炼",
+      "尚未开始本次下矿作业"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "fuel_source",
+      "known_threats",
+      "visited_chunks",
+      "target_resource_count",
+      "search_ticks",
+      "escape_route_exists"
+    ]
+  },
+  "actions": [
+    "执行开始前检查清单：安全基线、补给、熔炼链、返程能力",
+    "按铁矿获取路线策略选定路线并记录选择理由",
+    "作业中按检查点核对目标资源计数是否真的增长",
+    "完成后回写状态事实：取得的矿石数量与位置、消耗的耐久与补给、返程路径、未竟区域"
+  ],
+  "preconditions": [
+    "状态读取可信（背包、位置、版本一致）",
+    "已知本轮作业的停止条件"
+  ],
+  "success_condition": "铁矿石达到计划数量并已入包，或已明确判定该区域不产出并完成路线切换，由背包计数与搜索记录验证",
+  "abort_condition": [
+    "不适用：当前处于战斗或坠落事件中，应先走战斗撤退手册",
+    "补给或耐久不足以支撑返程",
+    "连续失败达到该失败的升级阈值",
+    "出现无法规避的危险（熔岩、敌对实体聚集、无法通过的塌方）"
+  ],
+  "risk_notes": [
+    "不要把路径重算当成进展——净位移才是",
+    "不要在背包接近满载时继续深入",
+    "不要用没有熔炼链的矿石填满背包",
+    "手册不替代挖掘、导航工具的具体执行契约"
+  ],
+  "candidate_routes": [
+    "洞穴探索：高收益高风险",
+    "分支挖矿：可控低收益",
+    "替代来源（战利品箱等）：低风险低收益"
+  ],
+  "scenario": "下矿准备与执行：一次以铁为目标的完整采矿作业",
+  "checklist": [
+    "安全基线各项目前是否满足（生命、食物、耐久、照明、退路）",
+    "熔炉与燃料是否就绪",
+    "本次作业的停止条件是什么",
+    "返程路径是否已知或是否接受返程成本",
+    "背包是否为空位预留",
+    "已知该区域是否已搜索过"
+  ],
+  "continue_condition": [
+    "目标资源计数在稳定增长",
+    "补给与耐久仍在安全余量内",
+    "未出现不可规避的危险",
+    "中断次数未达到上限"
+  ],
+  "exit_condition": [
+    "目标数量达成",
+    "目标资源计数长期不增长",
+    "补给、耐久或空间不足以支撑返程",
+    "出现不可规避的危险或路径不可达"
+  ],
+  "failure_entry_points": [
+    "failure_search_no_progress",
+    "failure_search_area_repeat",
+    "failure_path_no_path",
+    "failure_path_stuck",
+    "failure_path_thrash_reset",
+    "failure_inventory_full",
+    "failure_tool_durability_low",
+    "failure_food_insufficient"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_pathfinder_goto_errors",
+    "src_pathfinder_reset_reasons",
+    "src_baritone_features_pathing",
+    "src_issue_pathfinder_stuck_stairs",
+    "src_issue_pathfinder_parkour_physics",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "error_codes",
+    "project_policy"
+  ],
+  "tags": [
+    "playbook",
+    "iron-age",
+    "link_strategy:stg_iron_route",
+    "link_strategy:stg_premining_safety_baseline",
+    "link_strategy:stg_explore_vs_resupply",
+    "canonical_id:pb_iron_mining_run"
+  ],
+  "evidence_strength": "high"
+}

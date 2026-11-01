@@ -1,0 +1,132 @@
+{
+  "id": "failure_combat_interrupt",
+  "knowledge_type": "failure_recovery",
+  "title": "作业被战斗打断",
+  "summary": "被打断本身不是失败，重复被打断才是。判据是同一作业点 60 秒内出现两次以上伤害事件，说明环境未被清理，继续原样作业只会累积损失。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "挖掘/合成/冶炼过程中受到伤害",
+      "diggingAborted 或窗口被强制关闭"
+    ],
+    "state_features": [
+      "bot.health",
+      "damage_events",
+      "hostiles_within_8",
+      "light_level",
+      "task_progress"
+    ]
+  },
+  "actions": [
+    "立即中断当前动作，确认伤害来源",
+    "评估交战或撤退",
+    "清理作业点（照明/封口/清怪）",
+    "按 L1→L4 恢复作业"
+  ],
+  "preconditions": [
+    "已记录伤害事件与来源方向"
+  ],
+  "success_condition": "恢复后 60 秒内无伤害事件，且原任务继续推进",
+  "abort_condition": [
+    "生命 < 10 直接撤退（策略阈值，可调）",
+    "同一作业点 60 秒内第二次被打断"
+  ],
+  "risk_notes": [
+    "受击时继续挖矿会让耐久与生命同时损失",
+    "边打边合成会因窗口关闭而失败"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_mineflayer_api_events",
+    "src_pathfinder_reset_reasons",
+    "src_internal_design",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "official_document",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "挖掘中途出现 diggingAborted，方块仍存在",
+    "合成或冶炼窗口被强制关闭",
+    "生命值在作业期间持续下降",
+    "同一作业点反复出现伤害事件"
+  ],
+  "possible_causes": [
+    "作业点光照不足，持续刷怪",
+    "靠近洞穴口或未封闭的通道",
+    "未清理周边既有敌对实体",
+    "夜间露天作业",
+    "作业时间过长，周边刷出的敌对实体逐步进入跟随范围"
+  ],
+  "diagnostics": [
+    "检查 8 格内敌对实体数量与类型",
+    "检查作业点光照与封闭性",
+    "统计 60 秒内伤害事件次数",
+    "确认伤害来源方向（背后/上方/水中）"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：中断动作，先处理当前威胁（交战或撤退）",
+    "L2 局部子任务重规划：换作业点、补光源、封住来路",
+    "L3 回到最近安全检查点：恢复生命与装备后再返回",
+    "L4 升级给大模型：把“清场 + 照明”写入该任务的前置条件"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "受击时继续挖矿",
+    "边交战边合成或冶炼",
+    "低生命继续作业",
+    "忽略同一位置的第二次打断"
+  ],
+  "tags": [
+    "failure-recovery",
+    "combat",
+    "link_playbook:pb_combat_retreat",
+    "theme:combat"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "summary",
+      "value": "60",
+      "context": "同一作业点 60 秒内出现两次以上伤害事件",
+      "reason": "受伤事件统计窗口：作者自定的滚动窗口长度，游戏未规定该窗口"
+    },
+    {
+      "field": "success_condition",
+      "value": "60",
+      "context": "恢复后 60 秒内无伤害事件",
+      "reason": "确认已脱离危险期的观察窗口：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "10",
+      "context": "生命 < 10 直接撤退",
+      "reason": "撤退生命阈值：按玩家 20 HP 上限取 50% 作为保守余量，作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "60",
+      "context": "同一作业点 60 秒内第二次被打断",
+      "reason": "判定重复打断的统计窗口：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "8",
+      "context": "检查 8 格内敌对实体数量与类型",
+      "reason": "作业点敌对实体检查半径：作者自定的安全半径"
+    },
+    {
+      "field": "diagnostics",
+      "value": "60",
+      "context": "统计 60 秒内伤害事件次数",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    }
+  ],
+  "evidence_strength": "high"
+}

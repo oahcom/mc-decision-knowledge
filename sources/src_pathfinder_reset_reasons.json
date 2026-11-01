@@ -1,0 +1,30 @@
+{
+  "source_id": "src_pathfinder_reset_reasons",
+  "title": "mineflayer-pathfinder index.js — path status, reset reasons and stop semantics",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/mineflayer-pathfinder/master/index.js",
+  "platform": "GitHub",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "content_excerpt": "A* results carry status 'partial', 'timeout', 'noPath' or 'success'. resetPath(reason) clears the current path and emits path_reset with reasons goal_updated, movements_updated, block_updated, chunk_loaded, goal_moved, dig_error, no_scaffolding_blocks, place_error and stuck. stop() clears the goal, empties the path, emits path_stop and calls fullStop(). A futility check resets with 'stuck' when more than 3500 ms elapsed without reaching the next node. thinkTimeout defaults to 5000 ms and tickTimeout to 40 ms.",
+  "evidence_notes": "path_reset 的 reason 是区分“环境变化导致重算”和“真卡死”的关键诊断字段；stuck 有明确的 3500 ms 单节点阈值，可直接作为卡死判定基线。stop() 会清空目标，不能当作“已到达”。",
+  "related_game_versions": [
+    "mineflayer-pathfinder 主线（与 mineflayer 支持版本同步）",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "阈值（3500 ms / 5000 ms）是库默认值，服务端延迟高时需要重新标定。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

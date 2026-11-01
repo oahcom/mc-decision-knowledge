@@ -1,0 +1,30 @@
+{
+  "source_id": "src_baritone_usage_commands",
+  "title": "Baritone USAGE.md — goto, thisway and stop/cancel commands",
+  "url": "https://raw.githubusercontent.com/cabaletta/baritone/master/USAGE.md",
+  "platform": "GitHub",
+  "source_type": "official_document",
+  "reliability": "A",
+  "license": "LGPL-3.0-or-later",
+  "content_excerpt": "Baritone usage: 'thisway 1000' then 'path' walks in the direction you are facing for a thousand blocks; 'goto x y z', 'goto x z' or 'goto y' goes to a coordinate in a single step and starts going immediately; 'cancel' or 'stop' stops everything, and 'forcecancel' is also an option; 'goto portal' or 'goto ender_chest' or 'goto block_type' goes to a block.",
+  "evidence_notes": "命令层把“停止”与“到达”明确分开（stop/cancel/forcecancel 不产生到达语义），支持本项目中“中断不等于成功”的契约设计；也说明长途目标按单步执行而非一次到位。",
+  "related_game_versions": [
+    "Baritone 支持的 Java Edition 版本",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 4,
+    "specificity": 4,
+    "version_clarity": 3,
+    "reproducibility": 4
+  },
+  "notes": "Baritone 是 Java 模组，本项目通过协议层复现其行为语义，不直接调用其命令。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

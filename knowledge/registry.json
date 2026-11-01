@@ -1,0 +1,45 @@
+{
+  "note": "被 tags 里的 link_playbook / link_strategy 前向引用的 ID 必须先在此登记。02 阶段产出手册与策略时必须复用这些 ID；改名需同步修改引用方，否则校验失败。 entity_map 把领域 ID（stg_*/pb_*）映射到条目 ID（strategy_*/playbook_*）；映射一旦写入，对应条目必须存在，否则校验直接失败——这样“前向引用”不会悄悄悬空。",
+  "reserved_playbooks": [
+    "pb_opening_resource_buildup",
+    "pb_first_night_shelter",
+    "pb_stone_tool_furnace",
+    "pb_iron_mining_run",
+    "pb_combat_retreat",
+    "pb_inventory_tool_management"
+  ],
+  "reserved_strategies": [
+    "stg_opening_priority",
+    "stg_stone_tool_route",
+    "stg_food_sustain",
+    "stg_iron_route",
+    "stg_premining_safety_baseline",
+    "stg_equipment_allocation",
+    "stg_explore_vs_resupply",
+    "stg_night_exposure",
+    "stg_tool_mix_for_stage",
+    "stg_collect_and_store",
+    "stg_encounter_engage_or_avoid",
+    "stg_recovery_budget"
+  ],
+  "entity_map": {
+    "stg_opening_priority": "strategy_opening_priority",
+    "stg_stone_tool_route": "strategy_stone_tool_route",
+    "stg_food_sustain": "strategy_food_sustain",
+    "stg_iron_route": "strategy_iron_route",
+    "stg_premining_safety_baseline": "strategy_premining_safety_baseline",
+    "stg_equipment_allocation": "strategy_equipment_allocation",
+    "stg_explore_vs_resupply": "strategy_explore_vs_resupply",
+    "stg_night_exposure": "strategy_night_exposure",
+    "stg_tool_mix_for_stage": "strategy_tool_mix_for_stage",
+    "stg_collect_and_store": "strategy_collect_and_store",
+    "stg_encounter_engage_or_avoid": "strategy_encounter_engage_or_avoid",
+    "stg_recovery_budget": "strategy_recovery_budget",
+    "pb_opening_resource_buildup": "playbook_opening_resource_buildup",
+    "pb_first_night_shelter": "playbook_first_night_shelter",
+    "pb_stone_tool_furnace": "playbook_stone_tool_furnace",
+    "pb_iron_mining_run": "playbook_iron_mining_run",
+    "pb_combat_retreat": "playbook_combat_retreat",
+    "pb_inventory_tool_management": "playbook_inventory_tool_management"
+  }
+}

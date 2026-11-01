@@ -1,0 +1,27 @@
+{
+  "source_id": "src_minecraft_wiki_protocol",
+  "title": "Minecraft Wiki: Protocol documentation",
+  "url": "https://minecraft.wiki/w/Protocol_Documentation",
+  "platform": "Minecraft Wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "This page provides an overview of Minecraft protocol documentation, file formats, and development tools, including Java Edition network protocol, services and server interfaces, file formats and development tools.",
+  "evidence_notes": "Protocol-level source for understanding what state and events can be observed through the Java Edition protocol. Former wiki.vg content has been imported into Minecraft Wiki according to the Wiki.vg page.",
+  "related_game_versions": ["Java Edition current versions", "Java Edition historical versions"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 4,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "Seed source from web search on 2026-11-01. Must be re-read and version-checked before promoting knowledge beyond draft."
+}

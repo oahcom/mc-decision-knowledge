@@ -1,0 +1,23 @@
+{
+  "source_id": "src_voyager_core_thresholds",
+  "title": "Voyager — voyager/voyager.py (核心阈值常量)",
+  "url": "https://raw.githubusercontent.com/MineDojo/Voyager/main/voyager/voyager.py",
+  "platform": "GitHub",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "import CriticAgent\nfrom .agents import CurriculumAgent\nfrom .agents import SkillManager\n\n# TODO: remove event memory\nclass Voyager:\n def __init__(\n self,\n mc_port: int = None,\n azure_login: Dict[str, str] = None,\n server_port: int = 3000,\n openai_api_key: str = None,\n env_wait_ticks: int = 20,\n env_request_timeout: int = 600,\n max_iterations: int = 160,\n reset_placed_if_failed: bool = False,\n action_agent_model_name: str = \"gpt-4\",\n action_agent_temperature: float = 0,\n action_agent_task_max_retries: int = 4,\n action_agent_show_chat_log: bool = True,\n action_agent_show_execution_error: bool = True,\n curriculum_agent_model_name: str = \"gpt-4\",\n curriculum_agent_temperature: float = 0,\n curriculum_agent_qa_model_name: str = \"gpt-3.5-turbo\",\n curriculum_agent_qa_temperature: float = 0,\n curriculum_agent_warm_up: Dict[str, int] = None,\n curriculum_agent_core_invento",
+  "evidence_notes": "什么时候做、何时停止：给出 env_wait_ticks=20（每次动作后的环境等待 tick）、max_iterations=160（总迭代上限）、action_agent_task_max_retries=4（单任务重试上限）等量化参数——直接界定「一轮动作算多久」「同一任务最多试几次」「整个 episode 何时结束」。",
+  "related_game_versions": [
+    "1.19"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：voyager.py § Voyager.__init__ 默认参数"
+}

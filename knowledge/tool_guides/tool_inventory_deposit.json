@@ -1,0 +1,130 @@
+{
+  "id": "tool_inventory_deposit",
+  "knowledge_type": "tool_guide",
+  "title": "背包与容器存取（deposit / inventory）执行契约",
+  "summary": "存取类操作的典型错误是误存关键工具。契约要求先声明保留清单，再执行转移，并用双向 diff 验证；窗口打开期间禁止进入战斗。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "背包接近满载或需要阶段性卸货",
+      "计划需要从容器取用材料"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "keep_list",
+      "container_space",
+      "bot.currentWindow",
+      "hostiles_within_8"
+    ]
+  },
+  "actions": [
+    "生成保留清单（工具、食物、方块、任务材料）",
+    "打开容器并确认窗口类型",
+    "按 filter 逐类转移，跳过保留清单",
+    "关闭窗口后做背包/容器双向 diff"
+  ],
+  "preconditions": [
+    "容器距离 ≤ 4.5 格且打开成功",
+    "容器剩余槽位 ≥ 待存物品种类数",
+    "保留清单已显式给出（非空）",
+    "不在战斗中，6 格内无敌对实体"
+  ],
+  "success_condition": "指定物品已从背包转移，保留清单逐项仍在背包，bot.currentWindow 为 null",
+  "abort_condition": [
+    "timeout_ms 到期：关闭窗口、重读背包并报告未完成项",
+    "受到攻击：立即关窗撤离，不再执行剩余转移",
+    "窗口打开期间不得发起战斗或导航"
+  ],
+  "risk_notes": [
+    "没有保留清单时不要执行批量存入",
+    "容器位于危险区域时不要长时间开窗",
+    "不要把唯一的一把镐或全部食物存入",
+    "战斗中不要打开容器"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_wiki_player_interaction_range"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "deposit / inventory",
+  "parameters": [
+    {
+      "name": "container_pos",
+      "type": "block_pos",
+      "required": true,
+      "description": "箱子/熔炉/末影箱坐标"
+    },
+    {
+      "name": "mode",
+      "type": "string",
+      "required": true,
+      "description": "'deposit' | 'withdraw' | 'sort'"
+    },
+    {
+      "name": "item_filter",
+      "type": "list<string>",
+      "required": false,
+      "description": "参与转移的物品；缺省为低价值方块优先"
+    },
+    {
+      "name": "keep",
+      "type": "object",
+      "required": true,
+      "description": "保留清单 {item: min_count}，任何情况下不得转移"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "默认 6000"
+    }
+  ],
+  "expected_effects": [
+    "目标物品从背包转移到容器（或反向）",
+    "保留清单物品数量不变",
+    "容器窗口关闭"
+  ],
+  "failure_modes": [
+    "container_unreachable — 容器被包围或超距",
+    "container_full — 容器无剩余槽位",
+    "deposit_wrong_item — 误存保留清单内物品（唯一工具/食物）",
+    "deposit_desync — 转移后背包或容器未按预期变化",
+    "deposit_interrupted — 转移过程被攻击或强制移动打断"
+  ],
+  "verification": [
+    "背包与容器双向 diff 与计划一致",
+    "保留清单逐项数量 ≥ 下限",
+    "关键工具仍在快捷栏/背包中",
+    "bot.currentWindow 为 null"
+  ],
+  "tags": [
+    "tool-contract",
+    "inventory",
+    "link_playbook:pb_iron_mining_run",
+    "theme:capacity"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "parameters",
+      "value": "6000",
+      "context": "默认 6000",
+      "reason": "工具参数的初始值（存取超时）：作者可调"
+    }
+  ],
+  "evidence_strength": "high"
+}

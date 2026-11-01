@@ -1,0 +1,30 @@
+{
+  "source_id": "src_mineflayer_api_events",
+  "title": "Mineflayer docs/api.md — digging, blockUpdate and forcedMove events",
+  "url": "https://raw.githubusercontent.com/PrismarineJS/mineflayer/master/docs/api.md",
+  "platform": "GitHub",
+  "source_type": "official_document",
+  "reliability": "A",
+  "license": "MIT",
+  "content_excerpt": "\"diggingCompleted\" (block) fires with the block that no longer exists. \"diggingAborted\" (block) fires with the block that still exists, whether the process was completed or aborted. \"forcedMove\" fires when the bot is force moved by the server (teleport, spawning, ...). \"blockUpdate\" reports a block change observed by the client.",
+  "evidence_notes": "forcedMove 是识别服务端位置纠正（回拉/传送）的唯一可靠客户端信号，直接支撑“路径震荡/回拉”类失败诊断；diggingAborted 与 diggingCompleted 的区分决定“方块是否还在”，是挖掘成功判定的基础。",
+  "related_game_versions": [
+    "Java Edition 1.8 及以后（mineflayer 支持范围）",
+    "26.3"
+  ],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 3,
+    "reproducibility": 5
+  },
+  "notes": "事件名跨版本稳定，但服务端触发条件（反作弊、延迟补偿）不在文档范围内。 复核时删除了对“方块破坏进度事件”的引用：原文该句归属不明确，易被误读为 diggingCompleted 的定义。",
+  "retrieved_at": "2026-11-01T22:30:00+08:00"
+}

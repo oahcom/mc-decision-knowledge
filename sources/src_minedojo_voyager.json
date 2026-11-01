@@ -1,0 +1,27 @@
+{
+  "source_id": "src_minedojo_voyager",
+  "title": "MineDojo Voyager: open-ended embodied agent",
+  "url": "https://github.com/MineDojo/Voyager",
+  "platform": "GitHub",
+  "source_type": "research_paper",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "Voyager is an LLM-powered embodied lifelong learning agent in Minecraft with an automatic curriculum, an ever-growing executable skill library, and iterative prompting that incorporates environment feedback, execution errors, and self-verification.",
+  "evidence_notes": "Reference for AI-specific Minecraft decision structure: curriculum, skill library, environment feedback, self-verification, and failure-driven refinement.",
+  "related_game_versions": ["Java Edition versions used by the project"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "Use for architecture and decision-process lessons, not as proof that every strategy works in dsv4.1 or the current project setup."
+}

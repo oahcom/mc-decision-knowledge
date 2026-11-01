@@ -1,0 +1,79 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "strategy",
+  "id": "strategy_stone_tool_route",
+  "title": "石质工具与熔炉路线：木器链、圆石直取与熔炉依赖",
+  "summary": "石质阶段的核心取舍是是否建立熔炉链。木器链慢但安全，圆石直取快但没有熔炉就没有后续冶炼，本策略按“下一阶段是否必须依赖熔炉”来选路线，而不是默认走标准流程。",
+  "stage": "stone_age",
+  "trigger": {
+    "conditions": [
+      "已有木制工具或可立即获得的木料",
+      "目标产物需要冶炼才能得到",
+      "尚未拥有熔炉"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "nearby_tree",
+      "known_threats",
+      "time_of_day",
+      "fuel_source"
+    ]
+  },
+  "actions": [
+    "确认下一阶段的目标产物是否必须冶炼",
+    "若必须冶炼：先确认木料与圆石来源，再选择工具链顺序",
+    "若可绕过：优先用徒手采集减少依赖，冶炼留到收益明确时再做",
+    "熔炉建成后立即确认燃料来源是否可持续"
+  ],
+  "preconditions": [
+    "木料来源可用",
+    "已知目标产物是否依赖冶炼",
+    "当前环境允许进行基础采集作业"
+  ],
+  "success_condition": "已拥有可用的石制工具；若下一阶段依赖冶炼，则熔炉已建成且燃料来源可持续",
+  "abort_condition": [
+    "木料来源中断且没有替代",
+    "遭遇敌对实体且无法保持作业连续性",
+    "目标产物实际不依赖冶炼（应改走绕过路线）"
+  ],
+  "risk_notes": [
+    "不要为了凑齐标准工具链而延误整体进度",
+    "不要在熔炉建成后忽略燃料——无燃料的熔炉等于没有熔炉"
+  ],
+  "candidate_routes": [
+    "完整链：木镐 → 石镐 → 熔炉 → 冶炼",
+    "圆石直取：徒手或简易工具获取圆石，先省下熔炉成本",
+    "先战斗后生产：优先石斧石剑保证作业安全，再回头补熔炉"
+  ],
+  "decision_tradeoffs": [
+    "完整链：材料链清晰、后续无阻碍，但耗时最长",
+    "圆石直取：短期效率高，但放弃了后续冶炼能力",
+    "先战斗后生产：安全收益立竿见影，但工具升级被推后"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_minedojo_voyager",
+    "src_mindcraft_project",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "project_policy"
+  ],
+  "tags": [
+    "strategy",
+    "stone-age",
+    "link_playbook:pb_stone_tool_furnace",
+    "canonical_id:stg_stone_tool_route"
+  ],
+  "evidence_strength": "high"
+}

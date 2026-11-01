@@ -1,0 +1,74 @@
+{
+  "id": "ai_stale_state_plan_discard",
+  "knowledge_type": "ai_heuristic",
+  "title": "旧状态版本上的计划必须废弃：版本不一致即重规划",
+  "summary": "计划绑定的 state_version 与运行时不一致时，其前提假设已失效。模型应废弃旧计划并基于最新状态重新生成，而不是只调整步骤顺序继续执行，否则会掩盖状态漂移。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "plan.state_version 落后于 runtime.state_version",
+      "剩余步骤前置条件可能失效"
+    ],
+    "state_features": [
+      "plan.state_version",
+      "runtime.state_version",
+      "bot.health",
+      "bot.food",
+      "bot.inventory",
+      "equipment_durability"
+    ]
+  },
+  "actions": [
+    "比较计划与运行时的 state_version",
+    "逐条复核剩余步骤前置条件",
+    "版本不一致时废弃旧计划并绑定新版本重新生成"
+  ],
+  "preconditions": [
+    "运行时维护单调递增的 state_version",
+    "计划创建时记录版本号"
+  ],
+  "success_condition": "新计划绑定最新 state_version，且剩余步骤前置条件全部成立",
+  "abort_condition": [
+    "版本无法对齐（事件丢失）",
+    "重规划达到次数上限"
+  ],
+  "risk_notes": [
+    "只改步骤序号不改前提条件，等于继续执行旧计划",
+    "把继续执行当作恢复会掩盖状态漂移"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_mineflayer_api_events",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "计划绑定的 state_version 落后于运行时版本时，废弃旧计划并基于最新状态重新生成。",
+  "alternative_comparison": [
+    "继续旧计划：省一次重规划，但前提假设已失效，会持续产生错误动作",
+    "废弃并重规划：多花一次生成成本，但消除状态漂移带来的连锁失败"
+  ],
+  "anti_patterns": [
+    "只调整步骤顺序而不重新校验前提条件",
+    "把旧状态版本上的成功当成本版本也成立",
+    "忽略异步结果晚到导致的状态版本错位"
+  ],
+  "model_guidance": "每次执行前比对计划与运行时 state_version；不一致即废弃旧计划，用最新状态重新生成并绑定新版本，不得仅改步骤顺序。",
+  "tags": [
+    "ai-decision",
+    "planning",
+    "state-sync",
+    "link_strategy:stg_opening_priority",
+    "theme:planning"
+  ],
+  "evidence_strength": "medium"
+}

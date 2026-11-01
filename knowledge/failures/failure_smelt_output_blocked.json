@@ -1,0 +1,123 @@
+{
+  "id": "failure_smelt_output_blocked",
+  "knowledge_type": "failure_recovery",
+  "title": "熔炉产出槽阻塞",
+  "summary": "输出槽满时熔炉会静默停摆：输入不再消耗、进度停滞，但界面看起来“还在烧”。诊断要以 outputItem 与进度双信号确认。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "furnace.outputItem() 持续非空且数量不再增长",
+      "输入数量停止下降"
+    ],
+    "state_features": [
+      "furnace.outputItem",
+      "furnace.progress",
+      "furnace.fuel",
+      "inventory_free_slots"
+    ]
+  },
+  "actions": [
+    "读取输出槽物品类型与数量",
+    "确认背包是否有空位收取",
+    "取出一批产物并观察进度是否恢复",
+    "按 L1→L4 调整批量策略"
+  ],
+  "preconditions": [
+    "熔炉窗口仍处于打开状态",
+    "已排除燃料耗尽（fuel 未归零）"
+  ],
+  "success_condition": "输出槽清空且产物入包，进度恢复推进",
+  "abort_condition": [
+    "输出槽无法取出（背包满）",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "输出槽满时继续加料只会延长阻塞",
+    "离开时不清空熔炉会导致物品滞留"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_minecraftdata_items_id_map"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "outputItem 数量停在 64 或固定值",
+    "输入数量不再减少，进度停滞",
+    "熔炉仍显示燃烧但无产出"
+  ],
+  "possible_causes": [
+    "输出槽已满（64 个）",
+    "产物与槽内物品不同类，无法堆叠",
+    "长时间未调用 takeOutput",
+    "背包满导致取出失败"
+  ],
+  "diagnostics": [
+    "判别：furnace.fuel 已归零时转 failure_smelt_fuel_starved；fuel > 0 且输出槽非空按本卡",
+    "读取 outputItem 的类型与数量",
+    "检查背包空位与可堆叠余量",
+    "检查上次 takeOutput 的时间戳",
+    "确认 fuel 仍大于 0"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：执行一次 takeOutput 并重读输出槽",
+    "L2 局部子任务重规划：改为分批冶炼（每批 ≤16），边冶边取",
+    "L3 回到最近安全检查点：回熔炉彻底清空并重新投料",
+    "L4 升级给大模型：调整冶炼批量与携带策略"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "输出槽满时继续加料",
+    "离开时不清空熔炉",
+    "把“还在燃烧”当作仍在产出",
+    "为腾空位丢弃任务材料"
+  ],
+  "tags": [
+    "failure-recovery",
+    "smelting",
+    "link_playbook:pb_iron_mining_run",
+    "theme:process"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "recovery_steps",
+      "value": "16",
+      "context": "改为分批冶炼（每批 ≤16）",
+      "reason": "单批冶炼上限：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "furnace.fuel 已归零",
+      "reason": "区分「燃料耗尽」与「输出槽满」的相对判据：fuel 归零归前卡，是相对量"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "fuel > 0",
+      "reason": "fuel 未归零且输出槽非空才归本卡：这是区分「输出槽满」与「燃料耗尽」的相对判据，是相对量而非外部事实"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "确认 fuel 仍大于 0",
+      "reason": "区分「燃料耗尽」与「输出槽满」的相对判据：确认 fuel 未归零才归本卡，是相对量而非外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

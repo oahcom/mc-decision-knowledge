@@ -1,0 +1,23 @@
+{
+  "source_id": "src_mindcraft_skill_timeout",
+  "title": "Mindcraft — src/agent/library/skills.js (技能定义与采集超时判据)",
+  "url": "https://raw.githubusercontent.com/mindcraft-bots/mindcraft/develop/src/agent/library/skills.js",
+  "platform": "GitHub",
+  "source_type": "source_code",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "// wait for the items to smelt\n let total = 0;\n let smelted_item = null;\n await new Promise(resolve => setTimeout(resolve, 200));\n let last_collected = Date.now();\n while (total < num) {\n await new Promise(resolve => setTimeout(resolve, 1000));\n if (furnace.outputItem()) {\n smelted_item = await furnace.takeOutput();\n if (smelted_item) {\n total += smelted_item.count;\n last_collected = Date.now();\n }\n }\n if (Date.now() - last_collected > 11000) {\n break; // if nothing has been collected in 11 seconds, stop\n }\n if (bot.interrupt_code) {\n break;\n }\n }\n // take all remaining in input/fuel slots\n if (furnace.inputItem()) {\n await furnace.takeInput();\n }\n if (furnace.fuelItem()) {\n await furnace.takeFuel();\n }\n\n await bot.closeWindow(furnace);\n\n if (placedFurn",
+  "evidence_notes": "何时停止：给出「11 秒内没有任何采集结果则中止该技能」这一显式停滞判据，以及技能内部的停滞中止逻辑。",
+  "related_game_versions": [
+    "1.21.6"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：skills.js § collectBlock / § craftingTableRange"
+}

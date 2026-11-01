@@ -1,0 +1,29 @@
+{
+  "source_id": "src_issue_pathfinder_stuck_stairs",
+  "title": "mineflayer-pathfinder issue #343 — bot stuck on stairs",
+  "url": "https://github.com/PrismarineJS/mineflayer-pathfinder/issues/343",
+  "platform": "GitHub",
+  "source_type": "issue_or_pr",
+  "reliability": "B",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T22:34:00+08:00",
+  "content_excerpt": "Issue #343 (opened 2024-12-13, still open): \"Bot gets stuck on stairs, thinking it can walk over them, but they are facing the wrong direction, hence you cant just walk up, but the bot thinks it can.\" The issue body is one sentence plus a screenshot; it contains no reproduction steps and no version string.",
+  "evidence_notes": "野外证据：卡死可来自“寻路对碰撞体的假设”与“实际可通行性”不一致，而非算力不足。未获维护者确认，可靠性定为 B；只能支撑“可能原因”，不能支撑结论性阈值。本次只读取了 issue 正文与状态，未读评论内容，因此不对评论下结论。",
+  "related_game_versions": [
+    "Java Edition 1.20+（报告未标注精确版本）"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 4,
+    "specificity": 3,
+    "version_clarity": 2,
+    "reproducibility": 3
+  },
+  "notes": "摘录已剔除作者信息，仅保留问题描述；该 issue 无复现步骤与日志。"
+}

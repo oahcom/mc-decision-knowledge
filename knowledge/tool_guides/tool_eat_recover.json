@@ -1,0 +1,155 @@
+{
+  "id": "tool_eat_recover",
+  "knowledge_type": "tool_guide",
+  "title": "进食与生存恢复（eat / survival）执行契约",
+  "summary": "进食是最容易被战斗打断的动作，且饱食度满时无法进食。契约要求先确认安全、再确认饥饿值，并把“进食被打断”视为撤退信号而不是重试信号。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "饥饿值低于阈值或需要回血",
+      "背包存在可食用物品"
+    ],
+    "state_features": [
+      "bot.food",
+      "saturation",
+      "bot.health",
+      "hostiles_within_8",
+      "food_items_count"
+    ]
+  },
+  "actions": [
+    "确认 6 格内无敌对实体",
+    "切换到食物槽位（不丢弃当前工具）",
+    "调用 consume() 并等待完成",
+    "核对饥饿值与物品数量变化"
+  ],
+  "preconditions": [
+    "背包存在可食用物品",
+    "当前饥饿值 < 目标值（饱食度满时无法进食）",
+    "6 格内无敌对实体",
+    "手持槽可切换且不会丢失关键工具"
+  ],
+  "success_condition": "饥饿值 ≥ 目标值（默认 18），食物计数 -1，且进食期间无受伤事件",
+  "abort_condition": [
+    "进食中受到伤害：立即中断并优先撤退，不原地重试",
+    "饥饿值已满：不得调用",
+    "只有负面效果食物且生命偏低：改用其它补给",
+    "timeout_ms（默认 4000）到期未完成进食：中断并检查窗口与手持物，不原地重试"
+  ],
+  "risk_notes": [
+    "交战中不要进食",
+    "饥饿值已满时不要进食（浪费）",
+    "只有腐肉/河豚等负面食物时不要作为主要补给",
+    "食物为唯一补给时不要一次吃光"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_wiki_hunger_regen_threshold",
+    "src_wiki_inventory_slots"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "eat / survival",
+  "parameters": [
+    {
+      "name": "food_item",
+      "type": "string",
+      "required": false,
+      "description": "指定食物；缺省按恢复效率选择"
+    },
+    {
+      "name": "target_food",
+      "type": "integer",
+      "required": false,
+      "description": "目标饥饿值，默认 18"
+    },
+    {
+      "name": "require_safe",
+      "type": "boolean",
+      "required": false,
+      "description": "是否要求 6 格内无敌对实体，默认 true"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "默认 4000"
+    }
+  ],
+  "expected_effects": [
+    "饥饿值上升",
+    "食物计数 -1",
+    "饱食度/回血状态改善"
+  ],
+  "failure_modes": [
+    "eat_no_food — 背包无可食用物品",
+    "eat_interrupted — 进食中被攻击打断",
+    "eat_not_hungry — 饥饿值已满，无法进食",
+    "eat_wrong_item — 手持物不可食用",
+    "eat_timeout — 超时未完成（窗口/交互异常）"
+  ],
+  "verification": [
+    "bot.food 上升到目标值以上",
+    "食物物品计数 -1",
+    "进食窗口内受伤事件数为 0"
+  ],
+  "tags": [
+    "tool-contract",
+    "survival",
+    "link_playbook:pb_combat_retreat",
+    "theme:attrition"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "abort_condition",
+      "value": "4000",
+      "context": "默认 4000",
+      "reason": "工具参数的初始值（进食超时）：作者可调"
+    },
+    {
+      "field": "parameters",
+      "value": "4000",
+      "context": "默认 4000",
+      "reason": "工具参数的初始值：作者可调"
+    },
+    {
+      "field": "success_condition",
+      "value": "1",
+      "context": "食物计数 -1",
+      "reason": "进食一次使食物计数减 1，是动作自身的相对变化量，非外部事实"
+    },
+    {
+      "field": "verification",
+      "value": "1",
+      "context": "食物物品计数 -1",
+      "reason": "进食一次使背包中该食物的计数减 1，是动作自身的相对变化量，而非外部事实"
+    },
+    {
+      "field": "verification",
+      "value": "0",
+      "context": "进食窗口内受伤事件数为 0",
+      "reason": "「进食期间未受伤」的相对判据：受伤事件数为 0 即全程安全，是相对量"
+    },
+    {
+      "field": "expected_effects",
+      "value": "1",
+      "context": "食物计数 -1",
+      "reason": "进食一次使食物计数减 1，是动作自身的相对变化量，而非外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

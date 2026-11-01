@@ -1,0 +1,170 @@
+{
+  "id": "failure_search_no_progress",
+  "knowledge_type": "failure_recovery",
+  "title": "目标资源搜索长时间无进展",
+  "summary": "表现为目标资源计数在固定窗口内零增长，但“搜索”仍在执行。核心诊断是把名义搜索时间换算成有效搜索时间，并区分“没找到”与“找到了但没采到”。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "目标资源计数在 1200 tick 内没有增长",
+      "搜索任务仍在运行"
+    ],
+    "state_features": [
+      "target_resource_count",
+      "search_ticks",
+      "interrupt_count",
+      "visited_chunks",
+      "tool_state",
+      "inventory_free_slots"
+    ]
+  },
+  "actions": [
+    "计算有效搜索时间（扣除中断与返程）",
+    "核对目标资源的生成条件与当前搜索层/群系",
+    "核对工具能否采集目标方块、背包是否有空位",
+    "按 L1→L4 顺序执行恢复，并记录每次尝试的参数变化"
+  ],
+  "preconditions": [
+    "搜索任务已运行足够长的窗口（≥1200 tick）",
+    "资源计数来自背包事实而非预测值"
+  ],
+  "success_condition": "目标资源计数增长到需求量，或确认该区域不产出并完成路线切换",
+  "abort_condition": [
+    "恢复尝试达到 escalate_after",
+    "出现更高优先级危险",
+    "背包满或工具失效导致采集不可能"
+  ],
+  "risk_notes": [
+    "在状态未变化时重复同一搜索只会累积时间成本",
+    "把失败归因于运气会掩盖工具或层级不匹配的根因"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_minecraft_wiki_gameplay",
+    "src_baritone_features_pathing",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "ai_synthesis",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "目标资源计数在 1200 tick 内零增长",
+    "已探索区块数在增长，但目标命中数为 0",
+    "连续两次计划选择了相同搜索策略且参数未变"
+  ],
+  "possible_causes": [
+    "搜索层高或生物群系与目标资源生成条件不匹配",
+    "在已访问区域重复搜索，有效新区域接近 0",
+    "目标区块未加载，客户端看不到目标方块",
+    "中断过多（战斗、坠落、背包满），有效搜索时间远低于名义时间",
+    "工具等级不足，目标方块被破坏但不掉落",
+    "背包已满，掉落物无法入包"
+  ],
+  "diagnostics": [
+    "判别：已访问区块仍在增长但命中为 0 按本卡；区块去重率低转 failure_search_area_repeat",
+    "统计 1200 tick 内有效搜索时间与中断次数",
+    "对比已访问区块集合与目标资源生成条件",
+    "确认工具等级与目标方块匹配",
+    "确认背包空位 ≥ 1",
+    "核对资源计数读取是否来自背包两次一致读取"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：改变搜索方向或高度层，单次移动 32~64 格后重新采样，同一策略只允许 1 次",
+    "L2 局部子任务重规划：改为沿已知矿脉或洞穴系统搜索；若工具/空位不满足，先补齐再回来",
+    "L3 回到最近安全检查点：回庇护所或前哨卸货整备，重置搜索基线并记录已排除区域",
+    "L4 升级给大模型：把该区域标记为低产，重选资源路线或调整阶段目标"
+  ],
+  "escalate_after": 3,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "在状态未变化时原样重复同一搜索",
+    "为了提高成功率而扩大搜索上限",
+    "背包已满或工具不合格时继续搜索",
+    "把未验证的“应该就在附近”当作继续搜索的理由"
+  ],
+  "tags": [
+    "failure-recovery",
+    "search",
+    "link_playbook:pb_iron_mining_run",
+    "link_strategy:stg_iron_route",
+    "theme:search"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "trigger",
+      "value": "1200",
+      "context": "1200 tick 内没有增长",
+      "reason": "无进展判定的观察窗口：作者自定"
+    },
+    {
+      "field": "preconditions",
+      "value": "1200",
+      "context": "运行足够长的窗口（≥1200 tick）",
+      "reason": "无进展判定所需的观察窗口由作者自定，取 1200 tick（60 秒），用于确认目标资源计数有足够时间增长"
+    },
+    {
+      "field": "diagnostics",
+      "value": "1200",
+      "context": "统计 1200 tick 内有效搜索时间",
+      "reason": "统计窗口的长度由作者自定，游戏未规定该窗口长度"
+    },
+    {
+      "field": "diagnostics",
+      "value": "1",
+      "context": "确认背包空位 ≥ 1",
+      "reason": "最小空位要求：作者自定"
+    },
+    {
+      "field": "symptoms",
+      "value": "1200",
+      "context": "1200 tick 内零增长",
+      "reason": "观察窗口的长度由作者自定，用于判定「无进展」"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "32",
+      "context": "单次移动 32~64 格后重新采样",
+      "reason": "重采样的位移下限：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "64",
+      "context": "单次移动 32~64 格后重新采样",
+      "reason": "重采样的位移上限：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "1",
+      "context": "同一策略只允许 1 次",
+      "reason": "同策略重试上限：作者自定"
+    },
+    {
+      "field": "diagnostics",
+      "value": "0",
+      "context": "命中为 0",
+      "reason": "「未命中」的相对判据：命中数为 0 表示目标资源未获得，是相对量而非外部事实"
+    },
+    {
+      "field": "symptoms",
+      "value": "0",
+      "context": "目标命中数为 0",
+      "reason": "目标命中数为 0 的相对判据：表示搜索未获得任何目标资源，是相对量而非外部事实"
+    },
+    {
+      "field": "possible_causes",
+      "value": "0",
+      "context": "有效新区域接近 0",
+      "reason": "有效新区域接近 0 表示搜索没有推进到未访问区域，是相对量而非外部事实"
+    }
+  ],
+  "evidence_strength": "medium"
+}

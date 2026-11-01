@@ -1,0 +1,27 @@
+{
+  "source_id": "src_internal_design",
+  "title": "Internal AI decision knowledge design",
+  "url": "local://docs/ai-decision-knowledge-spec.md",
+  "platform": "local project",
+  "source_type": "internal_design",
+  "reliability": "B",
+  "license": "internal",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "The project separates player decision knowledge from tool execution. The model chooses among verified strategies while the runtime validates state, executes skills, and handles recovery.",
+  "evidence_notes": "Internal source for AI-specific heuristics that are synthesized from the project architecture rather than an external Minecraft source.",
+  "related_game_versions": ["version-independent"],
+  "access_method": "local_file",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 4,
+    "version_clarity": 5,
+    "reproducibility": 4
+  },
+  "notes": "Internal design evidence cannot support source_verified status by itself."
+}

@@ -1,0 +1,158 @@
+{
+  "id": "tool_smelt_item",
+  "knowledge_type": "tool_guide",
+  "title": "熔炉冶炼（smelt）执行契约",
+  "summary": "冶炼是长时异步过程，失败集中在输出槽阻塞与燃料中断。契约把“打开—投料—等待—收取—关闭”拆成可验证步骤，并要求离开前熔炉必须为空，避免物品滞留。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "计划需要把矿石或食材转化为冶炼产物",
+      "熔炉可达且背包有输入与燃料"
+    ],
+    "state_features": [
+      "furnace.fuel",
+      "furnace.progress",
+      "furnace.outputItem",
+      "bot.inventory",
+      "hostiles_within_8"
+    ]
+  },
+  "actions": [
+    "打开熔炉并确认窗口类型",
+    "putInput / putFuel 并回读 inputItem / fuelItem 确认",
+    "按预算等待 furnace 'update' 事件，检查 fuel 与进度是否推进",
+    "takeOutput 收取产物并核对数量",
+    "关闭窗口，确认熔炉三个槽位为空"
+  ],
+  "preconditions": [
+    "熔炉距离 ≤ 4.5 格且打开成功",
+    "输入物品可被熔炉处理",
+    "燃料有效且数量满足 input_count × 单件燃料消耗",
+    "输出槽为空，或可容纳本次全部产物",
+    "背包有收取产物的空间"
+  ],
+  "success_condition": "产物数量达到期望并已入包，输入与燃料按比例消耗，关闭后熔炉输入/燃料/输出槽均为空",
+  "abort_condition": [
+    "timeout_ms 到期，或 furnace.fuel 归零且进度停止推进：立即取回输入、关闭窗口，不空等",
+    "受到攻击或生命下降：关闭窗口撤离，熔炉内容记为待回收",
+    "输出槽满且无法取出：停止加料"
+  ],
+  "risk_notes": [
+    "输出槽已有物品时不要继续加料",
+    "不要把燃料与待冶炼矿石混放在同一槽位",
+    "离开时不要留下未取空的熔炉（物品滞留且难以追溯）",
+    "不要在敌对生物活动区长时间停留冶炼"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_minecraft_wiki_gameplay",
+    "src_minecraft_wiki_version",
+    "src_wiki_player_interaction_range"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "smelt",
+  "parameters": [
+    {
+      "name": "furnace_pos",
+      "type": "block_pos",
+      "required": true,
+      "description": "熔炉坐标"
+    },
+    {
+      "name": "input_item",
+      "type": "string",
+      "required": true,
+      "description": "待冶炼物品 ID"
+    },
+    {
+      "name": "input_count",
+      "type": "integer",
+      "required": true,
+      "description": "投料数量"
+    },
+    {
+      "name": "fuel_item",
+      "type": "string",
+      "required": true,
+      "description": "燃料物品 ID"
+    },
+    {
+      "name": "fuel_count",
+      "type": "integer",
+      "required": true,
+      "description": "燃料数量，需覆盖 input_count 的单件消耗"
+    },
+    {
+      "name": "collect",
+      "type": "boolean",
+      "required": false,
+      "description": "是否自动收取产物，默认 true"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "默认 input_count × 单件冶炼时间 + 2000，单件时间需按版本回放校准"
+    }
+  ],
+  "expected_effects": [
+    "输入数量按进度减少",
+    "产物出现在输出槽并被收取入包",
+    "furnace.fuel 从 1 递减，progress 周期性更新"
+  ],
+  "failure_modes": [
+    "smelt_no_furnace — 熔炉不可达或打开失败",
+    "smelt_input_rejected — 输入不可冶炼（放错物品）",
+    "smelt_fuel_invalid — 燃料无效或不足",
+    "smelt_output_blocked — 输出槽满，进度停滞且输入不再消耗",
+    "smelt_fuel_starved — 燃料耗尽，进度回退",
+    "smelt_timeout — 超时未完成",
+    "smelt_window_desync — 客户端显示已产出但背包/输出槽未变"
+  ],
+  "verification": [
+    "furnace.outputItem() 数量达到期望",
+    "背包产物计数与期望一致（间隔 ≥2 tick 两次读取）",
+    "furnace.fuel 处于 [0,1] 且随进度变化",
+    "关闭后 inputItem/fuelItem/outputItem 均为 null"
+  ],
+  "tags": [
+    "tool-contract",
+    "smelting",
+    "link_playbook:pb_iron_mining_run",
+    "theme:process"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "parameters",
+      "value": "2000",
+      "context": "单件冶炼时间 + 2000",
+      "reason": "工具参数的初始值（冶炼超时余量）：作者可调"
+    },
+    {
+      "field": "verification",
+      "value": "2",
+      "context": "间隔 ≥2 tick 两次读取",
+      "reason": "确认读取的间隔：作者自定"
+    },
+    {
+      "field": "verification",
+      "value": "0",
+      "context": "furnace.fuel 处于 [0,1]",
+      "reason": "熔炉 fuel 进度值域 [0,1] 是相对量（0 = 尚未开始、1 = 冶炼完成），由熔炉当前进度自洽推出，不是外部事实"
+    }
+  ],
+  "evidence_strength": "high"
+}

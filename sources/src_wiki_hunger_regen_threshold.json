@@ -1,0 +1,30 @@
+{
+  "source_id": "src_wiki_hunger_regen_threshold",
+  "title": "Hunger - Minecraft Wiki（自然回血的饥饿阈值）",
+  "url": "https://minecraft.wiki/w/Hunger",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "ration [ edit | edit source ] Gaining natural regeneration by being at or above If the hunger value is at 18 ( ) or above, or the saturation value is non-zero, the player's health naturally regenerates every 4 seconds (80 ticks). Saturation is used first, and then once fully drained, hunger is used instead. When the hunger value drops to 17 ( ) or below, natural regeneration stops. Sprinting [ edit | edit source ] Main artic",
+  "evidence_notes": "给出自然回血条件：饥饿值 ≥ 18（或饱和度非零）时，每 4 秒（80 tick）回 1 点生命；并说明回血先扣饱和度、饱和度耗尽后再扣饥饿值。这是「何时该先吃东西」与「目标饥饿值取 18」的机制依据。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。"
+}

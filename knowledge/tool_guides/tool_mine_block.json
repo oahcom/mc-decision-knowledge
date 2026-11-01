@@ -1,0 +1,181 @@
+{
+  "id": "tool_mine_block",
+  "knowledge_type": "tool_guide",
+  "title": "挖掘单个方块（mine / dig）执行契约",
+  "summary": "把“挖一个方块”定义成可验证契约：前置条件是可计算的（距离、工具、空位、威胁），成功判定必须来自方块状态与背包事实，而不是 Promise 返回。dig 在被中断时同样 resolve，因此只靠返回值会把中断当成功。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "计划需要破坏某个具体坐标的方块",
+      "目标方块类型在允许挖掘白名单内"
+    ],
+    "state_features": [
+      "bot.targetDigBlock",
+      "equipped_tool",
+      "inventory_free_slots",
+      "block_at_target",
+      "distance_to_target",
+      "bot.health",
+      "hostiles_within_8"
+    ]
+  },
+  "actions": [
+    "校验前置条件：距离、工具、空位、威胁、危险方块",
+    "装备合适工具（bot.equip）并确认装备成功",
+    "调用 dig(block, forceLook=true, digFace='auto')，记录开始时刻",
+    "监听 diggingCompleted / diggingAborted，并按 timeout_ms 计时",
+    "按验证清单核对后置状态后才向计划返回成功"
+  ],
+  "preconditions": [
+    "目标坐标已在客户端加载（bot.blockAt(pos) 非 null）",
+    "目标与 bot 距离 ≤ 4.5 格（服务端交互距离上限）",
+    "已装备可破坏该方块的工具，剩余耐久 ≥ 1",
+    "背包至少 1 个空位，或掉落物可与现有堆叠合并",
+    "8 格内无敌对实体，或计划已显式声明这是防御性挖掘",
+    "目标不是基岩/屏障等不可破坏方块"
+  ],
+  "success_condition": "目标坐标方块类型变为 air，且该方块的掉落物已入包（两次间隔 ≥2 tick 的读取一致），或已明确记录掉落被阻塞的原因",
+  "abort_condition": [
+    "timeout_ms（默认 max(2000, digTime×1.5)）到期仍未收到 diggingCompleted：必须 stopDigging 后进入诊断",
+    "收到 diggingAborted：视为硬中断，不得对同一方块原样重发",
+    "受到伤害或 forcedMove（服务端回拉）：立即中断并优先撤离",
+    "生命 < 8 或食物 < 6：放弃当前挖掘（策略阈值，可调）"
+  ],
+  "risk_notes": [
+    "不要在脚下正下方单格使用（直接坠入洞穴或熔岩）",
+    "不要在头顶有沙砾、水或熔岩的方块下挖掘",
+    "背包已满时不要开挖（掉落物滞留并可能消失）",
+    "工具耐久低于本次目标方块数所需时不要开新矿脉",
+    "目标旁边有移动实体或玩家时不要假定必然成功"
+  ],
+  "source_refs": [
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_actions",
+    "src_mineflayer_api_events",
+    "src_baritone_settings_timeouts",
+    "src_minecraft_wiki_version",
+    "src_baritone_project",
+    "src_wiki_tool_durability_uses"
+  ],
+  "evidence_type": "code_behavior",
+  "confidence": "medium",
+  "validation_status": "source_verified",
+  "verified_scope": [
+    "api_contract",
+    "error_codes",
+    "default_values",
+    "project_policy"
+  ],
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "tool_name": "mine / dig",
+  "parameters": [
+    {
+      "name": "target",
+      "type": "block_pos",
+      "required": true,
+      "description": "目标方块坐标，必须是已加载区块内的整数坐标"
+    },
+    {
+      "name": "expect_item",
+      "type": "string",
+      "required": false,
+      "description": "预期掉落物 ID；用于验证而非驱动逻辑"
+    },
+    {
+      "name": "force_look",
+      "type": "boolean_or_ignore",
+      "required": false,
+      "description": "true 立即转头开挖；false 按正常转头速度；'ignore' 完全不转头。默认 true"
+    },
+    {
+      "name": "dig_face",
+      "type": "string",
+      "required": false,
+      "description": "挖掘面：'auto' | 'raycast' | 方向向量；默认 'auto'"
+    },
+    {
+      "name": "timeout_ms",
+      "type": "integer",
+      "required": false,
+      "description": "单方块超时，默认 max(2000, digTime×1.5)"
+    }
+  ],
+  "expected_effects": [
+    "目标方块变为 air",
+    "掉落物实体生成并进入背包，背包对应计数增加",
+    "工具耐久按破坏的方块数扣减（每块 1 点；瞬破方块不扣）",
+    "bot.targetDigBlock 回到 null"
+  ],
+  "failure_modes": [
+    "diggingAborted — 触发 diggingAborted 且方块仍存在：被 stopDigging、被击退或服务端拒绝",
+    "dig_double_call — 上一次挖掘未结束时再次调用，产生 fatal diggingAborted",
+    "dig_out_of_reach — 目标超出约 4.5 格交互距离，挖掘不开始或立即中断",
+    "dig_wrong_tool — 未装备合适工具或工具等级不足，耗时剧增或掉落为空",
+    "dig_unbreakable — 目标不可破坏（基岩、屏障等）",
+    "dig_timeout — 超时未完成，常见于服务端卡顿或方块被反复回滚",
+    "dig_no_drop — 方块已破坏但无掉落（工具等级不足、被其他实体拾取、方块本无掉落）"
+  ],
+  "verification": [
+    "bot.blockAt(target) 的类型为 air",
+    "bot.targetDigBlock === null",
+    "背包按 itemType 聚合的数量增加期望值，且间隔 ≥2 tick 的两次读取一致",
+    "工具耐久按预期扣减且工具未损坏",
+    "若掉落物仍在 bot.entities 中，记录实体 id 并转交 collect，不得判为成功"
+  ],
+  "tags": [
+    "tool-contract",
+    "mining",
+    "link_playbook:pb_iron_mining_run",
+    "theme:resource"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "preconditions",
+      "value": "8",
+      "context": "8 格内无敌对实体",
+      "reason": "挖掘作业的安全半径：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "1.5",
+      "context": "digTime×1.5",
+      "reason": "挖穿超时相对 digTime 的冗余系数：作者自定"
+    },
+    {
+      "field": "abort_condition",
+      "value": "8",
+      "context": "生命 < 8 或食物 < 6",
+      "reason": "放弃挖掘的生命阈值：作者自定"
+    },
+    {
+      "field": "parameters",
+      "value": "1.5",
+      "context": "digTime×1.5",
+      "reason": "工具参数的初始值：作者可调"
+    },
+    {
+      "field": "preconditions",
+      "value": "1",
+      "context": "剩余耐久 ≥ 1",
+      "reason": "「工具仍可使用」的相对判据：剩余耐久至少 1 点即可挖，是相对量（每点耐久的实际价值见 src_wiki_tool_durability_uses）"
+    },
+    {
+      "field": "preconditions",
+      "value": "1",
+      "context": "背包至少 1 个空位",
+      "reason": "「有地方放掉落物」的相对判据：至少 1 个空位即可，是相对量（槽位总数见 src_wiki_inventory_slots）"
+    },
+    {
+      "field": "expected_effects",
+      "value": "1",
+      "context": "每块 1 点",
+      "reason": "每次破坏方块扣 1 点耐久：由 Durability 页的「N uses」以「次」为单位计数得出，见 src_wiki_tool_durability_uses 的 derived_values"
+    }
+  ],
+  "evidence_strength": "high"
+}

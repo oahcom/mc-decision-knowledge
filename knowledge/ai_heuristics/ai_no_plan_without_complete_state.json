@@ -1,0 +1,75 @@
+{
+  "id": "ai_no_plan_without_complete_state",
+  "knowledge_type": "ai_heuristic",
+  "title": "状态不完整不生成计划：缺失关键状态时请求补齐而非猜测",
+  "summary": "当生命、食物、装备、当前位置或目标可达性等关键状态缺失时，模型不应在猜测中生成计划，而应显式请求补齐状态。基于残缺状态生成的计划会在执行中反复触发重规划。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "准备生成新计划",
+      "关键状态特征缺失或过期"
+    ],
+    "state_features": [
+      "bot.health",
+      "bot.food",
+      "equipment_durability",
+      "bot.position",
+      "runtime.state_version",
+      "known_threats"
+    ]
+  },
+  "actions": [
+    "核对计划所需的最小状态集合是否完整",
+    "缺失时请求运行时补齐或显式标记为未知",
+    "状态补齐后再生成绑定当前版本的短计划"
+  ],
+  "preconditions": [
+    "存在可请求的状态中心",
+    "关键状态可被协议层提供"
+  ],
+  "success_condition": "计划所需的最小状态集合完整后，才生成绑定当前 state_version 的计划",
+  "abort_condition": [
+    "关键状态持续缺失且无法补齐",
+    "紧急安全事件需要立即反应，跳过计划直接保护"
+  ],
+  "risk_notes": [
+    "用默认值或推测补齐缺失状态，等于把推测写成事实",
+    "残缺状态生成的计划会在执行中被反复打断"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_voyager_curriculum_prompt_rules",
+    "src_mindcraft_skill_timeout",
+    "src_paper_steve1_failure_analysis",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "expert_heuristic",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "计划所需关键状态缺失或过期时，不生成计划，先请求补齐状态，而不是用推测填充。",
+  "alternative_comparison": [
+    "用推测补齐并生成计划：快，但计划建立在猜测上，执行中反复失败",
+    "先补齐状态再生成：多一次状态请求，但计划可靠、重规划次数少"
+  ],
+  "anti_patterns": [
+    "把缺失状态用默认值或经验值静默填充",
+    "在旧状态版本上生成计划却不核对版本",
+    "把口头描述的状态当成实测状态"
+  ],
+  "model_guidance": "生成计划前逐项核对最小状态集合，任何关键项缺失就输出状态补齐请求；无法补齐时显式标记为未知，并只生成不依赖该未知项的保守计划。",
+  "tags": [
+    "ai-decision",
+    "planning",
+    "link_strategy:stg_opening_priority",
+    "theme:planning"
+  ],
+  "evidence_strength": "medium"
+}

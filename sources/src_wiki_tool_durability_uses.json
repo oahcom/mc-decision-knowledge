@@ -1,0 +1,36 @@
+{
+  "source_id": "src_wiki_tool_durability_uses",
+  "title": "Durability - Minecraft Wiki（工具可使用次数表）",
+  "url": "https://minecraft.wiki/w/Durability",
+  "platform": "minecraft_wiki",
+  "source_type": "community_wiki",
+  "reliability": "A",
+  "license": "CC-BY-NC-SA-3.0",
+  "retrieved_at": "2026-11-01T00:00:00Z",
+  "content_excerpt": "durability. Assuming a player uses a tool appropriately, the following list shows the maximum durability for tools of each material type. Materials Gold : 32 uses (Least durable) Wood : 59 uses Stone : 131 uses Copper : 191 uses Iron : 250 uses Diamond : 1561 uses Netherite : 2031 uses (Most durable) Specific tools and weapons Flint and steel : 64 uses Brush : 64 uses Fishing rod : 64 uses ‌ [ Java Edition only ] or 384 uses ‌ [ Bedrock Edition only ] Carrot on a stick : 25 uses Warped fungus on a stick : 100 uses Shears : 238 uses Shield : 336 uses Bow : 384 uses Trident : 250 uses Elytra : 432 uses Cross",
+  "evidence_notes": "给出工具材质的最大使用次数：金 32 / 木 59 / 石 131 / 铜 191 / 铁 250 / 钻石 1561 / 下界合金 2031 次。次数即「每破坏一个方块消耗 1 点耐久」的计数单位，是耐久预算（如铁镐 250 次 ≈ 250 个圆石）的基础。",
+  "related_game_versions": [
+    "Java Edition 全部版本",
+    "Bedrock Edition 全部版本"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 5,
+    "version_clarity": 4,
+    "reproducibility": 5
+  },
+  "notes": "摘录取自 Minecraft Wiki 官方 MediaWiki API 的渲染正文；数值可逐字复核。",
+  "derived_values": [
+    {
+      "value": "1",
+      "basis": "每次破坏方块消耗 1 点耐久：Durability 页的「N uses」以「次」为单位计数，而 Breaking 页注明瞬间破坏的方块「doesn't make tools lose durability」，即非瞬间破坏方块按 1 次 / 1 点扣减"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "source_id": "src_mindcraft_project",
+  "title": "Mindcraft: LLM and Mineflayer agent framework",
+  "url": "https://github.com/mindcraft-bots/mindcraft",
+  "platform": "GitHub",
+  "source_type": "github_repository",
+  "reliability": "B",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T19:20:00+08:00",
+  "content_excerpt": "Mindcraft crafts minds for Minecraft with LLMs and Mineflayer, supports task-based evaluation, bot profiles, model configuration, and explicit security warnings around allowing an LLM to write and execute code.",
+  "evidence_notes": "Useful for observing common LLM-agent failure modes, task definitions, prompt profiles, and safety constraints in protocol-layer Minecraft agents.",
+  "related_game_versions": ["Java Edition supported versions"],
+  "access_method": "search_result",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 4,
+    "version_clarity": 4,
+    "reproducibility": 4
+  },
+  "notes": "Community-maintained project. Do not copy prompts wholesale; extract decision knowledge and safety lessons with evidence."
+}

@@ -1,0 +1,23 @@
+{
+  "source_id": "src_minedojo_task_specs_spectrum",
+  "title": "MineDojo — minedojo/tasks/description_files/tasks_specs.yaml (任务模板化规格定义)",
+  "url": "https://raw.githubusercontent.com/MineDojo/MineDojo/main/minedojo/tasks/description_files/tasks_specs.yaml",
+  "platform": "GitHub",
+  "source_type": "benchmark",
+  "reliability": "A",
+  "license": "MIT",
+  "retrieved_at": "2026-11-01",
+  "content_excerpt": "====\nharvest_{quantity}_{ore_type}:\n __cls__: \"harvest\"\n prompt: \"obtain {quantity} {ore_type}\"\n target_names: \"{ore_type}\"\n target_quantities: \"{quantity}\"\n reward_weights: 1\n use_voxel: true\n voxel_size: { xmin: -1, ymin: -1, zmin: -1, xmax: 1, ymax: 1, zmax: 1 }\n use_lidar: false\n\nharvest_{quantity}_{ore_type}_with_{pickaxe_material}_pickaxe:\n __cls__: \"harvest\"\n prompt: \"obtain {quantity} {ore_type} with {pickaxe_material} pickaxe\"\n target_names: \"{ore_type}\"\n target_quantities: \"{quantity}\"\n reward_weights: 1\n initial_inventory:\n mainhand:\n name: \"{pickaxe_material}_pickaxe\"\n use_voxel: true\n voxel_size: { xmin: -1, ymin: -1, zmin: -1, xmax: 1, ymax: 1, zmax: 1 }\n use_lidar: false\n\n# ====harvest core items====\nharvest_{quantity}_{natural_items}:\n __cls__: \"harvest\"\n prompt: \"obtain {quantity} {natural_items}\"\n target_names: \"{natural_items}\"\n target_quantities: \"{quantity}\"\n reward_weights: 1\n use_voxel: true\n voxel_",
+  "evidence_notes": "什么时候做、何时停止：以模板参数化生成难度谱（barehand → wood → stone → iron → gold → diamond），给出目标数量与存活天数等终止参数。",
+  "related_game_versions": [
+    "1.11.2"
+  ],
+  "access_method": "public_page",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "notes": "自 Windows 侧来源库移植：tasks_specs.yaml § harvest / § techtree / § survival"
+}

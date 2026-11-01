@@ -1,0 +1,73 @@
+{
+  "id": "ai_plan_short_checkpoints",
+  "knowledge_type": "ai_heuristic",
+  "title": "计划必须有短检查点：用可验证里程碑切分长任务",
+  "summary": "长任务应被切分为带短检查点的有限步骤，每个检查点都能用游戏事实即时验证。没有检查点的长计划会在执行偏离后无法及早发现，导致状态漂移和重复失败。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "正在生成多步骤任务计划",
+      "计划缺少可验证的中间检查点"
+    ],
+    "state_features": [
+      "plan.state_version",
+      "current_step",
+      "step_progress",
+      "runtime.state_version"
+    ]
+  },
+  "actions": [
+    "把长任务切分为带明确成功条件的短步骤",
+    "为每个检查点声明可即时验证的完成判据",
+    "检查点未达成时触发重规划而非硬推"
+  ],
+  "preconditions": [
+    "运行时能对每个检查点做结果验证",
+    "步骤完成判据可化为游戏事实"
+  ],
+  "success_condition": "计划由带可验证检查点的有限步骤构成，每个检查点都能被即时判定达成或失败",
+  "abort_condition": [
+    "检查点验证结果与预期不符",
+    "状态版本在计划中途变化"
+  ],
+  "risk_notes": [
+    "把整段任务写成一个长步骤，等于放弃中途纠偏能力",
+    "检查点判据含糊（如“接近完成”）无法被运行时验证"
+  ],
+  "source_refs": [
+    "src_internal_design",
+    "src_minedojo_voyager",
+    "src_voyager_core_thresholds",
+    "src_voyager_curriculum_agent",
+    "src_voyager_critic_self_verification",
+    "src_minecraft_wiki_version",
+    "src_minedojo_benchmark"
+  ],
+  "evidence_type": "expert_heuristic",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T23:35:00+08:00",
+  "updated_at": "2026-11-01T23:35:00+08:00",
+  "decision_rule": "长任务必须切分为带可验证短检查点的有限步骤，检查点未达成即重规划，不硬推。",
+  "alternative_comparison": [
+    "单段长计划：表达简单，但偏离后无法及早发现，纠偏成本高",
+    "带检查点的短步骤：切分成本略增，但能及早发现偏离并局部重规划"
+  ],
+  "anti_patterns": [
+    "用“继续推进”这类不可验证的描述当检查点",
+    "把整个长任务写成一个不可拆分的动作",
+    "检查点失败后仍硬推下一步"
+  ],
+  "model_guidance": "把任务拆成有限短步骤，为每个步骤写可被运行时即时验证的成功条件；每完成一个检查点再推进下一个，失败立即重规划该步骤。",
+  "tags": [
+    "ai-decision",
+    "planning",
+    "link_strategy:stg_opening_priority",
+    "theme:planning"
+  ],
+  "evidence_strength": "medium"
+}

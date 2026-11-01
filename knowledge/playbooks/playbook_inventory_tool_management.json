@@ -1,0 +1,111 @@
+{
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "created_at": "2026-11-01T23:53:26+08:00",
+  "updated_at": "2026-11-01T23:53:26+08:00",
+  "validation_status": "draft",
+  "knowledge_type": "playbook",
+  "id": "playbook_inventory_tool_management",
+  "title": "手册 · 背包与工具管理（存放、腾位与耐久）",
+  "summary": "覆盖背包容量与工具耐久这两类慢性约束。它们不会立刻致命，却会持续降低所有其他作业的效率，因此手册把它们当作常规检查项，而不是出问题时才处理。",
+  "stage": "general",
+  "trigger": {
+    "conditions": [
+      "背包空位接近耗尽",
+      "工具耐久接近失效",
+      "准备开始一段需要持续采集的作业"
+    ],
+    "state_features": [
+      "bot.inventory",
+      "inventory_free_slots",
+      "stackable_pairs",
+      "low_value_items",
+      "nearby_container",
+      "pending_drops",
+      "equipment_durability",
+      "armor_durability",
+      "weapon_durability",
+      "food_items_count"
+    ]
+  },
+  "actions": [
+    "执行开始前检查清单：空位、可合并堆叠、关键物资是否齐备、耐久余量",
+    "按采集配额与存放策略决定采什么、放在哪、丢什么",
+    "腾位时只丢低价值物品，工具、食物与任务材料一律保留",
+    "完成后回写状态事实：保留清单、存放点位置与内容、耐久余量与补造材料缺口"
+  ],
+  "preconditions": [
+    "背包内容与容器状态可读且两次读取一致",
+    "已知本段作业需要保留哪些物资"
+  ],
+  "success_condition": "背包留有容纳掉落物的空间、关键物资齐全、耐久足以支撑下一段作业，由背包内容与装备栏状态验证",
+  "abort_condition": [
+    "不适用：背包空位充足且耐久健康",
+    "腾位会损失唯一工具或全部食物",
+    "存放点不可达",
+    "出现需要立即撤离的状态"
+  ],
+  "risk_notes": [
+    "不要丢弃工具、食物或唯一材料",
+    "不要在背包已满时继续采集",
+    "不要把耐久检查留到工具损坏之后",
+    "手册不替代存放工具的具体执行契约"
+  ],
+  "candidate_routes": [
+    "就地堆放：零往返，保存风险高",
+    "就近装箱：安全可取，依赖附近容器",
+    "只取目标资源：背包最干净",
+    "满载即返：带回最多，限制行动半径"
+  ],
+  "scenario": "背包与工具管理：容量、存放与耐久",
+  "checklist": [
+    "当前空位与可合并堆叠数",
+    "关键物资（工具、食物、任务材料）是否齐备",
+    "是否有可用的存放点",
+    "主工具与备用的耐久余量",
+    "掉落物是否有地方放",
+    "本段作业是否需要额外携带工具"
+  ],
+  "continue_condition": [
+    "空位维持在可容纳掉落物的水平",
+    "耐久余量足以支撑剩余作业",
+    "关键物资没有被腾位动作破坏"
+  ],
+  "exit_condition": [
+    "空位与耐久都回到安全区间",
+    "无法在不损失关键物资的前提下腾位",
+    "存放点不可达",
+    "出现需要立即撤离的状态"
+  ],
+  "failure_entry_points": [
+    "failure_inventory_full",
+    "failure_tool_durability_low",
+    "failure_tool_broken_mid_task",
+    "failure_state_desync_inventory"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_prismarine_mineflayer",
+    "src_mineflayer_api_events",
+    "src_internal_design",
+    "src_minecraft_wiki_version"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "verified_scope": [
+    "gameplay_mechanics",
+    "api_contract",
+    "project_policy"
+  ],
+  "tags": [
+    "playbook",
+    "capacity",
+    "link_strategy:stg_collect_and_store",
+    "link_strategy:stg_tool_mix_for_stage",
+    "link_strategy:stg_equipment_allocation",
+    "canonical_id:pb_inventory_tool_management"
+  ],
+  "evidence_strength": "high"
+}

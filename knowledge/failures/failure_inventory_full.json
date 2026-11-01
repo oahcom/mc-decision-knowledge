@@ -1,0 +1,120 @@
+{
+  "id": "failure_inventory_full",
+  "knowledge_type": "failure_recovery",
+  "title": "背包已满导致采集中断",
+  "summary": "背包满是容量问题，不是采集问题。它会在三个位置同时造成假象：掉落物不消失、合成失败、冶炼产物无法取出。诊断要先确认“真满”还是“可合并”。",
+  "game_edition": "java",
+  "game_versions": [
+    "26.3"
+  ],
+  "stage": "iron_age",
+  "trigger": {
+    "conditions": [
+      "背包空位为 0",
+      "采集后掉落物滞留地面"
+    ],
+    "state_features": [
+      "inventory_free_slots",
+      "stackable_pairs",
+      "low_value_items",
+      "nearby_container",
+      "pending_drops"
+    ]
+  },
+  "actions": [
+    "统计空位与可合并堆叠数量",
+    "列出低价值可丢弃物品",
+    "决定就地存放、丢弃或回程卸货",
+    "按 L1→L4 执行并更新保留清单"
+  ],
+  "preconditions": [
+    "空位统计来自背包事实",
+    "已排除窗口未关闭导致的槽位误读"
+  ],
+  "success_condition": "空位 ≥ 3 且关键物资（工具、食物、任务材料）齐全",
+  "abort_condition": [
+    "丢弃会损失唯一工具或全部食物时停止",
+    "恢复达到 escalate_after"
+  ],
+  "risk_notes": [
+    "背包满时继续挖矿会让掉落物消失",
+    "误丢唯一工具等价于任务失败"
+  ],
+  "source_refs": [
+    "src_minecraft_wiki_gameplay",
+    "src_prismarine_mineflayer",
+    "src_internal_design",
+    "src_minecraft_wiki_version",
+    "src_wiki_inventory_slots"
+  ],
+  "evidence_type": "community_consensus",
+  "confidence": "medium",
+  "validation_status": "draft",
+  "created_at": "2026-11-01T22:24:00+08:00",
+  "updated_at": "2026-11-01T22:36:00+08:00",
+  "symptoms": [
+    "背包 36 格全部占用",
+    "采集后掉落物停留在地面不消失",
+    "合成或冶炼因无空位失败"
+  ],
+  "possible_causes": [
+    "未设置保留/丢弃策略，收集了大量低价值方块",
+    "未就近使用箱子等容器存放",
+    "未合并同类堆叠，误判为已满",
+    "采集配额超过携带能力"
+  ],
+  "diagnostics": [
+    "统计空位与可合并堆叠对数",
+    "列出低价值物品（泥土、沙砾、安山岩）数量",
+    "检查附近 16 格内是否有可用容器",
+    "确认没有打开中的容器窗口干扰槽位统计"
+  ],
+  "recovery_steps": [
+    "L1 工具内重试/换目标：合并同类堆叠，丢弃低价值方块，腾出 3 个空位",
+    "L2 局部子任务重规划：就近开箱存放，或改为只采目标资源",
+    "L3 回到最近安全检查点：回基地卸货并重设保留清单",
+    "L4 升级给大模型：下调采集配额或调整携带策略"
+  ],
+  "escalate_after": 2,
+  "escalation_unit": "recovery_round",
+  "forbidden_actions": [
+    "背包满时继续挖矿",
+    "丢弃工具、食物或唯一材料",
+    "为腾位置反复丢弃再捡回",
+    "无视掉落物滞留继续推进计划"
+  ],
+  "tags": [
+    "failure-recovery",
+    "capacity",
+    "link_playbook:pb_iron_mining_run",
+    "link_strategy:stg_equipment_allocation",
+    "theme:capacity"
+  ],
+  "tunable_thresholds": [
+    {
+      "field": "success_condition",
+      "value": "3",
+      "context": "空位 ≥ 3",
+      "reason": "腾位目标：作者自定的最小冗余空位数"
+    },
+    {
+      "field": "diagnostics",
+      "value": "16",
+      "context": "检查附近 16 格内是否有可用容器",
+      "reason": "容器搜索半径：作者自定"
+    },
+    {
+      "field": "recovery_steps",
+      "value": "3",
+      "context": "腾出 3 个空位",
+      "reason": "腾位目标由作者自定，要求腾出至少 3 个空位以容纳后续采集"
+    },
+    {
+      "field": "trigger",
+      "value": "0",
+      "context": "背包空位为 0",
+      "reason": "「背包已满」的相对判据：空位为 0 是满的定义本身，不是外部事实（槽位总数 36 见 src_wiki_inventory_slots）"
+    }
+  ],
+  "evidence_strength": "medium"
+}

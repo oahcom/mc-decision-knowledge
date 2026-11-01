@@ -1,0 +1,29 @@
+{
+  "source_id": "src_issue_pathfinder_parkour_physics",
+  "title": "mineflayer-pathfinder issue #227 — stuck on 2 block gap (physics mismatch)",
+  "url": "https://github.com/PrismarineJS/mineflayer-pathfinder/issues/227",
+  "platform": "GitHub",
+  "source_type": "issue_or_pr",
+  "reliability": "B",
+  "license": "unknown_needs_verification",
+  "retrieved_at": "2026-11-01T22:34:00+08:00",
+  "content_excerpt": "Issue #227 (opened 2021-12-14, still open, opened by a repository collaborator): \"the physics simulations fail to make the jump over the 2 block gap without sprinting even tho the getMoveParkourForward provides a move for a 2 block jump. The jump should be possible in vanilla so this might be a problem with simulated physics.\" Reported against 1.12.2 with the then-current pathfinder build; no fix recorded.",
+  "evidence_notes": "野外证据：'寻路认为可达'与'物理执行做不到'可以同时成立，表现为反复尝试同一跳跃并卡住。作者为协作者，可信度高于普通报告，但问题仍未修复，因此仍标 B。",
+  "related_game_versions": [
+    "Java Edition 1.12.2（报告版本）"
+  ],
+  "access_method": "official_api",
+  "compliance": {
+    "publicly_accessible": true,
+    "robots_or_terms_respected": true,
+    "personal_data_excluded": true,
+    "no_auth_bypass": true
+  },
+  "quality": {
+    "decision_relevance": 5,
+    "specificity": 4,
+    "version_clarity": 3,
+    "reproducibility": 4
+  },
+  "notes": "摘录已剔除作者信息；版本较旧，不能直接外推到 26.3。"
+}
